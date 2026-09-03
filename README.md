@@ -1,6 +1,8 @@
 # Claude-Bot v1-flash
 
-Minecraft AI 助手机器人，基于 mineflayer + DeepSeek API。
+> 基于 **mineflayer + DeepSeek** 的 Minecraft AI 助手机器人：中文对话、自动漫游、采矿战斗、铁砧附魔，**内置 24 套可直接复刻的建筑蓝图**。
+
+![Node](https://img.shields.io/badge/Node.js-18%2B-blue.svg) ![Minecraft](https://img.shields.io/badge/Minecraft-1.21.x-green.svg) ![License](https://img.shields.io/badge/License-MIT-green.svg)
 
 ## 功能
 
