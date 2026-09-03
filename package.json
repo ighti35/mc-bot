@@ -1,0 +1,31 @@
+{
+  "name": "claude-bot-v1-flash",
+  "version": "1.1.0",
+  "description": "Minecraft AI 助手机器人 — mineflayer + DeepSeek API，自动漫游/采矿/战斗/附魔/自优化",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "minecraft",
+    "mineflayer",
+    "ai",
+    "bot",
+    "deepseek"
+  ],
+  "author": "Claude-Bot contributors",
+  "license": "MIT",
+  "type": "commonjs",
+  "dependencies": {
+    "@kleppe/litematic-reader": "^1.0.11",
+    "mineflayer": "^4.37.1",
+    "mineflayer-armor-manager": "^2.0.1",
+    "mineflayer-auto-eat": "^5.0.3",
+    "mineflayer-collectblock": "^1.6.0",
+    "mineflayer-pathfinder": "^2.4.5",
+    "mineflayer-tool": "^1.2.0",
+    "prismarine-schematic": "^1.3.0",
+    "vec3": "^0.2.0"
+  }
+}

@@ -1,0 +1,20 @@
+{
+  "host": "localhost",
+  "port": 62452,
+  "username": "Claude_Bot",
+  "version": "1.21.11",
+  "owner": "你的游戏ID",
+  "aiApiKey": "sk-你的DeepSeek-API-Key",
+  "aiApiUrl": "https://api.deepseek.com/v1/chat/completions",
+  "aiModel": "deepseek-chat",
+  "chatPrefix": "[ClaudeBot]",
+  "autoEat": true,
+  "autoEquipArmor": true,
+  "autoWander": true,
+  "wanderRadius": 32,
+  "viewDistance": "tiny",
+  "maxFollowDistance": 3,
+  "miningSpeed": 1200,
+  "collectRadius": 16,
+  "welcomeMessage": "Hello! I am your AI assistant. Type !help for commands."
+}

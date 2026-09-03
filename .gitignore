@@ -1,0 +1,20 @@
+# 依赖
+node_modules/
+
+# 个人配置：请复制 config.example.json 为 config.json，别提交真实 key
+config.json
+*.json.bak
+
+# data/ 下只提交蓝图与必需的 items/waypoints；其余是运行时产物，由 bot 自行重建
+data/*
+!data/items.json
+!data/waypoints.json
+!data/schematics/
+
+# 日志 / 无关文件
+*.log
+*.zip
+.DS_Store
+__pycache__/
+tools/
+open-watch.ps1
