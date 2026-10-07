@@ -1,5 +1,6 @@
 // mc-bot/modules/anti-stuck.js — 防卡死自救系统
 const Vec3 = require('vec3').Vec3;
+const {isBuilding}=require('./build-protection');
 
 let checkInterval = null;
 let lastPos = null;
@@ -18,8 +19,19 @@ function initAntiStuck(bot, state, config) {
   console.log('[AntiStuck] 防卡死系统已就绪');
 
   checkInterval = setInterval(() => {
+    if(isBuilding(state)){resetStuckTimer();lastPos=bot.entity?.position?.clone()||null;return;}
     if (!bot.entity || !bot.entity.position) return;
     if (state.mode === 'sleeping') return;
+    if(state._playerCombatTask||state._commandAuthorization)return;
+    // Managed navigation/mining owns its timeout/replanning. Never launch a competing rescue/teleport.
+    if (state._locateTask || state._pickupTask || state._chopTask || state._gamemodeTask || state._gameInventoryTask || state._inventoryTask || state._navigationTask || state._miningTask || state._explorationTask) {
+      stuckSeconds = 0; lastPos = bot.entity.position.clone(); return;
+    }
+    if (['thinking', 'crafting', 'placing'].includes(state.mode) || state._craftTask) {
+      stuckSeconds = 0;
+      lastPos = bot.entity.position.clone();
+      return;
+    }
     if (inEscape) return; // 自救过程中不重复检测
 
     const pos = bot.entity.position;
@@ -80,10 +92,11 @@ function resetStuckTimer() {
  * 处理卡死：分层自救
  */
 function handleStuck(bot, state, config) {
+  if(isBuilding(state))return;
   inEscape = true;
   currentEscapeLevel++;
 
-  const owner = config.owner || 'player';
+  const owner = config.owner || '';
   const pos = bot.entity.position;
 
   switch (currentEscapeLevel) {
@@ -321,6 +334,7 @@ function stopAntiStuck() {
  * 检查 bot 是否在水中，如果在则游上岸
  */
 function escapeWater(bot, state) {
+  if(isBuilding(state))return false;
   if (!bot.entity || !bot.entity.position) return false;
   const head = bot.blockAt(bot.entity.position.offset(0, 1.6, 0));
   const feet = bot.blockAt(bot.entity.position);

@@ -1,9 +1,5 @@
 // mc-bot/modules/builder.js — 建造模块（创造模式 + 服务器 /setblock /fill 指令）
-// 核心思路：建房时切到创造模式，用 /setblock 和 /fill 在服务器层整栋建造。
-// 不再逐格走位 placeBlock（那需要库存、寻路、且 placeBlock 回调可能永不触发导致卡死）。
-
-const pathfinder = require('mineflayer-pathfinder');
-const { GoalNear } = pathfinder.goals;
+// 原生图纸加载，分区块确认放置；保留游戏模式和已有建筑。
 
 // ===== 蓝图：每条是一个 /fill 矩形（相对原点 origin，y 从 0 起）=====
 // fields: {x1,y1,z1,x2,y2,z2, block}
@@ -194,233 +190,79 @@ function blockFor(kind, design, material) {
   return MAT[kind] || DESIGN_MAT[design] || 'stone_bricks';
 }
 
-// ===== 从预置图纸 JSON 建造（真正复刻开源建筑）=====
-const fs = require('fs');
-const path = require('path');
-const SCHEMATIC_DIR = path.join(__dirname, '..', 'data', 'schematics');
-const schematicsCache = {};
-
-function loadSchematic(name) {
-  if (schematicsCache[name]) return schematicsCache[name];
-  const safe = name.replace(/[^a-z0-9_-]/gi, '');
-  const file = path.join(SCHEMATIC_DIR, safe + '.json');
-  if (!fs.existsSync(file)) return null;
-  const data = JSON.parse(fs.readFileSync(file, 'utf8'));
-  schematicsCache[name] = data;
-  return data;
-}
-
-function listSchematics() {
-  if (!fs.existsSync(SCHEMATIC_DIR)) return [];
-  return fs.readdirSync(SCHEMATIC_DIR)
-    .filter((f) => f.endsWith('.json'))
-    .map((f) => f.replace(/\.json$/, ''));
-}
-
-// 逐格 /setblock 复刻一份图纸
-// /setblock 是命令（不是普通聊天），不受 MC 聊天反垃圾速率限制，可快速连发。
-// 只在每 600 条让出一次事件循环即可防打满服务器命令队列。
-async function buildSchematic(schem, origin, bot, state) {
-  const { blocks, size } = schem;
-  const total = blocks.length;
-  let done = 0;
-  let lastReport = 0;
-  for (const b of blocks) {
-    if (state.mode !== 'building') break;
-    const x = origin.x + b.x;
-    const y = origin.y + b.y;
-    const z = origin.z + b.z;
-    // 用带属性的 setblock（保留楼梯朝向/原木轴/门半扇），否则退回裸方块 id
-    const blockStr = b.setblock || b.name;
-    bot.chat(`/setblock ${x} ${y} ${z} ${blockStr}`);
-    done++;
-    // 每 600 条略歇，给服务器事件循环喘息
-    if (done % 600 === 0) await sleep(20);
-    // 每 25% 报一次进度
-    if (done - lastReport >= total / 4) {
-      lastReport = done;
-      bot.chat(`进度 ${done}/${total} (${Math.floor((done / total) * 100)}%)`);
-    }
-  }
-  return done;
-}
-
-// ===== 主入口 =====
-// args: [design, sizeStr, materialOrNull]（来自 !build 或 AI 转成数组）
-// design 可以是几何房型(house/modern/castle...) 或一份预置图纸名(large-survival-house)
-async function startBuilder(args, bot, state) {
-  const [design, sizeStr, material] = args;
-  const size = parseInt(sizeStr) || 5;
-
-  // 优先：若 design 是已转换好的图纸 JSON，走忠实复刻
-  const schematic = loadSchematic(design);
-  if (schematic) {
-    await buildFromSchematic(schematic, design, bot, state);
-    return;
-  }
-
-  const designFn = DESIGNS[design];
-  if (!designFn) {
-    const avail = Object.keys(DESIGNS).concat(listSchematics()).join(', ');
-    bot.chat(`未知房型: ${design}. 可用: ${avail}`);
-    resetToIdle(state);
-    return;
-  }
-
-  const createdPos = bot.entity.position.floored();
-  const rects = designFn(size);
-
-  try {
-    // 1) 切创造模式
-    if (!await setGamemode(bot, 'creative')) {
-      // 无权限：聊天提示，回退到生存 + /give + /setblock（指令通常可用）
-      bot.chat('我没权限切创造（服务器可能没开作弊）。请执行 /op Claude_Bot，或用 /give 给我方块。');
-      // 尝试 /give 一批方块后仍用 /setblock 建（/setblock 一般不需要创造）
-      await giveBuildingBlock(bot, design, size, material);
-    }
-
-    bot.chat(`开始建造 ${design} (${rects.length} 个区域)...`);
-    state.mode = 'building';
-    state.currentTask = `Building: ${design} ${size}`;
-
-    // 2) 计算原点：让结构中心落在当前 blob 正下方（玩家脚下）
-    let maxW = 0, maxD = 0;
-    for (const r of rects) {
-      maxW = Math.max(maxW, r.x2 - r.x1 + 1, r.x1, 0);
-      maxD = Math.max(maxD, r.z2 - r.z1 + 1, r.z1, 0);
-    }
-    const origin = {
-      x: createdPos.x - Math.floor(maxW / 2),
-      y: createdPos.y - 1,
-      z: createdPos.z - Math.floor(maxD / 2),
-    };
-
-    // 3) 逐区域发送 /fill（或 /setblock）
-    let executed = 0;
-    for (const r of rects) {
-      if (state.mode !== 'building') break;
-      const b = blockFor(r.kind, design, material);
-      const x1 = origin.x + r.x1, y1 = origin.y + r.y1, z1 = origin.z + r.z1;
-      const x2 = origin.x + r.x2, y2 = origin.y + r.y2, z2 = origin.z + r.z2;
-      const cmd = (x1 === x2 && y1 === y2 && z1 === z2)
-        ? `/setblock ${x1} ${y1} ${z1} ${b}`
-        : `/fill ${x1} ${y1} ${z1} ${x2} ${y2} ${z2} ${b}`;
-      bot.chat(cmd);
-      executed++;
-      await sleep(60);
-    }
-
-    bot.chat(`建造完成！共 ${executed} 个区域`);
-  } catch (e) {
-    console.error('[Builder] 建造出错:', e.message);
-    bot.chat(`建造中断: ${e.message}`);
-  } finally {
-    // 4) 无论成败都要切回生存并释放模式
-    await setGamemode(bot, 'survival').catch(() => {});
-    resetToIdle(state);
-  }
-}
-
-// 分块把某区域清成空气。/fill 单次体积上限 32768，超了必须拆成多块。
-const MAX_FILL = 30000; // 留点余量，避免 32768 边缘踩线
-async function clearArea(bot, origin, size) {
-  const x1 = origin.x, y1 = origin.y, z1 = origin.z;
-  const x2 = origin.x + size.x - 1, y2 = origin.y + size.y - 1, z2 = origin.z + size.z - 1;
-  const w = x2 - x1 + 1, d = z2 - z1 + 1, h = y2 - y1 + 1;
-  // 每层最多能放的块数，按 y 切片填；一层也超就再横向切
-  let layerD = d;
-  while (w * layerD > MAX_FILL) layerD = Math.floor(MAX_FILL / w);
-  for (let y = y1; y <= y2; y++) {
-    for (let z0 = z1; z0 <= z2; z0 += layerD) {
-      const ze = Math.min(z2, z0 + layerD - 1);
-      bot.chat(`/fill ${x1} ${y} ${z0} ${x2} ${y} ${ze} air`);
-      // 发多了让服务器喘口气
-      await sleep(5);
-    }
-  }
-  await sleep(200);
-}
-
-// 从图纸 JSON 复刻（忠实逐格）
-async function buildFromSchematic(schem, design, bot, state) {
-  const { size, totalBlocks, name } = schem;
-  const createdPos = bot.entity.position.floored();
-  // 原点：让结构中心落在玩家脚下，y 最低层贴玩家脚下的地面（往下1格做地基）
-  const origin = {
-    x: createdPos.x - Math.floor(size.x / 2),
-    y: createdPos.y - 1,
-    z: createdPos.z - Math.floor(size.z / 2),
-  };
-
-  try {
-    if (!await setGamemode(bot, 'creative')) {
-      bot.chat('我没权限切创造。请执行 /op Claude_Bot（/setblock 一般仍可用）。');
-    }
-    bot.chat(`开始复刻开源建筑: ${name} (${totalBlocks} 个方块)...`);
-    state.mode = 'building';
-    state.currentTask = `Building: ${name}`;
-
-    // 先清空整个规格空间为空气（清除可能的地形/障碍），再逐格放置。
-    // /fill 单次上限 32768 体积，超出必须分块。
-    await clearArea(bot, origin, size);
-
-    const done = await buildSchematic(schem, origin, bot, state);
-    bot.chat(`复刻完成！放置 ${done}/${totalBlocks} 个方块`);
-  } catch (e) {
-    console.error('[Builder] 图纸复刻出错:', e.message);
-    bot.chat(`复刻中断: ${e.message}`);
-  } finally {
-    await setGamemode(bot, 'survival').catch(() => {});
-    resetToIdle(state);
-  }
-}
-
-function resetToIdle(state) {
-  if (state.mode === 'building') state.mode = 'idle';
-  state.currentTask = null;
-}
-
-// 切换创造/生存模式，轮询直到生效；返回是否成功
-function setGamemode(bot, mode) {
-  return new Promise((resolve) => {
-    const targetMode = mode === 'creative' ? 1 : 0; // 1=creative, 0=survival
-    // 已在该模式则直接成功
-    if (bot.game && bot.game.gameMode === targetMode && !bot._awaitingGamemode) {
-      return resolve(true);
-    }
-    bot.chat(`/gamemode ${mode}`);
-    const start = Date.now();
-    const iv = setInterval(() => {
-      if (bot.game && bot.game.gameMode === targetMode) {
-        clearInterval(iv);
-        clearTimeout(to);
-        bot._awaitingGamemode = false;
-        resolve(true);
-      } else if (Date.now() - start > 8000) {
-        clearInterval(iv);
-        clearTimeout(to);
-        bot._awaitingGamemode = false;
-        resolve(false); // 权限不足或超时
+const {loadSchematic,validateSchematic}=require('./schematic-loader');
+const {executeBlueprint}=require('./blueprint-build');
+const checkpoint=require('./build-checkpoint');
+async function startBuilder(args,bot,state,options={}){
+  const resolved=require('./schematic-catalog').resolveSchematicName(args[0]);
+  if(args.includes('--repair'))return repairLastBlueprint(resolved,bot,state);
+  require('./command-permissions').requireAllowed(bot,state);
+  if(state._buildTask)throw new Error('已有建造任务，请先用 !stop');
+  const [,sizeStr,material]=args,design=resolved;
+  const token={},epoch=state._commandEpoch||0;
+  state._buildTask=token;state.mode='building';state.currentTask=`读取图纸：${design}`;
+  require('./build-protection').installMovementProtection(bot,state);
+  try{
+    let schematic=await loadSchematic(design);
+    if(!schematic){
+      const designFn=DESIGNS[design];if(!designFn)throw new Error(`没有找到图纸或房型：${design}`);
+      const size=Number(sizeStr||5);if(!Number.isInteger(size)||size<3||size>64)throw new Error('建筑尺寸应为 3 到 64 的整数');
+      const positions=new Map();
+      for(const r of designFn(size))for(let y=Math.min(r.y1,r.y2);y<=Math.max(r.y1,r.y2);y++)for(let z=Math.min(r.z1,r.z2);z<=Math.max(r.z1,r.z2);z++)for(let x=Math.min(r.x1,r.x2);x<=Math.max(r.x1,r.x2);x++){
+        const block=blockFor(r.kind,design,material),key=`${x},${y},${z}`;
+        if(block==='air')positions.delete(key);else positions.set(key,{x,y,z,name:block,setblock:block});
       }
-    }, 300);
-    const to = setTimeout(() => {
-      clearInterval(iv);
-      bot._awaitingGamemode = false;
-      resolve(false);
-    }, 9000);
-  });
+      const blocks=[...positions.values()],min={x:Infinity,y:Infinity,z:Infinity},max={x:-Infinity,y:-Infinity,z:-Infinity};
+      for(const b of blocks)for(const axis of ['x','y','z']){min[axis]=Math.min(min[axis],b[axis]);max[axis]=Math.max(max[axis],b[axis]);}
+      for(const b of blocks)for(const axis of ['x','y','z'])b[axis]-=min[axis];
+      schematic={name:design,blocks,totalBlocks:blocks.length,size:{x:max.x-min.x+1,y:max.y-min.y+1,z:max.z-min.z+1}};
+    }
+    validateSchematic(schematic,bot.registry);
+    if(state._buildTask!==token||(state._commandEpoch||0)!==epoch)throw Object.assign(new Error('建造已停止'),{code:'TASK_CANCELLED'});
+    const previous=args.includes('--new')?null:checkpoint.restore(bot,schematic,state);
+    const pos=options.position||bot.entity.position.floored(),origin=previous?.origin||{x:Math.floor(pos.x)-Math.floor(schematic.size.x/2),y:Math.floor(pos.y),z:Math.floor(pos.z)-Math.floor(schematic.size.z/2)};
+    const minY=bot.game?.minY??-64,maxY=minY+(bot.game?.height??384)-1;
+    if(origin.y<minY||origin.y+schematic.size.y-1>maxY)throw new Error(`建筑超出世界高度；请站在 Y≤${maxY-schematic.size.y+1} 的位置重试`);
+    bot.pathfinder?.setGoal(null);bot.clearControlStates?.();state._wanderEnabled=false;
+    state._buildCheckpoint=previous||checkpoint.create(bot,schematic,origin);
+    if(options.clearTerrain===true){state._buildCheckpoint.clearTerrain=true;state._buildCheckpoint.cleanupAuthorizedBy=options.owner;}
+    checkpoint.save(state);
+    state._buildProgress={design,done:state._buildCheckpoint.done,total:schematic.blocks.length,origin};
+    bot.chat(`${previous?'继续':'开始'}建造 ${design}：${schematic.blocks.length} 个方块，尺寸 ${schematic.size.x}×${schematic.size.y}×${schematic.size.z}；${state._buildCheckpoint.clearTerrain?'仅清理已授权的建筑范围':'保留已有方块'}，!stop 可停止。`);
+    const result=await executeBlueprint(schematic,origin,bot,state,token);
+    state._lastBuildResult={success:true,...result};return result;
+  }catch(error){state._lastBuildResult={success:false,design,message:error.message};throw error;}
+  finally{if(state._buildTask===token){state._buildTask=null;if((state._commandEpoch||0)===epoch){state.mode='idle';state.currentTask=null;}}}
 }
-
-// 给 bot 一批建造方块（生存兜底用 /give）
-async function giveBuildingBlock(bot, design, size, material) {
-  const block = material || DESIGN_MAT[design] || 'stone_bricks';
-  const count = Math.min(64, Math.max(64, size * size * 2));
-  bot.chat(`/give @s ${block} ${count}`);
-  await sleep(300);
+async function repairLastBlueprint(design,bot,state,{woodOnly=true}={}){
+  require('./command-permissions').requireAllowed(bot,state);
+  if(state._buildTask)throw new Error('已有建造任务，请先用 !stop');
+  const fs=require('fs'),path=require('path');
+  const job=state._buildCheckpoint||JSON.parse(fs.readFileSync(path.join(__dirname,'..','data','build-checkpoint.json'),'utf8'));
+  if(job.design!==design||job.username!==bot.username||job.dimension!==bot.game?.dimension||!job.completed)throw new Error('没有找到这份图纸已完成的原址记录');
+  const token={},epoch=state._commandEpoch||0;
+  state._buildTask=token;state.mode='building';state.currentTask=`检查原址楼梯和紫色落地窗：${design}`;
+  require('./build-protection').installMovementProtection(bot,state);
+  const assertActive=()=>{if(state._buildTask!==token||(state._commandEpoch||0)!==epoch||state.mode!=='building')throw Object.assign(new Error('建筑修复已停止'),{code:'TASK_CANCELLED'});};
+  try{
+    const schematic=await loadSchematic(design);validateSchematic(schematic,bot.registry);
+    if(checkpoint.create(bot,schematic,job.origin).signature!==job.signature)throw new Error('图纸已变化，不能按旧坐标修复');
+    assertActive();require('./task-control').pauseWanderingForCommand(bot,state);bot.pathfinder?.setGoal(null);bot.clearControlStates?.();
+    const result=await require('./blueprint-finish').finishBlueprint(schematic,job.origin,bot,state,{assertActive,woodOnly,allowReplace:true});
+    state._lastBuildRepair={design,origin:job.origin,...result,success:true};
+    job.finishing=result;state._buildCheckpoint=job;checkpoint.save(state);
+    return {message:`原址修复完成：检查 ${result.stairsChecked} 个${woodOnly?'木':''}楼梯，校正 ${result.stairsRepaired} 个；${result.portalWindowsVerified} 处下界门的 ${result.portalCellsVerified} 个门体方块已核对。`,...result};
+  }finally{if(state._buildTask===token){state._buildTask=null;if((state._commandEpoch||0)===epoch){state.mode='idle';state.currentTask=null;}}}
 }
-
-function sleep(ms) {
-  return new Promise((r) => setTimeout(r, ms));
+function proceduralBlueprint(design,size=5){
+  if(!DESIGNS[design])return null;
+  const positions=new Map();
+  for(const r of DESIGNS[design](size))for(let y=Math.min(r.y1,r.y2);y<=Math.max(r.y1,r.y2);y++)for(let z=Math.min(r.z1,r.z2);z<=Math.max(r.z1,r.z2);z++)for(let x=Math.min(r.x1,r.x2);x<=Math.max(r.x1,r.x2);x++){
+    const name=blockFor(r.kind,design),key=`${x},${y},${z}`;if(name==='air')positions.delete(key);else positions.set(key,{x,y,z,name,setblock:name});
+  }
+  const blocks=[...positions.values()],min={x:Infinity,y:Infinity,z:Infinity},max={x:-Infinity,y:-Infinity,z:-Infinity};
+  for(const b of blocks)for(const a of ['x','y','z']){min[a]=Math.min(min[a],b[a]);max[a]=Math.max(max[a],b[a]);}
+  for(const b of blocks)for(const a of ['x','y','z'])b[a]-=min[a];
+  return {name:design,blocks,totalBlocks:blocks.length,size:{x:max.x-min.x+1,y:max.y-min.y+1,z:max.z-min.z+1}};
 }
-
-module.exports = { startBuilder };
+module.exports={startBuilder,repairLastBlueprint,proceduralBlueprint};

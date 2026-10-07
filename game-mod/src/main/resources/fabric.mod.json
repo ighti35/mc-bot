@@ -1,0 +1,1 @@
+{"schemaVersion":1,"id":"bot_inventory","version":"1.1.0","name":"Claude Bot Inventory & Building","environment":"*","entrypoints":{"main":["local.botui.BotInventoryMod"],"client":["local.botui.BotInventoryClient"]},"depends":{"fabricloader":">=0.19.2","minecraft":"~1.21.11","java":">=21","fabric-api":"*"}}

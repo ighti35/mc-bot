@@ -1,281 +1,131 @@
-// mc-bot/modules/lumberjack.js — 砍树模块 v3（预扫描 + 分层挖掘 + 动态重扫）
-const { GoalNear } = require('mineflayer-pathfinder').goals;
-const Vec3 = require('vec3').Vec3;
+const { Vec3 } = require('vec3');
+const { pauseWanderingForCommand, waitForAction } = require('./task-control');
+const { navigateTo, safeMovements } = require('./navigation');
+const { canStand } = require('./terrain');
+const { collectNearbyItems } = require('./item-pickup');
 
-/**
- * 砍最近的树，返回实际捡到的物品数量
- */
-function chopNearestTree(bot, state) {
-  return new Promise(async (resolve) => {
-    // 1. 找最近的树
-    const treeBlock = bot.findBlock({
-      matching: b => b.name && (b.name.endsWith('_log') || b.name.endsWith('_wood')),
-      maxDistance: 32,
-    });
-    if (!treeBlock) { bot.chat('附近没有树！'); resolve(0); return; }
-
-    // 2. 地形预扫描：BFS 找整棵树所有原木
-    const allLogs = bfsTreeLogs(bot, treeBlock);
-    if (allLogs.length === 0) { bot.chat('找不到原木！'); resolve(0); return; }
-
-    const blockName = allLogs[0].name;
-    const woodType = blockName.replace('_log', '').replace('_wood', '');
-    const invBefore = countWoodInInventory(bot, blockName);
-
-    // 3. 过滤可达方块 + 按 Y 分层
-    const reachable = filterReachable(bot, allLogs);
-    console.log(`[Lumberjack] 扫描完成: ${allLogs.length}块总原木, ${reachable.length}块可达, 砍前背包${invBefore}个`);
-    bot.chat(`扫描: ${woodType}树 ${allLogs.length}块原木`);
-
-    if (reachable.length === 0) {
-      bot.chat('树太高了够不到！');
-      resolve(0);
-      return;
+const isLog = name => typeof name === 'string' && !name.startsWith('stripped_') && /_(log|wood|stem|hyphae)$/.test(name);
+const key = point => `${point.x},${point.y},${point.z}`;
+function chooseAxe(bot, block) {
+  const rank = { netherite: 1, diamond: 2, iron: 3, stone: 4, golden: 5, wooden: 6 };
+  const time = item => {
+    try { return block.digTime(item.type, false, false, false, item.enchants || [], bot.entity.effects || {}); }
+    catch (_) { return rank[item.name.split('_')[0]] || 10; }
+  };
+  return bot.inventory.items().filter(item => item.name.endsWith('_axe') &&
+    (bot.registry.itemsByName[item.name]?.maxDurability ?? Infinity) - (item.durabilityUsed || 0) > 4)
+    .sort((a, b) => time(a) - time(b))[0];
+}
+function treeLogs(bot, seed) {
+  const queue = [seed.position], seen = new Set(), logs = [];
+  while (queue.length && seen.size < 4096 && logs.length < 128) {
+    const point = queue.shift();
+    if (seen.has(key(point)) || point.distanceTo(seed.position) > 10) continue;
+    seen.add(key(point));
+    const block = bot.blockAt(point);
+    if (block?.name !== seed.name) continue;
+    logs.push(block);
+    for (let x = -1; x <= 1; x++) for (let y = -1; y <= 1; y++) for (let z = -1; z <= 1; z++) {
+      if (x || y || z) queue.push(point.offset(x, y, z));
     }
+  }
+  return logs.sort((a, b) => a.position.y - b.position.y || a.position.distanceTo(bot.entity.position) - b.position.distanceTo(bot.entity.position));
+}
 
-    // 4. 按 Y 分层（从低到高），逐层挖掘
-    const layers = groupByY(reachable);
-    let mined = 0;
-    let stuckStreak = 0;
-    const CHOP_TIMEOUT = 120000;
-    const chopStart = Date.now();
-
-    for (const layer of layers) {
-      if (Date.now() - chopStart > CHOP_TIMEOUT) break;
-      if (state.mode !== 'chopping') break;
-      if (bot.health < 8) { bot.chat('有危险！'); break; }
-
-      // 走到这一层最近的方块
-      const nearest = findNearest(bot, layer);
-      if (nearest) {
-        const d = bot.entity.position.distanceTo(new Vec3(nearest.x, nearest.y, nearest.z));
-        if (d > 4) {
-          try { await walkTo(bot, nearest.x, nearest.y, nearest.z, 8000); } catch (_) {}
-        }
-      }
-
-      // 挖这一层的所有方块
-      for (const log of layer) {
-        if (Date.now() - chopStart > CHOP_TIMEOUT) break;
-        if (state.mode !== 'chopping') break;
-
-        // 重新检查方块是否还存在
-        const cur = bot.blockAt(new Vec3(log.x, log.y, log.z));
-        if (!cur || !cur.name || (!cur.name.endsWith('_log') && !cur.name.endsWith('_wood'))) continue;
-
-        const success = await mineOneBlock(bot, log, state);
-        if (success) {
-          mined++;
-          stuckStreak = 0;
-        } else {
-          stuckStreak++;
-          if (stuckStreak >= 3) {
-            // 连续 3 个挖不到，可能需要重新定位
-            console.log('[Lumberjack] 连续失败，重新定位...');
-            try { await walkTo(bot, log.x, log.y, log.z, 5000); } catch (_) {}
-            stuckStreak = 0;
+async function collectWood(bot, state, config = {}, count = 0, options = {}, assertActive = () => {}) {
+  if (!Number.isSafeInteger(count) || count < 0 || count > 256) throw new Error('木头数量必须是 0 到 256 的整数。');
+  if (state._chopTask) throw new Error('已有砍树任务，请先用 !stop。');
+  const name = options.block?.replace(/^minecraft:/, '');
+  if (name && !isLog(name)) throw new Error(`无法识别原木：${name}`);
+  const matching = block => isLog(block?.name) && (!name || block.name === name);
+  const total = () => bot.inventory.items().filter(item => matching(item)).reduce((n, item) => n + item.count, 0);
+  const before = total(), token = {}, epoch = state._commandEpoch || 0;
+  const skipped = new Set(), harvestedNames = new Set();
+  const previous = bot.pathfinder.movements;
+  const deadline = Date.now() + (options.timeout ?? Math.max(120000, count * 10000));
+  let chopped = 0, trees = 0, failure, lastFailure;
+  pauseWanderingForCommand(bot, state);
+  state._chopTask = token; state.mode = 'chopping';
+  state.stats ||= {};
+  const active = () => {
+    assertActive();
+    if ((state._commandEpoch || 0) !== epoch || state._chopTask !== token || state.mode !== 'chopping') {
+      const error = new Error('砍树任务已停止'); error.code = 'TASK_CANCELLED'; throw error;
+    }
+  };
+  const safe = () => {
+    active();
+    if (Date.now() >= deadline) throw new Error(`砍树超时，已砍 ${chopped} 块，实际收到 ${total() - before} 块。`);
+    if (bot.health <= 8 || bot.food <= 5) throw new Error('生命值或饱食度不足，停止砍树。');
+    if ((bot.inventory.emptySlotCount?.() ?? 1) < 1) throw new Error('背包已满，停止砍树。');
+  };
+  const interrupt = () => { bot.pathfinder.setGoal(null); try { bot.stopDigging(); } catch (_) {} };
+  try {
+    bot.pathfinder.setMovements(safeMovements(bot));
+    while (count ? chopped < count : trees < 1) {
+      safe();
+      state.currentTask = `砍树 (${total() - before}/${count || '一棵树'})`;
+      const positions = bot.findBlocks({ matching, maxDistance: 48, count: 512 })
+        .filter(point => !skipped.has(key(point))).sort((a, b) => a.distanceTo(bot.entity.position) - b.distanceTo(bot.entity.position));
+      if (!positions.length) throw new Error(`附近没有更多可采集的原木，已砍 ${chopped} 块，实际收到 ${total() - before}/${count || chopped} 块。${lastFailure ? '原因：' + lastFailure : ''}`);
+      const seed = bot.blockAt(positions[0]);
+      let cut = 0;
+      for (const old of treeLogs(bot, seed)) {
+        safe();
+        if (count && chopped >= count) break;
+        skipped.add(key(old.position));
+        const block = bot.blockAt(old.position);
+        if (!matching(block)) continue;
+        const axe = chooseAxe(bot, block);
+        if (!axe) throw new Error('背包里没有耐久足够的斧头，请先给我一把斧头。');
+        try {
+          if (!bot.canDigBlock(block)) {
+            const ground = [], feet = bot.entity.position.floored();
+            for (let dx = -3; dx <= 3; dx++) for (let dz = -3; dz <= 3; dz++) for (let dy = -2; dy <= 1; dy++) {
+              const point = new Vec3(block.position.x + dx, feet.y + dy, block.position.z + dz);
+              if (canStand(bot, point) && point.offset(0.5, 1.62, 0.5).distanceTo(block.position.offset(0.5, 0.5, 0.5)) < 4.5) ground.push(point);
+            }
+            ground.sort((a, b) => a.distanceTo(bot.entity.position) - b.distanceTo(bot.entity.position));
+            for (const point of ground.slice(0, 3)) {
+              try { await navigateTo(point.x, point.y, point.z, bot, { state, assertActive: safe, exact: true, range: 0, timeout: 6000, saveTrail: false }); }
+              catch (error) { safe(); lastFailure = error.message; }
+              if (bot.canDigBlock(block)) break;
+            }
+            if (!bot.canDigBlock(block)) { lastFailure = '剩余原木过高或没有可达落脚点'; continue; }
           }
+          await require('./dig-confirmed').digConfirmed(bot,block,{state,assertActive:safe,prepare:async()=>{
+            await waitForAction(bot.equip(axe, 'hand'), { assertActive: safe, timeout: 5000, onInterrupt: interrupt });
+            if (bot.heldItem?.name !== axe.name) throw new Error('没有确认斧头已装备。');
+          }});
+          const after = bot.blockAt(block.position);
+          if (!after || after.name === block.name) throw new Error('未确认原木挖下。');
+          chopped++; cut++; harvestedNames.add(block.name);
+          state.stats.blocksMined = (state.stats.blocksMined || 0) + 1;
+          if (bot.waitForTicks) await waitForAction(bot.waitForTicks(3), { assertActive: safe, timeout: 1000 });
+          await collectNearbyItems(bot, { state, assertActive: safe, names: [...harvestedNames], timeout: 2500 });
+        } catch (error) {
+          safe(); lastFailure = error.message;
+          console.log('[Tree] Skipped log:', error.message);
         }
       }
-
-      // 每层挖完，捡一下掉落物 + 重扫新暴露的方块
-      await quickCollect(bot);
+      if (cut) trees++;
     }
-
-    // 5. 最后全面收尾
-    console.log('[Lumberjack] 最后收集...');
-    for (let pass = 0; pass < 3; pass++) {
-      await quickCollect(bot);
-      await sleep(1000);
-    }
-
-    // 6. 统计
-    const invAfter = countWoodInInventory(bot, blockName);
-    const collected = invAfter - invBefore;
-    console.log(`[Lumberjack] 完成: 挖${mined}块, 收${collected}个 (${invBefore}→${invAfter})`);
-
-    if (collected > 0) {
-      bot.chat(`砍完了！收到${collected}个${woodType}原木`);
-    } else {
-      bot.chat(`挖了${mined}块但没捡到掉落物...`);
-    }
-
-    resolve(collected > 0 ? collected : mined);
-  });
-}
-
-// ========== 地形扫描 ==========
-
-function bfsTreeLogs(bot, startBlock) {
-  const blocks = [];
-  const visited = new Set();
-  const queue = [startBlock.position];
-  const startPos = startBlock.position;
-
-  while (queue.length > 0) {
-    const pos = queue.shift();
-    const key = `${pos.x},${pos.y},${pos.z}`;
-    if (visited.has(key)) continue;
-    visited.add(key);
-    if (pos.distanceTo(startPos) > 8) continue;
-
-    const block = bot.blockAt(pos);
-    if (!block || !block.name) continue;
-    if (!block.name.endsWith('_log') && !block.name.endsWith('_wood')) continue;
-
-    blocks.push({ x: pos.x, y: pos.y, z: pos.z, name: block.name });
-
-    for (const [dx, dy, dz] of [[0,1,0],[0,-1,0],[1,0,0],[-1,0,0],[0,0,1],[0,0,-1]]) {
-      queue.push(pos.offset(dx, dy, dz));
+    await collectNearbyItems(bot, { state, assertActive: safe, names: [...harvestedNames], radius: 6, timeout: 4000 });
+    const collected = total() - before;
+    if (count && collected < count) throw new Error(`已砍 ${chopped} 块，但背包实际收到 ${collected}/${count} 块，部分掉落物无法拾取。`);
+    state.stats.itemsCollected = (state.stats.itemsCollected || 0) + collected;
+    return { chopped, collected, trees, message: `已砍 ${chopped} 块原木，背包实际增加 ${collected} 块。` };
+  } catch (error) { failure = error.message; throw error; }
+  finally {
+    interrupt(); bot.clearControlStates(); bot.pathfinder.setMovements(previous);
+    state._lastChoppingResult = { chopped, collected: total() - before, trees, failure };
+    if (state._chopTask === token) {
+      state._chopTask = null;
+      if ((state._commandEpoch || 0) === epoch && state.mode === 'chopping') { state.mode = 'idle'; state.currentTask = null; }
     }
   }
-
-  return blocks;
 }
-
-// 过滤：只保留 bot 能够到的方块
-function filterReachable(bot, logs) {
-  const botY = bot.entity.position.y;
-  return logs.filter(log => {
-    const vertDist = Math.abs(log.y - botY);
-    return vertDist <= 4.5;
-  });
+async function chopNearestTree(bot, state, options = {}) {
+  return (await collectWood(bot, state, {}, options.count ?? 0, options)).collected;
 }
-
-// 按 Y 坐标分层分组
-function groupByY(logs) {
-  const map = new Map();
-  for (const log of logs) {
-    if (!map.has(log.y)) map.set(log.y, []);
-    map.get(log.y).push(log);
-  }
-  // 按 Y 从低到高排序
-  return [...map.entries()].sort((a, b) => a[0] - b[0]).map(e => e[1]);
-}
-
-// 找离 bot 最近的方块
-function findNearest(bot, logs) {
-  let best = null, bestDist = Infinity;
-  for (const log of logs) {
-    const d = bot.entity.position.distanceTo(new Vec3(log.x, log.y, log.z));
-    if (d < bestDist) { bestDist = d; best = log; }
-  }
-  return best;
-}
-
-// ========== 移动 ==========
-
-function walkTo(bot, x, y, z, timeout = 10000) {
-  return new Promise((resolve, reject) => {
-    bot.pathfinder.setGoal(new GoalNear(x, y, z, 2));
-    const start = Date.now();
-    const check = setInterval(() => {
-      const dist = bot.entity.position.distanceTo(new Vec3(x, y, z));
-      if (dist < 3) { clearInterval(check); resolve(); return; }
-      if (Date.now() - start > timeout) { clearInterval(check); reject(new Error('timeout')); }
-    }, 200);
-  });
-}
-
-// ========== 挖掘（轮询） ==========
-
-function mineOneBlock(bot, pos, state) {
-  return new Promise((resolve) => {
-    const block = bot.blockAt(new Vec3(pos.x, pos.y, pos.z));
-    if (!block || !block.name) { resolve(false); return; }
-    if (!block.name.endsWith('_log') && !block.name.endsWith('_wood')) { resolve(false); return; }
-
-    const dist = bot.entity.position.distanceTo(block.position);
-    const vertDist = Math.abs(block.position.y - bot.entity.position.y);
-
-    if (vertDist > 4.5) { resolve(false); return; }
-    if (dist > 6) { resolve(false); return; }
-
-    // 太远 → 先靠近
-    if (dist > 4) {
-      walkTo(bot, pos.x, pos.y, pos.z, 5000)
-        .then(() => mineOneBlock(bot, pos, state).then(resolve))
-        .catch(() => resolve(false));
-      return;
-    }
-
-    if (!bot.canDigBlock(block)) {
-      bot.setControlState('jump', true);
-      setTimeout(() => {
-        bot.setControlState('jump', false);
-        if (!bot.canDigBlock(block)) { resolve(false); return; }
-        startDig();
-      }, 400);
-      return;
-    }
-
-    startDig();
-
-    function startDig() {
-      try { bot.stopDigging(); } catch (_) {}
-      try { bot.lookAt(block.position.offset(0.5, 0.5, 0.5)); } catch (_) {}
-
-      console.log(`[Lumberjack] dig ${block.name} (${pos.x},${pos.y},${pos.z})`);
-
-      bot.dig(block).catch(e => {
-        // bot.dig() 是 async 函数，rejection 必须用 .catch 捕获
-        if (e.message !== 'Digging aborted') {
-          console.log(`[Lumberjack] dig rejected: ${e.message}`);
-        }
-      });
-
-      const t0 = Date.now();
-      const poll = setInterval(() => {
-        const cur = bot.blockAt(new Vec3(pos.x, pos.y, pos.z));
-        if (!cur || !cur.name || (!cur.name.endsWith('_log') && !cur.name.endsWith('_wood'))) {
-          clearInterval(poll);
-          resolve(true);
-          return;
-        }
-        if (Date.now() - t0 > 10000) {
-          clearInterval(poll);
-          try { bot.stopDigging(); } catch (_) {}
-          resolve(false);
-        }
-      }, 200);
-    }
-  });
-}
-
-// ========== 收集 ==========
-
-// 快速走向最近的掉落物
-function quickCollect(bot) {
-  return new Promise((resolve) => {
-    const items = Object.values(bot.entities).filter(
-      e => (e.name === 'item' || e.name === 'Item') && e.position.distanceTo(bot.entity.position) < 10
-    );
-    if (items.length === 0) { resolve(); return; }
-
-    let best = null, bestDist = Infinity;
-    for (const it of items) {
-      const d = it.position.distanceTo(bot.entity.position);
-      if (d < bestDist) { bestDist = d; best = it; }
-    }
-
-    if (!best || bestDist < 1.5) { resolve(); return; }
-
-    bot.pathfinder.setGoal(new GoalNear(best.position.x, best.position.y, best.position.z, 1));
-    setTimeout(resolve, 1500);
-  });
-}
-
-function countWoodInInventory(bot, blockName) {
-  let count = 0;
-  for (const item of bot.inventory.items()) {
-    if (item.name === blockName) count += item.count;
-    if (item.name === 'stripped_' + blockName) count += item.count;
-  }
-  return count;
-}
-
-function sleep(ms) {
-  return new Promise(r => setTimeout(r, ms));
-}
-
-module.exports = { chopNearestTree };
+module.exports = { collectWood, chopNearestTree, chooseAxe, isLog };

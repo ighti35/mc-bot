@@ -1,6 +1,7 @@
 // mc-bot/modules/wander.js — 自由漫游模块
 const { GoalNear } = require('mineflayer-pathfinder').goals;
 const Vec3 = require('vec3').Vec3;
+const {isBuilding}=require('./build-protection');
 
 let wanderInterval = null;
 let centerPos = null;
@@ -28,6 +29,7 @@ function startWandering(bot, state, config, playerName) {
   console.log(`[Wander] 开始漫游，中心玩家: ${centerPlayer}，半径: ${radius}`);
 
   wanderInterval = setInterval(() => {
+    if(isBuilding(state))return;
     // 只在 idle 模式下漫游（chopping/navigating/mining/combat 等都不漫游）
     if (state.mode !== 'idle') return;
     if (!state._wanderEnabled) return;

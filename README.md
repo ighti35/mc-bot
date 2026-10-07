@@ -1,139 +1,41 @@
-# Claude-Bot v1-flash
+# Claude-Bot 2.0.0
 
-> 基于 **mineflayer + DeepSeek** 的 Minecraft AI 助手机器人：中文对话、自动漫游、采矿战斗、铁砧附魔，**内置 24 套可直接复刻的建筑蓝图**。
+Minecraft Java 1.21.11 AI 助手机器人，Mineflayer + DeepSeek。Claude-Bot 是项目名称；模型可通过配置更换，默认 deepseek-flash。
 
-![Node](https://img.shields.io/badge/Node.js-18%2B-blue.svg) ![Minecraft](https://img.shields.io/badge/Minecraft-1.21.x-green.svg) ![License](https://img.shields.io/badge/License-MIT-green.svg)
+## 安装
 
-## 功能
+需要 Node.js 22 或更新版本、Minecraft Java 1.21.11，以及你自己的 DeepSeek API Key。
 
-- **AI 对话** — 自然语言交流（中文），DeepSeek 大模型驱动
-- **自动漫游** — 在主人周围自动行走探索
-- **采矿/砍树** — 识别矿石和树木，自动切换工具
-- **自动战斗** — 遭遇怪物自动反击
-- **铁砧附魔** — 自动使用铁砧给装备附魔
-- **水域生存** — 自动游泳上浮，不会溺水
-- **村庄搜索** — /locate 命令 + 探索
-- **联网搜索** — Bing 搜索实时信息
-- **死亡分析** — 每次死亡自动分析原因
-- **自由指令** — AI 可自行执行任何 MC 指令
+1. 下载完整发布 ZIP 并解压，或克隆仓库。
+2. `npm ci` 安装依赖。
+3. 将 `config.example.json` 复制为 `config.json`，填写 API Key、主人游戏 ID 和 Minecraft 的局域网端口。
+4. 世界对局域网开放后执行 `npm start`。管理网页默认为 http://127.0.0.1:52592。
 
-## 环境要求
+## 本次重大更新
 
-- **Node.js** >= 18（推荐 v20+）
-- **Minecraft** Java Edition 1.21.x
-- **DeepSeek API Key** — 在 [platform.deepseek.com](https://platform.deepseek.com) 注册获取
+- 按矿层规划阶梯与分支矿道，扫描已加载矿石，定向挖掘矿脉；修复附魔数据与 1.21.11 工具速度兼容。
+- 挖掘等待落地及服务端确认，避免超时取消造成进度恢复；缺失落脚点补路，支持回收挡路火把。
+- 探索、群系/结构定位、玩家追击、拾取、砍树、合成与任务取消。
+- 默认禁止生存模式指令兜底，主人可以授权；创造模式默认允许，明确禁用优先。
+- 对话记忆、真实背包和独立装备槽，生命/饥饿/护甲/状态效果显示。
+- 游戏内中文建筑菜单、图纸预览、断点续建与建造保护。
+- 地面阶梯带路模块会等待主人跟上，保存路线并确认露天出口。
+- 可选的局部亚诺尔隆德氛围模组，默认关闭；不包含原作音乐。
 
-## 快速开始
+## 游戏内模组
 
-### 1. 配置
+`game-mod/dist/bot-inventory-1.0.0.jar` 提供 /botinv、/botbuild，适用于 Fabric Loader 0.19.3 / Fabric API 0.141.6+1.21.11。宿主与客户端安装；机器人无需安装。背包管理需要游戏管理员权限，建筑操作只允许配置中的主人。
 
-复制配置模板并填入你的信息：
+`atmosphere-mod/dist` 中的模组同样需要 Fabric API。它默认不绑定任何玩家世界，按该目录说明自行配置。Java 模组更新后必须重启 Minecraft。
 
-```bash
-copy config.example.json config.json
-```
+## 图纸与本地数据
 
-编辑 `config.json`：
+完整发布包附带当前建筑图纸目录；仓库只保留较小图纸，新大型图纸通过发布包分发。也可用 tools/convert-litematic.js 转换自有图纸。第三方图纸及音乐的权利属于原作者，图纸来源说明保留在各自元数据中。
 
-```json
-{
-  "host": "localhost",
-  "port": 62452,
-  "username": "Claude_Bot",
-  "version": "1.21.11",
-  "owner": "你的游戏ID",
-  "aiApiKey": "sk-你的DeepSeek-API-Key",
-  "aiApiUrl": "https://api.deepseek.com/v1/chat/completions",
-  "aiModel": "deepseek-chat"
-}
-```
+发布包不含 API Key、真实配置、对话、日志、游戏存档、背包快照、路线、建造断点、浏览器缓存、Minecraft/Java 安装文件或本机音频。首次启动生成你自己的运行数据。不要提交 config.json、data 中的运行记录或 .env。
 
-> 如果用其他 AI（OpenAI、Ollama 等），只需改 `aiApiUrl` 和 `aiModel`。OpenAI 兼容的 API 都支持。
+## 验证
 
-### 2. 安装依赖
+`npm test` 运行功能回归检查。自动化测试使用虚拟玩家与临时数据；不连接实际 Minecraft 世界。模组构建说明见各自目录。
 
-```bash
-npm install
-```
-
-### 3. 启动 Minecraft 服务器
-
-打开 MC 1.21.x，创建局域网世界（打开局域网），记下端口号。
-
-> 也可以在启动器里安装 Forge/Fabric 开服。
-
-### 4. 启动 Bot
-
-```bash
-npm start
-```
-
-### 5. 给 Bot 权限（可选）
-
-在游戏聊天框执行：
-
-```
-/op Claude_Bot
-```
-
-这样 Bot 才能使用 `/attribute` 设置血量，以及 `/locate` 搜索结构。
-
-## 使用
-
-在游戏里直接和 Bot 聊天即可，Bot 会自动识别你的消息并回复。
-
-常用命令（游戏内聊天输入）：
-
-| 命令 | 说明 |
-|------|------|
-| `!help` | 查看帮助 |
-| `!stop` | 停止漫游 |
-| `!wander` | 开始漫游 |
-| `!mine <方块>` | 采矿 |
-| `!collect <物品>` | 收集掉落物 |
-| `!enchant` | 自动附魔 |
-| `!come` | 让 Bot 过来 |
-
-随意用自然语言说话也可以，Bot 会自行判断该做什么。
-
-## 目录结构
-
-```
-mc-bot/
-├── index.js              # 主入口
-├── config.json           # 配置文件（需要自己创建）
-├── config.example.json   # 配置模板
-├── package.json
-├── modules/
-│   ├── ai.js             # AI 大脑（核心）
-│   ├── anvil.js          # 铁砧附魔
-│   ├── chat.js           # 聊天命令
-│   ├── combat.js         # 战斗系统
-│   ├── miner.js          # 采矿/砍树
-│   ├── wander.js         # 自动漫游
-│   ├── collector.js      # 收集掉落物
-│   ├── builder.js        # 建筑
-│   ├── death-analyzer.js # 死亡分析
-│   └── web-learner.js    # 联网搜索
-└── data/
-    ├── items.json        # 方块映射（必需）
-    ├── waypoints.json    # 路径点（运行时生成）
-    ├── schematics/       # 蓝图建筑：<名字>.json 供 builder 复刻，<名字>.litematic 为可编辑源
-    ├── death-reports/    # 死亡报告（运行时生成，已 gitignore）
-    └── search-requests/  # 搜索记录（运行时生成，已 gitignore）
-```
-
-> `data/schematics/` 里的蓝图已随仓库分发，AI 说「盖个 神里屋敷 / 巴黎圣母院 / 樱花木屋」等即可直接复刻。
-> 要是想让 Bot 认识更多建筑，往 `data/schematics/` 放一个 `<名字>.json`（逐格坐标数组）就能用。
-
-## 自定义 AI
-
-如果想换成其他 AI：
-
-- **OpenAI**: 改 `aiApiUrl` 为 `https://api.openai.com/v1/chat/completions`，`aiModel` 为 `gpt-4o`
-- **Ollama（本地）**: 改 `aiApiUrl` 为 `http://localhost:11434/v1/chat/completions`，`aiModel` 为 `qwen2.5` 等
-- **其他兼容接口**：只要兼容 OpenAI Chat Completions API 即可
-
-## License
-
-MIT — 随便改，随便发。
+许可证：MIT（代码）；第三方依赖及图纸遵循各自许可。

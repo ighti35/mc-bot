@@ -2,18 +2,23 @@
 const { GoalNear, GoalBlock } = require('mineflayer-pathfinder').goals;
 const { escapeWater, resetStuckTimer } = require('./anti-stuck');
 const think = require('./thinklog');
+const { pauseWanderingForCommand, stopCurrentTask } = require('./task-control');
+const { runCraftingTask } = require('./crafting-task');
+const { ConversationMemory } = require('./conversation-memory');
+const path = require('path');
+const { currentGameMode, runGameModeTask, normalizeGameMode } = require('./game-mode');
+const {executeWithFallback,runCommand,enabled:commandAssistEnabled}=require('./command-assist');
+const commandPermissions=require('./command-permissions');
+const {resolvePlayer,describePlayers}=require('./player-targets');
 
 let apiKey = null;
 let apiUrl = null;
 let model = null;
-let ownerName = 'player';
-let conversationHistory = [];
-const MAX_HISTORY = 16;
+let conversationMemory;
 
-function buildSystemPrompt(owner) {
-  return `You are Claude_Bot, a Minecraft robot. You LIVE inside the game world. You ARE the bot character — not an assistant outside the game.
+const SYSTEM_PROMPT = `You are Claude_Bot, a Minecraft robot. You LIVE inside the game world. You ARE the bot character — not an assistant outside the game.
 
-Player "${owner}" is your owner. When ${owner} says "你" (you), they are talking to YOU, the bot. When they ask "你有X吗", they mean "Do YOU (the bot) have X in YOUR inventory?" — always check your OWN inventory first.
+Player "Owner" is your owner. When Owner says "你" (you), they are talking to YOU, the bot. When they ask "你有X吗", they mean "Do YOU (the bot) have X in YOUR inventory?" — always check your OWN inventory first.
 
 CRITICAL: You can see your inventory in the "Inv" field of the game state. You can see enchanted books in "EnchBooks". Use the inventory tool to check what you have. NEVER say "I can't check your backpack" — the player is asking about YOUR backpack, not theirs.
 
@@ -26,45 +31,61 @@ To act: respond ONLY with this JSON format (no other text):
 
 ## Available Tools
 - chat: say something. args: {"message":"..."}
-- come: go to player. args: {"player":"${owner}"}
+- come: go to player. args: {"player":"Owner"}
 - stop: stop all tasks. args: {}
-- mine: mine blocks. args: {"block":"coal_ore","count":5}
+- mine: locate real loaded target blocks, plan safe tunnels and collect veins. args: {"block":"diamond_ore","count":10,"strategy":"auto"}. Ordinary/deepslate variants both count. scanRadius32 (8..64); auto/branch use heights/branches when no targets are loaded, nearby/targeted only search loaded local blocks. Optional y,direction,mainLength,branchLength. Count is target blocks; default16. Report MinePlan honestly. If acquiring requested resources is impossible and command assistance is enabled, /give may supply the missing amount; never describe that as actual mining. A request to excavate a tunnel cannot be fulfilled by giving items.
 - collect: collect blocks. args: {"block":"oak_log","count":10}
-- chop_tree: chop nearest tree. args: {}
+- pickup: pick up visible dropped item entities WITHOUT mining blocks. args: {"item":"oak_log","radius":12} or {} for all nearby drops. Use Dropped in current context to identify items. Unknown item metadata means visible but not yet identified; do not claim there are no drops. When asked to 捡/拾取地上物品, use pickup, not collect/mine or /give.
+- chop_tree: automatically equip an axe and collect logs across trees. args: {"count":20} (omit count for one tree). For a quantity request, use ONE counted action; wait for its verified result.
+- craft: really craft items from YOUR inventory. args: {"item":"crafting_table","count":1,"place":true}. count is desired output quantity; place=true also places ONE resulting block on nearby ground. For crafting_table this automatically turns inventory logs into planks first, then crafts a table in the 2x2 inventory grid. Missing materials cause an explicit failure.
+- place: place ONE block from YOUR inventory on nearby safe ground. args: {"item":"crafting_table"}. Use this alone if you already have the block.
 - goto: go to coords. args: {"x":100,"y":64,"z":200}
 - status: report HP/food/position. args: {}
 - inventory: check YOUR (bot's) inventory. args: {}
-- drop: drop items. args: {"item":"cobblestone"}
+- drop: walk close to a player and toss the EXACT requested number of inventory items in front of them. args: {"item":"dirt","count":10,"player":"Owner"}. Always include count when the user specifies a quantity; omit count only if they ask for all of that item.
 - equip_sword/equip_axe/equip_pickaxe: args: {}
 - attack: attack mob. args: {"mob":"zombie"}
+- attack_player: continuously chase AND melee-attack a specifically requested player; arriving nearby does NOT complete the task. args: {"player":"Owner","duration":300}. Use this for 追杀我/攻击我/打我; never substitute come or mob-only attack. Duration1..600s. It ends on death, !stop, low health, lost live target or the time limit. Owner is protected from automatic combat but may explicitly request a duel.
 - wander: toggle auto-wander. args: {}
 - scout: scan for rare ores. args: {}
 - enchant: enchant YOUR item with an enchanted book using anvil. args: {"item":"sword","enchant":"sharpness"}
 - search_web: search the internet to learn something. args: {"query":"how to find diamonds in minecraft 1.21"}
-- find_village: try to locate a village via command or exploration. args: {}
-- explore: pick a direction and walk exploring new terrain. args: {"direction":"north"} or args:{"x":1000,"z":-500}
+- find_village: execute /locate structure #minecraft:village, await the server's real coordinates, then lead the owner there by an adaptive ground/swimming/bridge route. args: {} or {"guide":false} to only locate. Never substitute random exploration or claim beds prove a village.
+- find_biome: execute /locate biome for a real named biome and lead the owner there. args: {"target":"cherry_grove"}. Chinese names are accepted. Requires server permission; report command failures honestly.
+- locate: locate a structure or biome and lead there. args: {"kind":"biome","target":"desert","guide":true}. guide:false only reports verified coordinates.
+- explore: survey terrain in short segments, climb small hills, detour high mountains, swim and bridge cliffs using inventory blocks. args: {"direction":"north","distance":96} or {"x":100,"z":-50}. Distance8..512, coordinates within512. Use locate tools for distant destinations. If the destination cannot be reached normally, command assistance may teleport using confirmed coordinates. Never invent destinations or claim arrival without confirmation.
+- back: return along the latest recorded route, with command assistance if walking fails. args: {}
+- route: report the latest mine plan and exploration/return route. args: {}
 - optimize: review bot performance and suggest code improvements. args: {}
-- build: build a structure near the player. The bot switches to CREATIVE mode, builds, then switches back to SURVIVAL automatically (you don't need to handle gamemode). There are TWO ways to call it: (A) copy a REAL blueprint faithfully - args: {"design":"<schematic name>"}, where schematic names are a faithful block-by-block copy of real open-source buildings. Available: large-survival-house (大型生存屋, 8722 blocks), sakura (樱花木屋, 7177 blocks), clocktower (哥特钟楼, 42641 blocks), mansion (城主府大别墅, 48529 blocks), notredame (巴黎圣母院, 410797 blocks - HUGE cathedral, ONLY when user literally asks for 巴黎圣母院, takes a long time), kamisato (神里屋敷, 12834 blocks - 日式宅邸/庭院), xmas_town (圣诞小镇, 94522 blocks - 大片雪景小镇, large), sakura_hut (樱花小屋, 2725 blocks), granary (粮仓, 940 blocks), shirazu (白洲梓, 1561 blocks), ariyama (阿山盔甲屋/城堡, 4679 blocks). Pick the closest match to what the user asks (e.g. 巴黎圣母院/大教堂→notredame, 大别墅/城主府→mansion, 哥特钟楼→clocktower, 樱花/木屋→sakura or sakura_hut, 神里/日式宅邸/庭院→kamisato, 圣诞/雪景/小镇→xmas_town, 城堡→ariyama). (B) procedural geometry - args: {"design":"house","size":5,"material":"oak_planks"}. design options: house, modern, cottage, castle, ziggurat, box, tower, wall, platform. material is an optional block name (e.g. oak_planks, stone_bricks, white_concrete). Use a size between 4 and 9. The bot places the building centered on the current player, clearing the area first - warn the player to stand clear.
-- cmd: run ANY Minecraft command directly. args: {"command":"/locate structure village_plains"} or {"command":"/tp ${owner} ~ ~ ~"}
+- build: build a real schematic at the bot position or resume its saved original location. Preserve the actual game mode. Commands require current permission. Native schematic names: notredame (巴黎圣母院, 410783 blocks), large-survival-house (大型生存屋), sakura (樱花木屋), clocktower (哥特钟楼), mansion (城主府), kamisato (神里屋敷), xmas_town (圣诞小镇), sakura_hut (樱花小屋), granary (粮仓), shirazu (白洲梓), ariyama (阿山盔甲屋), smallhouse, 21981. args: {"design":"notredame"}. For repairing existing stairs and nether portal blocks, use {"design":"notredame","repair":true}; this uses the saved original coordinates and never rebuilds the whole structure. Stair facing/half/shape must match the schematic. Place portal blocks after all supporting structure, using strict placement; decorative nether portal windows are restored as portal blocks, not ignited with fire. Procedural geometry args: {"design":"house","size":5,"material":"oak_planks"}; designs: house, modern, cottage, castle, ziggurat, box, tower, wall, platform. New builds preserve existing terrain unless this exact saved job has explicit human cleanup authorization.
+- Maze schematic choices for build: maze-fallout (废土迷宫/辐射迷宫, 105×105 footprint, height 7, 54413 blocks), maze-vault (地下堡垒迷宫/避难所迷宫, 105×105 footprint, height 7, 48896 blocks), maze-catacombs (地下墓穴迷宫, 80×80 footprint, height 6, 33780 blocks), maze-classic (经典石砖迷宫, 100×100 footprint, height 3, 20002 blocks). For an unspecified request to build a 迷宫 or 大型迷宫, choose maze-fallout. Example: {"tool":"build","args":{"design":"maze-fallout"}}. These are installed real schematic files, not patterns to invent with raw commands.
+- gamemode: change YOUR actual game mode and wait for server confirmation. args: {"mode":"survival"}. Use this when asked to switch to survival/creative/adventure/spectator. Never claim success from memory or chat alone; GameMode in current state is authoritative.
+- cmd: send a Minecraft command directly. args: {"command":"/locate structure village_plains"} or {"command":"/tp Owner ~ ~ ~"}. Sending alone is not proof that the server executed it.
 - unstuck: manually trigger self-rescue if you're stuck in terrain. args: {}
+
+- Mega builds installed: anor-londo (亚诺尔隆德, 633×921 footprint, height 246), minas-tirith (米那斯提力斯/白城, 527×642 footprint, height 247), raya-lucaria (雷亚卢卡利亚魔法学院, 372×491 footprint, height 239, includes entrance bridge and local terrain). Arcania is imported as five separate real map regions: arcania (阿卡尼亚白色城堡, 401×529, height 139), arcania-black-castle (阿卡尼亚黑色城堡, 495×463, height 193), arcania-elvish-city (阿卡尼亚精灵城, 297×475, height 176), arcania-mountain-mansion (阿卡尼亚山间庄园, 353×353, height 177), arcania-mesa-stronghold (阿卡尼亚恶地要塞, 401×417, height 148). These retain surrounding terrain and foundations. The complete Arcania world archive is saved separately; the menu entries do not represent all 5000×5000 blocks of its terrain. Use the building menu to choose coordinates and check height before starting. Only leyndell (王城罗德尔) remains unavailable because the original requires incompatible Conquest Reforged custom blocks. Never substitute an invented procedural castle or raw commands for a missing requested blueprint.
 
 ## Rules
 - Respond in Chinese
-- You CAN run ANY Minecraft command using the "cmd" tool. Use it freely.
+- Minecraft commands are allowed by default while the bot's actual server game mode is creative. In other modes, only the owner can explicitly authorize their use for the current task. An explicit prohibition overrides creative mode. CommandAssist:false forbids cmd, /give, /tp, /locate, game-mode changes, and command-based building. Failure or missing materials is NEVER implicit authorization. Explain what is missing or impossible and stop the failed action. Authorization in conversation history or a prior completed task is expired; it must never enable later tasks. With current permission, verified commands may help achieve the requested outcome.
 - Common useful commands: /locate, /tp, /give, /time, /weather, /gamemode, /effect, /summon, /kill
 - For finding structures: "/locate structure <type>" (village, bastion_remnant, fortress, etc.)
 - For teleporting: "/tp <player> <x> <y> <z>" or "/tp <player1> <player2>"
-- When searching for villages, use /locate commands first — much faster than walking
-- If ${owner} asks to go somewhere, use /tp if available, or walk there
+- When asked to find a village or take the owner to a biome, use find_village/find_biome/locate. These tools await /locate results and plan the journey; do not merely send cmd or walk a random direction.
+- If CommandAssist:true for this task, command help is permitted by creative mode or explicit owner authorization. Prefer normal actions; commands may be used if they cannot work. If CommandAssist:false, never substitute commands for mining, crafting or movement. A request to craft requires actual crafting from inventory; report missing materials when that fails. Never invent /craft. Stop/cancellation always cancels the task. Keep the requested game mode. Honor narrower restrictions such as 不准传送 even during an authorized task. Do not claim physical mining/crafting happened when commands supplied the result.
+- If asked to branch mine, strip mine, 按矿层挖 or 开矿道, use mine with strategy:"branch". Report missing tools, low durability, hazards or partial results truthfully. Defaults are configurable foot heights, not a guarantee of finding ore; emerald requires mountain terrain, nether ores require the Nether.
 - When asked to DO something, always use the JSON format with actions
 - Keep chat messages short (< 100 chars, Minecraft chat limit)
-- "你" = YOU the bot. "我" = ${owner} (the player). This is CRITICAL.
+- "你" = YOU the bot. "我" = Owner (the player). This is CRITICAL.
 - If the player asks "你有X吗" or "do you have X", check YOUR inventory (look at Inv/EnchBooks fields)
 - NEVER say things like "我无法查看你的背包" — the player is asking about YOUR items
 - If asked whether you have something, answer directly yes/no based on your inventory
 - Always include a friendly "chat" message even when executing actions
-- CRITICAL BUILD RULE: When the user asks you to build/construct/盖/建造/建 something, you MUST emit an action {"tool":"build","args":{"design":"<name>"}} in that same response. Pick the design from the build tool's schematic list. Do NOT reply with just a "chat" message, and do NOT use "/tp" instead of build — teleport alone does NOT build anything. If you want to teleport to the player too, emit BOTH actions in the same "actions" array: [{"tool":"cmd","args":{"command":"/tp @s ${owner}"}},{"tool":"build","args":{"design":"kamisato"}}]. The build tool builds the structure centered on the player automatically.`;
-}
+- For "挖十个泥土丢给我", use [{"tool":"mine","args":{"block":"dirt","count":10}},{"tool":"drop","args":{"item":"dirt","count":10}}]. Actions execute in order and mining waits for collection before drop. If the user only needs ten items and they are already in your inventory, you may use drop directly with count:10. Never say you gave ten while omitting count.
+- For crafting or placing individual items, prefer craft/place, not build. Vanilla Minecraft has NO /craft command. If missing materials or limitations prevent completion, command assistance may give the requested item or place the requested block; report the method honestly.
+- When asked "去合成工作台，放在地上", emit {"tool":"craft","args":{"item":"crafting_table","count":1,"place":true}}. If a table is already in your inventory, use place instead. Do not stop after only crafting planks. One log produces four planks; a crafting table needs four planks and no existing table.
+- The chat field describes what you will TRY, never claims an action already succeeded. Actual execution results appear in LastResult and Recent. If an action failed, explain the real reason; never claim you are still doing it. If materials are missing, request them or offer to collect them first.
+- CRITICAL BUILD RULE: When the user asks you to build/construct/盖/建造/建 something, you MUST emit an action {"tool":"build","args":{"design":"<name>"}} in that same response. Pick the design from the build tool's schematic list. Do NOT reply with just a "chat" message, and do NOT use "/tp" instead of build — teleport alone does NOT build anything. If you want to teleport to the player too, emit BOTH actions in the same "actions" array: [{"tool":"cmd","args":{"command":"/tp @s Owner"}},{"tool":"build","args":{"design":"kamisato"}}]. The build tool builds the structure centered on the player automatically.`;
 
 function initAI(config) {
   if (!config.aiApiKey) {
@@ -75,20 +96,45 @@ function initAI(config) {
   apiKey = config.aiApiKey;
   apiUrl = config.aiApiUrl || 'https://api.deepseek.com/v1/chat/completions';
   model = config.aiModel || 'deepseek-chat';
-  ownerName = config.owner || 'player';
+  const scope = `${config.username || 'Claude_Bot'}:${config.owner || ''}`;
+  const memoryName = require('crypto').createHash('sha256').update(scope).digest('hex').slice(0, 16);
+  conversationMemory = new ConversationMemory(path.join(__dirname, '..', 'data', `conversation-${memoryName}.json`), scope);
+  try { conversationMemory.importLog(path.join(__dirname, '..', 'data', 'bot.log'), config.owner); } catch (error) { console.error('[Memory] 旧日志恢复失败:', error.message); }
+  console.log(`[Memory] 已恢复 ${conversationMemory.turns.length} 轮对话`);
   console.log(`[AI] AI 大脑已就绪 (${apiUrl})`);
   return true;
 }
 
 async function processMessage(username, message, bot, state, config) {
   if (!apiKey) return null;
+  if(state._commandTask||state._surfaceTeleportTask){bot.chat('正在等待上一条指令结果；要取消请发 !stop。');return null;}
 
   const isOwner = username === config.owner;
   const isMentioned = message.toLowerCase().includes('claude');
 
   if (!isOwner && !isMentioned) return null;
 
-  const gameContext = buildGameContext(bot, state);
+  pauseWanderingForCommand(bot, state);
+  if (require('./build-protection').isBuilding(state) || state._locateTask || state._pickupTask || state._chopTask || state._gamemodeTask || state._gameInventoryTask || state._inventoryTask || state._aiRequest || state._craftTask || state._miningTask || state._explorationTask || state._navigationTask) {
+    bot.chat(`正在${state.currentTask || '处理上一条指令'}，请稍等；要取消请发 !stop。`);
+    return { chat: '', actions: [] };
+  }
+
+  const gameContext = buildGameContext(bot, state, config, message);
+  const epoch = state._commandEpoch || 0;
+  const request = { controller: new AbortController() };
+  state._aiRequest = request;
+  if (state.mode === 'idle') {
+    state.mode = 'thinking';
+    state.currentTask = '处理指令';
+  }
+  const assertActive = () => {
+    if ((state._commandEpoch || 0) !== epoch || request.controller.signal.aborted) {
+      const error = new Error('任务已停止');
+      error.code = 'TASK_CANCELLED';
+      throw error;
+    }
+  };
 
   // 思考日志：展示这次 AI 收到的输入
   think.header('🤖 Claude_Bot 思考过程');
@@ -97,14 +143,18 @@ async function processMessage(username, message, bot, state, config) {
 
   // 构建消息
   const messages = [
-    { role: 'system', content: buildSystemPrompt(ownerName) },
-    ...conversationHistory,
+    { role: 'system', content: SYSTEM_PROMPT.replace(/Owner/g, config.owner) + '\nPersistent conversation history below is for memory only. Never replay past actions on restart. Historical positions/inventory may be outdated: current state is authoritative. Interrupted actions have unknown completion; never claim they succeeded. Remember previous conversations instead of claiming all memories are lost after restart.' },
+    ...conversationMemory.messages(),
     { role: 'user', content: `[Player ${username}] ${message}\n\nCurrent state: ${gameContext}` },
   ];
+  const memoryTurn = conversationMemory.begin(username, message);
+  let releaseCommandAuthorization=()=>{};
+  let memoryStatus = 'failed';
 
   try {
     const response = await fetch(apiUrl, {
       method: 'POST',
+      signal: AbortSignal.any([request.controller.signal, AbortSignal.timeout(45000)]),
       headers: {
         'Content-Type': 'application/json',
         'Authorization': `Bearer ${apiKey}`,
@@ -125,6 +175,7 @@ async function processMessage(username, message, bot, state, config) {
     }
 
     const data = await response.json();
+    assertActive();
     const rawText = data.choices?.[0]?.message?.content?.trim();
 
     if (!rawText) {
@@ -149,11 +200,15 @@ async function processMessage(username, message, bot, state, config) {
       parsed = { chat: rawText, actions: [] };
     }
 
-    if (typeof parsed === 'string') {
-      parsed = { chat: parsed, actions: [] };
+    if (!parsed || typeof parsed !== 'object' || Array.isArray(parsed)) {
+      parsed = { chat: rawText, actions: [] };
     }
+    if (!Array.isArray(parsed.actions)) parsed.actions = [];
     if (!parsed.chat && parsed.actions) {
       parsed.chat = 'OK!';
+    }
+    if (parsed.actions.some(action => action.tool === 'gamemode' || action.tool === 'cmd' && /^\/?(?:minecraft:)?gamemode\s/i.test(String(action.args?.command || '').trim()))) {
+      parsed.chat = '正在切换游戏模式，等待服务器确认。';
     }
 
     // 思考日志：展示 AI 原始回复 + 动作清单
@@ -161,41 +216,51 @@ async function processMessage(username, message, bot, state, config) {
     think.actionList(parsed);
 
     // 更新对话历史
-    conversationHistory.push({ role: 'user', content: message });
-    conversationHistory.push({ role: 'assistant', content: rawText });
-    if (conversationHistory.length > MAX_HISTORY) {
-      conversationHistory = conversationHistory.slice(-MAX_HISTORY);
-    }
+    conversationMemory.reply(memoryTurn, rawText);
 
     // 发送聊天
     if (parsed.chat) {
+      assertActive();
       think.finalChat(parsed.chat);
       bot.chat(parsed.chat);
     }
 
     // 执行动作
     if (parsed.actions && parsed.actions.length > 0) {
+      if(parsed.actions.some(action=>!['chat','status','inventory','route','scout','search_web','optimize'].includes(action.tool)))releaseCommandAuthorization=commandPermissions.begin(username,message,bot,state,config);
       if (!state.stats.actionHistory) state.stats.actionHistory = [];
       for (const action of parsed.actions) {
+        assertActive();
         try {
           think.actionStart(action.tool, action.args);
-          await executeAction(action, bot, state, config);
-          think.actionOk(action.tool);
+          const result = await executeWithFallback(action,bot,state,config,()=>executeAction(action,bot,state,config,assertActive),assertActive,{message});
+          if (action.tool !== 'stop') assertActive();
+          think.actionOk(action.tool, result?.message || '');
+          state._lastActionResult = { tool: action.tool, success: true, message: result?.message || '动作已调用' };
+          conversationMemory.result(memoryTurn, action.tool, true, result?.message || '动作已调用');
+          if (result?.message) bot.chat(result.message);
           state.stats.actionHistory.push({
             time: Date.now(),
             action: action.tool,
-            detail: JSON.stringify(action.args).slice(0, 100),
+            detail: (result?.message || JSON.stringify(action.args || {})).slice(0, 100),
             success: true,
           });
+          if (action.tool === 'stop') break;
         } catch (e) {
+          if (e.code === 'TASK_CANCELLED') throw e;
           think.actionFail(action.tool, e.message);
-          console.error(`[AI] Action error (${action.tool}):`, e.message);
+          console.error(`[AI] Action error (${action.tool}):`, e.stack || e.message);
+          state._lastActionResult = { tool: action.tool, success: false, message: e.message };
+          conversationMemory.result(memoryTurn, action.tool, false, e.message);
+          bot.chat(`执行失败：${e.message}`.slice(0, 200));
           state.stats.actionHistory.push({
             time: Date.now(),
             action: action.tool,
             detail: e.message.slice(0, 100),
             success: false,
           });
+          // A failed prerequisite must not be followed by placement or other dependent actions.
+          break;
         }
       }
       // 只保留最近 100 条记录
@@ -206,20 +271,39 @@ async function processMessage(username, message, bot, state, config) {
 
     think.rule();
     think.end();
+    memoryStatus = memoryTurn.results.some(result => !result.success) ? 'failed' : 'complete';
     return parsed;
   } catch (err) {
+    if (err.code === 'TASK_CANCELLED' || request.controller.signal.aborted) {
+      memoryStatus = 'cancelled';
+      return { chat: '', actions: [], cancelled: true };
+    }
     console.error('[AI] Error:', err.message);
+    bot.chat('处理指令失败，请稍后重试；也可以用 !craft 或 !place。');
     return null;
+  } finally {
+    releaseCommandAuthorization();
+    conversationMemory.finish(memoryTurn, memoryStatus);
+    if (state._aiRequest === request) {
+      state._aiRequest = null;
+      if (state.mode === 'thinking') {
+        state.mode = 'idle';
+        state.currentTask = null;
+      }
+    }
   }
 }
 
-function buildGameContext(bot, state) {
+function buildGameContext(bot, state, config=global.config||{}, message='') {
   const pos = bot.entity.position;
   const hp = Math.round(bot.health);
   const food = Math.round(bot.food);
   const mode = state.mode;
-  const task = state.currentTask || 'none';
-  const items = bot.inventory.items().slice(0, 8).map(i => `${i.count}x ${i.name}`).join(', ') || 'empty';
+  const gameMode = currentGameMode(bot) || 'unknown';
+  const task = `${state.currentTask || 'none'} Players:[${describePlayers(bot,config.owner)}]`;
+  const assistance=`CommandAssist:${commandAssistEnabled(config,message,state,bot)||!commandPermissions.denied(message)&&!commandPermissions.restricted(state)&&commandPermissions.pending(state,config.owner)} CommandPermission:${bot._inventoryCanGive===true?'available':'unknown'} LastCommandFallback:${JSON.stringify(state._lastCommandFallback||null)}`;
+  const items = bot.inventory.items().map(i => `${i.count}x ${i.name}`).join(', ') || 'empty';
+  const dropped = require('./item-pickup').describeDroppedItems(bot, { radius: 16, maxItems: 24 });
   const nearby = Object.values(bot.entities)
     .filter(e => e.type === 'mob' && e.position.distanceTo(pos) < 16)
     .slice(0, 5)
@@ -244,12 +328,12 @@ function buildGameContext(bot, state) {
 
   // 动作统计
   const history = state.stats.actionHistory || [];
-  const recentActions = history.slice(-5).map(a => `[${a.success ? '✓' : '✗'} ${a.action}]`).join(' ') || 'none';
+  const recentActions = history.slice(-5).map(a => `[${a.success ? '✓' : '✗'} ${a.action}: ${a.detail || ''}]`).join(' ') || 'none';
 
-  return `Pos:(${Math.round(pos.x)},${Math.round(pos.y)},${Math.round(pos.z)}) HP:${hp} Food:${food} Mode:${mode} Task:${task} Inv:[${items}] Nearby:[${nearby}] EnchBooks:[${books}] Search:${searchInfo} Recent:[${recentActions}]`;
+  return `${assistance} Pos:(${Math.round(pos.x)},${Math.round(pos.y)},${Math.round(pos.z)}) HP:${hp} Food:${food} GameMode:${gameMode} Mode:${mode} Task:${task} Located:${JSON.stringify(state._lastLocatedTarget || null)} Inv:[${items}] Nearby:[${nearby}] Dropped:[${dropped}] EnchBooks:[${books}] Search:${searchInfo} Recent:[${recentActions}] LastResult:${JSON.stringify(state._lastActionResult || null)} MinePlan:${JSON.stringify(state._lastMiningPlan || null)} Exploration:${JSON.stringify(state._lastExplorationResult || null).slice(0, 1000)}`;
 }
 
-async function executeAction(action, bot, state, config) {
+async function executeAction(action, bot, state, config, assertActive = () => {}) {
   const { tool, args = {} } = action;
   console.log(`[AI Action] ${tool}:`, JSON.stringify(args));
 
@@ -260,142 +344,40 @@ async function executeAction(action, bot, state, config) {
 
     case 'come': {
       const playerName = args.player || config.owner;
-      const player = bot.players[playerName]?.entity;
-      if (!player) { bot.chat(`I can't find ${playerName}!`); break; }
-
-      // 水中先行上岸
-      if (escapeWater(bot, state)) break;
-
-      // 保存目标给 anti-stuck 使用
-      const target = player.position;
-      state._lastGotoTarget = { x: target.x, y: target.y, z: target.z };
-      resetStuckTimer();
-
-      // 使用 navigator 的带超时导航
-      const { navigateTo } = require('./navigator');
-      state.mode = 'navigating';
-      state.currentTask = `Going to ${playerName}`;
-      navigateTo(target.x, target.y, target.z, bot, { timeout: 60000 })
-        .then(() => {
-          if (state.mode === 'navigating') state.mode = 'idle';
-          state.currentTask = null;
-        })
-        .catch((err) => {
-          console.log('[AI] come 导航失败:', err.message);
-          if (state.mode === 'navigating') state.mode = 'idle';
-          state.currentTask = null;
-          bot.chat(`来不了了！${err.message}`);
-        });
-      break;
+      const player = resolvePlayer(bot,playerName);
+      if (!player) throw new Error(`找不到 ${playerName}，请靠近我。`);
+      return require('./navigation-task').goTo(bot, state, player.position.clone(), { assertActive, timeout: 120000, range: 2, allowTower: true, getTarget:()=>resolvePlayer(bot,playerName)?.position });
     }
 
     case 'stop': {
-      const { stopWandering } = require('./wander');
-      bot.pathfinder.setGoal(null);
-      if (bot.collectBlock) bot.collectBlock.cancelTask();
-      state.mode = 'idle';
-      state.currentTask = null;
-      state._wanderEnabled = false;
-      state._lastGotoTarget = null;
-      resetStuckTimer();
-      stopWandering();
+      stopCurrentTask(bot, state);
       break;
     }
 
-    case 'mine': {
-      // 木头类用 lumberjack 砍树模块（chopping 模式，不受 anti-stuck 干扰）
-      if (isWoodBlock(args.block)) {
-        if (state.mode === 'chopping') break;
-        bot.pathfinder.setGoal(null);
-        try { bot.stopDigging(); } catch (_) {}
-        state.mode = 'chopping';
-        state.currentTask = `Mining ${args.block}`;
-        const { chopNearestTree: cnt } = require('./lumberjack');
-        cnt(bot, state).then(count => {
-          console.log(`[Mine] Chopped ${count} ${args.block}`);
-          state.mode = 'idle';
-          state.currentTask = null;
-        });
-      } else {
-        if (state.mode === 'mining') break;
-        bot.pathfinder.setGoal(null);
-        try { bot.stopDigging(); } catch (_) {}
-        if (bot.collectBlock) bot.collectBlock.cancelTask();
-        state.mode = 'mining';
-        state.currentTask = `Mining ${args.block}`;
-        const { startMiner } = require('./miner');
-        startMiner(args.block, bot, state, config, args.count || 0);
-      }
-      break;
-    }
+    case 'gamemode':
+      return runGameModeTask(bot, state, config, args.mode, assertActive);
 
+    case 'craft':
+    case 'place':
+      return runCraftingTask(tool, args, bot, state, assertActive);
+
+    case 'mine':
     case 'collect': {
-      // 木头类用 lumberjack 砍树模块
       if (isWoodBlock(args.block)) {
-        if (state.mode === 'chopping') break;
-        bot.pathfinder.setGoal(null);
-        try { bot.stopDigging(); } catch (_) {}
-        state.mode = 'chopping';
-        state.currentTask = `Collecting ${args.block}`;
-        const { chopNearestTree: ct } = require('./lumberjack');
-        ct(bot, state).then(count => {
-          console.log(`[Collect] Chopped ${count} ${args.block}`);
-          state.mode = 'idle';
-          state.currentTask = null;
-        });
-      } else {
-        if (state.mode === 'mining') break;
-        bot.pathfinder.setGoal(null);
-        try { bot.stopDigging(); } catch (_) {}
-        if (bot.collectBlock) bot.collectBlock.cancelTask();
-        state.mode = 'mining';
-        state.currentTask = `Collecting ${args.block}`;
-        const { startMiner: sm } = require('./miner');
-        sm(args.block, bot, state, config, args.count || 0);
+        return await require('./lumberjack').collectWood(bot, state, config, args.count ?? 0, args, assertActive);
       }
-      break;
+      const { startMiner } = require('./miner');
+      return await startMiner(args.block, bot, state, config, args.count ?? 0, { ...args, strategy: args.strategy || (tool === 'collect' ? 'nearby' : 'auto') });
     }
 
-    case 'chop_tree': {
-      if (state.mode === 'chopping') break;
-      bot.pathfinder.setGoal(null);
-      try { bot.stopDigging(); } catch (_) {}
-      state.mode = 'chopping';
-      state.currentTask = 'Chopping tree';
-      const { chopNearestTree } = require('./lumberjack');
-      chopNearestTree(bot, state).then(count => {
-        console.log(`[Tree] Done, chopped ${count} logs`);
-        state.mode = 'idle';
-        state.currentTask = null;
-      });
-      break;
-    }
+    case 'chop_tree':
+      return await require('./lumberjack').collectWood(bot, state, config, args.count ?? 0, args, assertActive);
+
+    case 'pickup':
+      return await require('./item-pickup').runPickupTask(bot, state, args, assertActive);
 
     case 'goto': {
-      // 水中先行上岸
-      if (escapeWater(bot, state)) break;
-
-      const tx = args.x, ty = args.y || bot.entity.position.y, tz = args.z;
-      state._lastGotoTarget = { x: tx, y: ty, z: tz };
-      resetStuckTimer();
-
-      const { navigateTo: navTo } = require('./navigator');
-      state.mode = 'navigating';
-      state.currentTask = `Going to (${tx},${ty},${tz})`;
-      bot.chat(`出发去 (${Math.round(tx)},${Math.round(ty)},${Math.round(tz)})`);
-      navTo(tx, ty, tz, bot, { timeout: 90000 })
-        .then(() => {
-          if (state.mode === 'navigating') state.mode = 'idle';
-          state.currentTask = null;
-          bot.chat(`到达目的地！`);
-        })
-        .catch((err) => {
-          console.log('[AI] goto 导航失败:', err.message);
-          if (state.mode === 'navigating') state.mode = 'idle';
-          state.currentTask = null;
-          bot.chat(`走不到目标: ${err.message}`);
-        });
-      break;
+      return require('./navigation-task').goTo(bot, state, { x: args.x, y: args.y ?? bot.entity.position.y, z: args.z }, { assertActive, timeout: 90000 });
     }
 
     case 'status': {
@@ -412,25 +394,25 @@ async function executeAction(action, bot, state, config) {
     }
 
     case 'drop': {
-      const item = bot.inventory.items().find(i => i.name.includes(args.item));
-      if (item) bot.tossStack(item, () => {});
-      else bot.chat(`No ${args.item} in bag.`);
-      break;
+      return require('./item-transfer').dropItem(bot, state, config, args, assertActive);
     }
 
     case 'equip_sword':
     case 'equip_axe':
     case 'equip_pickaxe': {
       const toolType = tool.split('_')[1];
-      const items = bot.inventory.items().filter(i => i.name.includes(toolType));
+      const items = bot.inventory.items().filter(i => i.name.endsWith('_' + toolType));
       if (items.length === 0) { bot.chat(`No ${toolType}!`); break; }
       const rank = { netherite: 5, diamond: 4, iron: 3, stone: 2, golden: 1, wooden: 1 };
       items.sort((a, b) => (Object.entries(rank).find(([k]) => b.name.includes(k))?.[1] || 0) - (Object.entries(rank).find(([k]) => a.name.includes(k))?.[1] || 0));
-      bot.equip(items[0], 'hand').then(() => bot.chat(`Holding ${items[0].name}`)).catch(() => {});
+      await require('./task-control').waitForAction(bot.equip(items[0], 'hand'), { assertActive, timeout: 5000 });
+      if (bot.heldItem?.name !== items[0].name) throw new Error('没有确认工具已装备。');
+      return { message: `已装备 ${items[0].name}` };
       break;
     }
 
     case 'attack': {
+      if(args.player||resolvePlayer(bot,args.mob))return require('./player-combat').huntPlayer(bot,state,config,{player:args.player||args.mob},assertActive);
       if (state.mode === 'combat') break;
       const lower = (args.mob || '').toLowerCase();
       const target = Object.values(bot.entities).find(e =>
@@ -441,6 +423,8 @@ async function executeAction(action, bot, state, config) {
       require('./combat').startCombat(bot, state, target);
       break;
     }
+
+    case 'attack_player':return require('./player-combat').huntPlayer(bot,state,config,args,assertActive);
 
     case 'wander': {
       const { startWandering, stopWandering } = require('./wander');
@@ -483,73 +467,24 @@ async function executeAction(action, bot, state, config) {
     }
 
     case 'find_village': {
-      bot.chat('正在用 /locate 查找最近的村庄...');
-      const { GoalNear } = require('mineflayer-pathfinder').goals;
-
-      // 方案1: 用 /locate 命令
-      bot.chat('/locate structure minecraft:village_plains');
-      bot.chat('/locate structure minecraft:village_taiga');
-      bot.chat('/locate structure minecraft:village_savanna');
-      bot.chat('/locate structure minecraft:village_desert');
-      bot.chat('/locate structure minecraft:village_snowy');
-
-      // 方案2: 同时启动探索模式
-      state.mode = 'exploring';
-      state.currentTask = 'Searching for village';
-      const dirs = ['north', 'south', 'east', 'west'];
-      const dir = dirs[Math.floor(Math.random() * 4)];
-      const pos = bot.entity.position;
-      const offsets = { north: [0, -200], south: [0, 200], east: [200, 0], west: [-200, 0] };
-      const [dx, dz] = offsets[dir];
-      bot.pathfinder.setGoal(new GoalNear(pos.x + dx, pos.y, pos.z + dz, 1));
-      bot.chat(`同时往${dir}方向探索200格...`);
-
-      // 等一会看 locate 有没有结果
-      setTimeout(() => {
-        if (state.mode === 'exploring') {
-          state.mode = 'idle';
-          state.currentTask = null;
-          bot.chat('村庄搜索已启动。如果看到 /locate 结果请告诉我坐标！');
-        }
-      }, 12000);
-      break;
+      return require('./locate').locateAndGuide(bot,state,config,{...args,kind:'structure',target:'village'},assertActive);
     }
+
+    case 'find_biome':
+      return require('./locate').locateAndGuide(bot,state,config,{...args,kind:'biome',target:args.target||args.biome},assertActive);
+
+    case 'locate':
+      return require('./locate').locateAndGuide(bot,state,config,args,assertActive);
 
     case 'explore': {
-      if (escapeWater(bot, state)) break;
-
-      const pos = bot.entity.position;
-      let tx, tz;
-
-      if (args.x !== undefined && args.z !== undefined) {
-        tx = args.x; tz = args.z;
-      } else {
-        const dirs = { north: [0, -300], south: [0, 300], east: [300, 0], west: [-300, 0] };
-        const [dx, dz] = dirs[args.direction] || dirs[Object.keys(dirs)[Math.floor(Math.random() * 4)]];
-        tx = pos.x + dx; tz = pos.z + dz;
-      }
-
-      state._lastGotoTarget = { x: tx, y: pos.y, z: tz };
-      resetStuckTimer();
-
-      const { navigateTo: nv } = require('./navigator');
-      state.mode = 'exploring';
-      state.currentTask = `Exploring (${Math.round(tx)}, ${Math.round(tz)})`;
-      bot.chat(`出发探索！目标: (${Math.round(tx)}, ${Math.round(tz)})`);
-      nv(tx, pos.y, tz, bot, { timeout: 120000 })
-        .then(() => {
-          if (state.mode === 'exploring') state.mode = 'idle';
-          state.currentTask = null;
-          bot.chat('探索到达！附近有什么有趣的？');
-        })
-        .catch((err) => {
-          console.log('[AI] explore 导航失败:', err.message);
-          if (state.mode === 'exploring') state.mode = 'idle';
-          state.currentTask = null;
-          bot.chat(`探索失败: ${err.message}`);
-        });
-      break;
+      return require('./exploration').exploreTerrain(bot, state, config, args, assertActive);
     }
+
+    case 'back':
+      return require('./navigation').returnAlongTrail(bot, state, { assertActive });
+
+    case 'route':
+      return { message: `矿道：${state._lastMiningPlan ? `${state._lastMiningPlan.label} Y=${state._lastMiningPlan.y} ${state._lastMiningPlan.phase} ${state._lastMiningPlan.mined}/${state._lastMiningPlan.targetCount}` : '暂无'}；返程节点：${(state._lastExpeditionRoute || state._lastNavigationTrail)?.points?.length || 0}；探路标记：${state._explorationMap?.landmarks?.length || 0}。` };
 
     case 'unstuck': {
       resetStuckTimer();
@@ -600,38 +535,46 @@ async function executeAction(action, bot, state, config) {
     }
 
     case 'build': {
+      commandPermissions.requireAllowed(bot,state);
       const design = args.design || args.shape || 'house'; // 兼容旧 shape 字段
       const sizeStr = String(args.size || 5);
       const material = args.material || null;
-      // 开始建造：builder 内部会切创造→建房→切回生存
+      // Await confirmed construction and preserve the actual game mode.
       state.mode = 'building';
       state.currentTask = `Building: ${design} ${sizeStr}`;
       const { startBuilder } = require('./builder');
-      // fire-and-forget 但必须捕获错误，否则 async 异常会变 unhandledRejection 崩掉整个进程
-      startBuilder([design, sizeStr, material], bot, state)
+      // Forward errors so missing schematics cannot be reported as success.
+      const building=startBuilder([design, sizeStr, material,...(args.repair?['--repair']:[])], bot, state)
         .catch((e) => {
           console.error('[AI] build error:', e.message);
           if (state.mode === 'building') state.mode = 'idle';
           state.currentTask = null;
           bot.chat(`盖房子出错啦：${e.message}`);
+          throw e;
         });
       bot.chat(`好的，我来盖个 ${design} (大小 ${sizeStr})`);
-      break;
+      return await building;
     }
 
     case 'cmd': {
       const command = args.command;
-      if (!command) {
-        bot.chat('需要提供命令参数');
-        break;
+      if (typeof command !== 'string' || !command.trim()) {
+        throw new Error('需要提供命令参数');
+      }
+      if (/^\/?(?:minecraft:)?craft(?:\s|$)/i.test(command.trim())) {
+        throw new Error('Minecraft 没有 /craft 指令，请使用 craft 合成功能。');
+      }
+      const modeCommand = command.trim().match(/^\/?(?:minecraft:)?gamemode\s+(\S+)(?:\s+(\S+))?$/i);
+      if (modeCommand) {
+        if (modeCommand[2] && !['@s', bot.username, config.username].includes(modeCommand[2])) throw new Error('模式工具只修改机器人自己，请明确目标。');
+        return runGameModeTask(bot, state, config, normalizeGameMode(modeCommand[1]), assertActive);
       }
       console.log(`[AI Cmd] ${command}`);
-      bot.chat(command);
-      break;
+      return runCommand(bot,state,command,{assertActive});
     }
 
     default:
-      console.log(`[AI] Unknown tool: ${tool}`);
+      throw new Error(`不支持的动作：${tool}`);
   }
 }
 
@@ -639,9 +582,14 @@ async function executeAction(action, bot, state, config) {
 
 // 判断是否为木头类方块
 function isWoodBlock(blockName) {
-  if (!blockName) return false;
-  return blockName.endsWith('_log') || blockName.endsWith('_wood') ||
-         blockName.includes('planks') || blockName === 'log' || blockName === 'wood';
+  return require('./lumberjack').isLog(String(blockName || '').replace(/^minecraft:/, ''));
 }
 
-module.exports = { initAI, processMessage };
+function rememberCommand(username, message, tool, success, detail) {
+  if (!conversationMemory) return;
+  const turn = conversationMemory.begin(username, message);
+  conversationMemory.reply(turn, detail || '本地指令已处理');
+  conversationMemory.result(turn, tool, success, detail || '本地指令已处理');
+  conversationMemory.finish(turn, success ? 'complete' : 'failed');
+}
+module.exports = { initAI, processMessage, rememberCommand, buildGameContext };

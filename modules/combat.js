@@ -1,14 +1,23 @@
 // mc-bot/modules/combat.js — 自动反击模块
 const { GoalNear } = require('mineflayer-pathfinder').goals;
+const {isBuilding}=require('./build-protection');
+const {currentGameMode}=require('./game-mode');
 
 let combatInterval = null;
 let currentTarget = null;
+const blockedTargets=new Map();
+let combatBot=null;
+function targetKey(entity){return entity.uuid||entity.id;}
+function isBlocked(entity){const until=blockedTargets.get(targetKey(entity));if(!until)return false;if(until>Date.now())return true;blockedTargets.delete(targetKey(entity));return false;}
+function canAutoFight(bot){return !['creative','spectator'].includes(currentGameMode(bot));}
 
 /**
  * 启动战斗模块：监听受伤事件，自动反击
  */
 function initCombat(bot, state, config) {
+  stopCombat();blockedTargets.clear();combatBot=bot;
   const owner = config.owner;
+  let lastHealth=bot.health;
 
   // 受伤时自动反击
   bot.on('entityHurt', (entity) => {
@@ -19,6 +28,12 @@ function initCombat(bot, state, config) {
   // 正确的 bot 被攻击事件是比较 health 下降
   // mineflayer 用 "health" 事件监听血量变化
   bot.on('health', () => {
+    const damaged=typeof lastHealth==='number'&&bot.health<lastHealth;lastHealth=bot.health;
+    if(!damaged||!canAutoFight(bot))return;
+    if(isBuilding(state))return;
+    if(state._playerCombatTask)return;
+    if (state._locateTask || state._pickupTask || state._chopTask || state._gamemodeTask || state._gameInventoryTask || state._inventoryTask || state._navigationTask || state._explorationTask) return;
+    if (['thinking', 'crafting', 'placing', 'delivering'].includes(state.mode) || state._craftTask) return;
     if (state.mode === 'combat') return; // 已经在战斗中
     if (state.mode === 'mining' || state.mode === 'collecting' || state.mode === 'chopping') return; // 工作时不触发
     if (bot.health <= 0) return;
@@ -27,11 +42,16 @@ function initCombat(bot, state, config) {
     const attacker = findNearestHostile(bot, owner);
     if (!attacker) return;
 
-    startCombat(bot, state, attacker);
+    startCombat(bot, state, attacker, {automatic:true});
   });
 
   // 周期性检查附近是否有敌对生物在攻击 bot
   combatInterval = setInterval(() => {
+    if(!canAutoFight(bot))return;
+    if(isBuilding(state))return;
+    if(state._playerCombatTask)return;
+    if (state._locateTask || state._pickupTask || state._chopTask || state._gamemodeTask || state._gameInventoryTask || state._inventoryTask || state._navigationTask || state._explorationTask) return;
+    if (['thinking', 'crafting', 'placing', 'delivering'].includes(state.mode) || state._craftTask) return;
     if (state.mode === 'combat') return; // 已经在战斗
     if (state.mode === 'mining' || state.mode === 'collecting' || state.mode === 'enchanting' || state.mode === 'chopping') return; // 工作时不打扰
     if (bot.health <= 0) return;
@@ -42,7 +62,7 @@ function initCombat(bot, state, config) {
     const hostile = findNearestAttackingHostile(bot, owner, 10);
     if (!hostile) return;
 
-    startCombat(bot, state, hostile);
+    startCombat(bot, state, hostile, {automatic:true});
   }, 2000);
 }
 
@@ -54,6 +74,7 @@ function findNearestHostile(bot, owner) {
   for (const entity of Object.values(bot.entities)) {
     if (entity === bot.entity) continue;
     if (!isHostileMob(entity)) continue;
+    if(entity.isValid===false||isBlocked(entity))continue;
     // 排除 owner 玩家
     if (entity.username && entity.username === owner) continue;
 
@@ -75,6 +96,7 @@ function findNearestAttackingHostile(bot, owner, range) {
   for (const entity of Object.values(bot.entities)) {
     if (entity === bot.entity) continue;
     if (!isHostileMob(entity)) continue;
+    if(entity.isValid===false||isBlocked(entity))continue;
     if (entity.username && entity.username === owner) continue;
 
     const dist = entity.position.distanceTo(pos);
@@ -88,13 +110,17 @@ function findNearestAttackingHostile(bot, owner, range) {
   return closest;
 }
 
-function startCombat(bot, state, target) {
+function startCombat(bot, state, target, {automatic=false}={}) {
+  if(isBuilding(state))return;
   if (!target || !target.position) return;
 
   console.log(`[Combat] Engaging: ${target.name || target.username || target.mobType}`);
   state.mode = 'combat';
   state.currentTask = `Fighting ${target.name || target.username || 'mob'}`;
   currentTarget = target;
+  combatBot=bot;
+  state._combatAutomatic=automatic;
+  state._combatChaseStarted=0;
 
   // 装备最好的武器
   equipBestWeapon(bot);
@@ -107,6 +133,7 @@ function startCombat(bot, state, target) {
 }
 
 function fightTarget(bot, state, target) {
+  if(isBuilding(state))return;
   if (state.mode !== 'combat') return;
   if (!target || !target.isValid) {
     endCombat(state);
@@ -135,7 +162,8 @@ function fightTarget(bot, state, target) {
     state._combatChaseStarted = Date.now();
   } else if (Date.now() - chaseStarted > 25000) {
     console.log('[Combat] 追击超时，放弃目标');
-    bot.chat("Can't reach the target, giving up.");
+    blockedTargets.set(targetKey(target),Date.now()+120000);
+    if(!state._combatAutomatic)bot.chat("Can't reach the target, giving up.");
     state._combatChaseStarted = 0;
     endCombat(state);
     return;
@@ -204,10 +232,12 @@ function fightTarget(bot, state, target) {
 }
 
 function endCombat(state) {
+  if(combatBot){combatBot.pathfinder.setGoal(null);combatBot.clearControlStates();}
   state.mode = 'idle';
   state.currentTask = null;
   currentTarget = null;
   state._combatChaseStarted = 0;
+  state._combatTarget=null;state._combatTargetId=null;state._combatAutomatic=false;
 }
 
 function hasAnyWeapon(bot) {

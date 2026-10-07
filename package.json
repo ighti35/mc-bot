@@ -1,11 +1,11 @@
 {
   "name": "claude-bot-v1-flash",
-  "version": "1.1.0",
+  "version": "2.0.0",
   "description": "Minecraft AI 助手机器人 — mineflayer + DeepSeek API，自动漫游/采矿/战斗/附魔/自优化",
   "main": "index.js",
   "scripts": {
     "start": "node index.js",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "node --test --test-concurrency=1 tests/mining-regression.test.cjs tests/strategy-navigation.test.cjs tests/locate-journey.test.cjs tests/tower-placement.test.cjs tests/command-assist.test.cjs tests/command-permissions.test.cjs tests/player-combat.test.cjs tests/lumberjack.test.cjs tests/item-pickup.test.cjs tests/dig-confirmed.test.cjs tests/inventory-panel.test.cjs tests/conversation-memory.test.cjs tests/game-inventory.test.cjs tests/game-mode.test.cjs tests/schematic-builder.test.cjs tests/blueprint-finish.test.cjs tests/build-panel.test.cjs tests/packed-schematic.test.cjs tests/build-preview-cache.test.cjs tests/build-protection.test.cjs tests/combat-retry.test.cjs tests/item-enchantments.test.cjs tests/mining-support.test.cjs tests/mining-speed.test.cjs tests/surface-guide.test.cjs"
   },
   "keywords": [
     "minecraft",
@@ -27,5 +27,8 @@
     "mineflayer-tool": "^1.2.0",
     "prismarine-schematic": "^1.3.0",
     "vec3": "^0.2.0"
+  },
+  "engines": {
+    "node": ">=22"
   }
 }

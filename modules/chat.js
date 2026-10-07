@@ -4,27 +4,47 @@ const { GoalNear, GoalBlock, GoalXZ } = pathfinder.goals;
 const fs = require('fs');
 const path = require('path');
 const { startWandering, stopWandering } = require('./wander');
-const { processMessage } = require('./ai');
+const { processMessage, rememberCommand } = require('./ai');
+const { stopCurrentTask } = require('./task-control');
+const { runCraftingTask } = require('./crafting-task');
+const { detectGameModeRequest, runGameModeTask } = require('./game-mode');
+const { detectLocateRequest, locateAndGuide } = require('./locate');
+const {executeWithFallback}=require('./command-assist');
+const commandPermissions=require('./command-permissions');
+const {resolvePlayer}=require('./player-targets');
+const {huntPlayer,detectPlayerAttack}=require('./player-combat');
 
 const HELP_MSG = [
   '========== Claude AI Commands ==========',
   '!help - Show this help',
   '!come - Come to you',
+  '!hunt [玩家] - 持续追击并攻击；!stop 停止',
+  '!commands - 查看授权；说“这次可以用指令”仅授权下一次任务',
   '!follow - Follow you / stop following',
   '!stop - Stop current task',
   '!wander - Toggle auto-wander near you',
-  '!mine <ore> [count] - Auto mine (e.g. !mine iron_ore 10)',
+  '!mine <block> [count] [targeted] - 先锁定坐标开矿道；targeted 仅挖已加载目标',
+  '!branch <ore> [count] [Y] [direction] - 按矿层开阶梯和分支矿道',
+  '!explore <direction> [distance] - 分段探路并记录地形/资源',
+  '!village - 定位村庄并带路；!biome <群系名> - 定位目标群系并带路',
+  '!locate <structure|biome> <目标> - 仅定位并返回真实坐标',
+  '!back - 沿最新路线返程；!route - 查看矿道和探路记录',
+  '!surface - 修步行阶梯并带主人返回露天地面',
   '!find <item> - Find nearby resources',
   '!collect <item> [count] - Collect items (e.g. !collect oak_log 20)',
+  '!drops - 查看附近掉落物；!pickup [item] - 拾取地上的物品',
+  '!craft <item> [count] [place] - 合成；加 place 会放置一个成品',
+  '!place <item> - 放置背包里的方块（支持 工作台）',
   '!goto <x y z> - Go to coordinates',
   '!home / !gohome - Set/go home',
   '!status - Bot status',
   '!inv - Show inventory',
+  '!gamemode survival - 切换自己的游戏模式并等待服务器确认',
   '!drop <item> - Drop items',
   '!sword / !axe / !pickaxe - Get best tool',
   '!enchant <item> [附魔] - 用铁砧附魔装备',
   '!kill <mob> - Attack a mob',
-  '!tree - Chop a tree',
+  '!tree [count] - 用斧头砍树并收集指定数量原木',
   '!dig - Dig block under feet',
   '!scout - Scan for rare ores',
   '!near - Scan surroundings',
@@ -37,7 +57,84 @@ let followTarget = null;
 let followInterval = null;
 
 function handleChat(username, message, bot, state, config) {
+  if(require('./build-protection').isBuilding(state)&&username!==config.owner)return;
   const msg = message.trim();
+  if(username===config.owner&&/^(?:停止追杀|停止攻击|别打我|不要打我|别追杀我)/.test(msg)){stopCurrentTask(bot,state);bot.chat('已停止追击。');return;}
+  const permissionReply=commandPermissions.request(username,msg,state,config,bot);
+  if(permissionReply){
+    if((commandPermissions.denied(msg)||/^!commands\s+(?:deny|off)\s*$/i.test(msg))&&(state._commandTask||state._surfaceTeleportTask||state.mode==='building'))stopCurrentTask(bot,state);
+    bot.chat(permissionReply);return;
+  }
+  if(state._buildTask&&!/^!(?:stop|help|status|inv|route|drops)\b/i.test(msg)){bot.chat(`正在建造：${state.currentTask||'读取图纸'}；!stop 可停止。`);return;}
+  if(username===config.owner&&/^(?:!surface|带我回(?:到)?地面|带我上(?:到)?地面)\s*$/.test(msg)){
+    if(state._gameInventoryTask||state._miningTask||state._navigationTask){bot.chat('请先关闭背包管理或用 !stop 停止当前任务，再开始地面带路。');return;}
+    if(state._surfaceGuide){bot.chat('正在带你回地面，请跟上。');return;}
+    stopCurrentTask(bot,state);
+    require('./surface-guide').guideToSurface(bot,state,config).then(result=>{state._lastActionResult={tool:'surface',success:true,message:`已到达露天地面 ${result.surface}`};}).catch(error=>{if(error.code!=='TASK_CANCELLED')bot.chat('地面带路暂停：'+error.message);});
+    return;
+  }
+  if((state._commandTask||state._surfaceTeleportTask)&&!/^!(?:stop|help|status|inv|route|drops)\b/i.test(msg)){bot.chat('正在等待指令结果；要取消请发 !stop。');return;}
+  if(state._playerCombatTask&&!/^!(?:stop|help|status|inv|route|drops)\b/i.test(msg)){bot.chat('正在持续追击；!stop 可停止。');return;}
+  const pursuit=username===config.owner&&!msg.startsWith('!')?detectPlayerAttack(msg,username):null;
+  if(pursuit){
+    if(state._aiRequest||state._miningTask||state._craftTask||state._explorationTask||state._navigationTask||state._gameInventoryTask||state._inventoryTask){bot.chat('已有任务，请先发 !stop。');return;}
+    commandPermissions.withAuthorization(username,msg,bot,state,config,()=>huntPlayer(bot,state,config,pursuit)).then(result=>{rememberCommand(username,msg,'attack_player',true,result.message);bot.chat(result.message);}).catch(error=>{if(error.code!=='TASK_CANCELLED'){rememberCommand(username,msg,'attack_player',false,error.message);bot.chat(`追击失败：${error.message}`);}});return;
+  }
+  const destination = username === config.owner && !msg.startsWith('!') ? detectLocateRequest(msg) : null;
+  if (destination) {
+    if(state._locateTask||state._aiRequest||state._gameInventoryTask||state._inventoryTask||state._miningTask||state._craftTask||state._explorationTask||state._navigationTask||state._chopTask||state._pickupTask||state._gamemodeTask){bot.chat('已有任务，请先发 !stop 再开始带路。');return;}
+    commandPermissions.withAuthorization(username,msg,bot,state,config,()=>executeWithFallback({tool:'locate',args:destination},bot,state,config,()=>locateAndGuide(bot,state,config,destination),()=>{},{message:msg})).then(result=>{state._lastActionResult={tool:'locate',success:true,message:result.message};rememberCommand(username,msg,'locate',true,result.message);bot.chat(result.message);}).catch(error=>{if(error.code==='TASK_CANCELLED')return;state._lastActionResult={tool:'locate',success:false,message:error.message};rememberCommand(username,msg,'locate',false,error.message);bot.chat(`执行失败：${error.message}`.slice(0,200));});return;
+  }
+  const requestedMode = username === config.owner ? detectGameModeRequest(msg) : null;
+  if (requestedMode) {
+    if (state._locateTask || state._pickupTask || state._chopTask || state._gameInventoryTask || state._inventoryTask || state._craftTask || state._miningTask || state._explorationTask || state._navigationTask || state._locateTask || state._pickupTask || state._chopTask || state._gamemodeTask || state.mode === 'building') {
+      bot.chat('请先结束当前操作，或发送 !stop，再切换游戏模式。'); return;
+    }
+    const pendingAuthorization=state._pendingCommandAuthorization;
+    stopCurrentTask(bot, state);state._pendingCommandAuthorization=pendingAuthorization;
+    commandPermissions.withAuthorization(username,msg,bot,state,config,()=>runGameModeTask(bot, state, config, requestedMode)).then(result => {
+      state._lastActionResult = { tool: 'gamemode', success: true, message: result.message };
+      rememberCommand(username, msg, 'gamemode', true, result.message); bot.chat(result.message);
+    }).catch(error => {
+      if (error.code === 'TASK_CANCELLED') return;
+      state._lastActionResult = { tool: 'gamemode', success: false, message: error.message };
+      rememberCommand(username, msg, 'gamemode', false, error.message); bot.chat(error.message);
+    }); return;
+  }
+
+  // These commands work immediately, even while the AI is waiting for a response.
+  if (msg.startsWith('!')) {
+    const [cmd, ...args] = msg.slice(1).trim().split(/\s+/);
+    const name = cmd.toLowerCase();
+    if (['hunt','stop', 'craft', 'place', 'wander', 'help', 'mine', 'tree', 'collect', 'drops', 'pickup', 'branch', 'explore', 'village', 'biome', 'locate', 'goto', 'come', 'back', 'route', 'status', 'inv'].includes(name)) {
+      if (config.owner && username !== config.owner && name !== 'help') {
+        bot.chat(`Sorry, only ${config.owner} can command me.`);
+        return;
+      }
+      if (!['stop', 'help', 'route', 'status', 'inv', 'drops'].includes(name) && (state._locateTask || state._pickupTask || state._chopTask || state._gamemodeTask || state._gameInventoryTask || state._inventoryTask || state._aiRequest || state._miningTask || state._explorationTask || state._navigationTask || state._craftTask)) {
+        bot.chat('已有任务正在执行，请先发 !stop。'); return;
+      }
+      Promise.resolve().then(() => {
+        const run=()=>executeWithFallback(fallbackAction(name,args,username,bot),bot,state,config,()=>handleCommand(name,args,username,bot,state,config),()=>{},{message:msg});
+        return ['stop','help','route','status','inv','drops'].includes(name)?run():commandPermissions.withAuthorization(username,msg,bot,state,config,run);
+      })
+        .then(result => {
+          if (username === config.owner) rememberCommand(username, msg, name, true, result?.message);
+          if (result?.message) {
+            state._lastActionResult = { tool: name, success: true, message: result.message };
+            bot.chat(result.message);
+          }
+        })
+        .catch(error => {
+          if (error.code === 'TASK_CANCELLED') return;
+          if (username === config.owner) rememberCommand(username, msg, name, false, error.message);
+          state._lastActionResult = { tool: name, success: false, message: error.message };
+          console.error(`[Command] ${name}:`, error.message);
+          bot.chat(`执行失败：${error.message}`.slice(0, 200));
+        });
+      return;
+    }
+  }
 
   // === AI 模式：把消息发给 Claude API ===
   processMessage(username, msg, bot, state, config).then((result) => {
@@ -61,16 +158,35 @@ function handleChat(username, message, bot, state, config) {
     }
 
     try {
-      handleCommand(cmd, args, username, bot, state, config);
+      return commandPermissions.withAuthorization(username,msg,bot,state,config,()=>handleCommand(cmd, args, username, bot, state, config));
     } catch (e) {
       bot.chat(`Command error: ${e.message}`);
       console.error(e);
     }
+  }).catch(error => {
+    console.error('[Chat] 处理指令失败:', error.message);
+    bot.chat('处理指令失败，请重试。');
   });
+}
+
+function fallbackAction(cmd,args,username,bot) {
+  const item=args[0]?(resolveItemName(args[0])||args[0]):undefined;
+  if(cmd==='come')return {tool:'come',args:{player:username}};
+  if(cmd==='goto'&&args.length>=3&&args.slice(0,3).every(value=>Number.isFinite(Number(value))))return {tool:'goto',args:{x:Number(args[0]),y:Number(args[1]),z:Number(args[2])}};
+  if(cmd==='back')return {tool:'back',args:{}};
+  if(['mine','collect'].includes(cmd))return {tool:cmd,args:{block:item,count:Number(args[1]??16),strategy:args[2]||'auto'}};
+  if(cmd==='tree')return {tool:'chop_tree',args:{count:Number(args[0]??1)}};
+  if(['craft','place'].includes(cmd))return {tool:cmd,args:{item,count:Number(args[1]??1),place:args.includes('place')}};
+  if(cmd==='village')return {tool:'find_village',args:{}};
+  if(cmd==='biome')return {tool:'find_biome',args:{target:args[0]}};
+  if(cmd==='explore'&&args[0]&&!['north','south','east','west','北','南','东','西'].includes(args[0]))return {tool:'locate',args:{kind:/^(村庄|village)$/i.test(args[0])?'structure':'biome',target:args[0]}};
+  if(cmd==='explore')return {tool:'explore',args:{direction:args[0]||'north',distance:Number(args[1]??96)}};
+  return null;
 }
 
 function handleCommand(cmd, args, username, bot, state, config) {
   switch (cmd) {
+    case 'hunt':return huntPlayer(bot,state,config,{player:args[0]||username});
     case 'help':
       for (const line of HELP_MSG) {
         bot.chat(line);
@@ -78,8 +194,7 @@ function handleCommand(cmd, args, username, bot, state, config) {
       break;
 
     case 'come':
-      cmdCome(username, bot);
-      break;
+      return cmdCome(username, bot, state);
 
     case 'follow':
       cmdFollow(username, bot, state);
@@ -94,25 +209,56 @@ function handleCommand(cmd, args, username, bot, state, config) {
       break;
 
     case 'mine':
-      cmdMine(args[0], bot, state, parseInt(args[1]) || 0);
-      break;
+      return cmdMine(args[0], bot, state, Number(args[1] ?? 0), config, { strategy: args[2] || 'auto' });
+
+    case 'branch':
+      return cmdMine(args[0], bot, state, Number(args[1] ?? 16), config, {
+        strategy: 'branch', y: args[2] === undefined ? undefined : Number(args[2]), direction: args[3] || 'east',
+      });
+
+    case 'explore':
+      if (args[0] && !['north','south','east','west','北','南','东','西'].includes(args[0])) return locateAndGuide(bot,state,config,{kind:/^(村庄|village)$/i.test(args[0])?'structure':'biome',target:args[0]});
+      return require('./exploration').exploreTerrain(bot, state, config, { direction: args[0] || 'north', distance: Number(args[1] ?? 96) });
+
+    case 'village':
+      return locateAndGuide(bot,state,config,{kind:'structure',target:'village'});
+    case 'biome':
+      return locateAndGuide(bot,state,config,{kind:'biome',target:args[0]});
+    case 'locate':
+      return locateAndGuide(bot,state,config,{kind:args[0],target:args[1],guide:false});
+
+    case 'back':
+      return require('./navigation').returnAlongTrail(bot, state);
+
+    case 'route':
+      return { message: `矿道：${state._lastMiningPlan ? `${state._lastMiningPlan.label} Y=${state._lastMiningPlan.y} ${state._lastMiningPlan.phase} ${state._lastMiningPlan.mined}/${state._lastMiningPlan.targetCount}` : '暂无'}；目标：${state._lastMiningPlan?.lockedTarget ? `(${state._lastMiningPlan.lockedTarget.x},${state._lastMiningPlan.lockedTarget.y},${state._lastMiningPlan.lockedTarget.z}) ${state._lastMiningPlan.lockedTarget.status}` : '暂无'}；返程节点：${(state._lastExpeditionRoute || state._lastNavigationTrail)?.points?.length || 0}。` };
 
     case 'find':
       cmdFind(args[0], bot, state);
       break;
 
     case 'collect':
-      cmdCollect(args[0], bot, state, parseInt(args[1]) || 0);
-      break;
+      return cmdMine(args[0], bot, state, args[1] === undefined ? 0 : Number(args[1]), config, { strategy: 'nearby' });
+
+    case 'drops': {
+      const summary = require('./item-pickup').describeDroppedItems(bot);
+      return { message: summary === 'none' ? '附近 16 格内没有可见掉落物。' : `附近掉落物：${summary}` };
+    }
+
+    case 'pickup':
+      return require('./item-pickup').runPickupTask(bot, state, { item: args[0] ? (resolveItemName(args[0]) || args[0]) : undefined });
+
+    case 'craft':
+      return cmdCraftOrPlace('craft', args, bot, state);
 
     case 'goto':
       if (!args[0]) { bot.chat('Usage: !goto <x> <y> <z> or !goto <name>'); return; }
       if (isNaN(args[0])) {
-        cmdGotoSaved(args[0], bot, state);
+        return cmdGotoSaved(args[0], bot, state);
       } else {
         const [x, y, z] = args.map(Number);
         if (isNaN(x) || isNaN(y) || isNaN(z)) { bot.chat('Usage: !goto <x> <y> <z>'); return; }
-        cmdGoto(x, y, z, bot, state);
+        return cmdGoto(x, y, z, bot, state);
       }
       break;
 
@@ -123,13 +269,11 @@ function handleCommand(cmd, args, username, bot, state, config) {
 
     case 'gohome':
       if (!state.home) { bot.chat('No home set. Use !home first.'); return; }
-      cmdGoto(state.home.x, state.home.y, state.home.z, bot, state);
-      break;
+      return cmdGoto(state.home.x, state.home.y, state.home.z, bot, state);
 
     case 'build':
       if (args.length < 1) { bot.chat('Usage: !build <design> <size> [material]  or  !build large-survival-house'); return; }
-      cmdBuild(args, bot, state);
-      break;
+      return cmdBuild(args, bot, state);
 
     case 'status':
       cmdStatus(bot, state);
@@ -163,16 +307,14 @@ function handleCommand(cmd, args, username, bot, state, config) {
       break;
 
     case 'tree':
-      cmdTree(bot, state);
-      break;
+      return require('./lumberjack').collectWood(bot, state, config, args[0] === undefined ? 0 : Number(args[0]));
 
     case 'dig':
       cmdDig(bot);
       break;
 
     case 'place':
-      cmdPlace(bot);
-      break;
+      return cmdCraftOrPlace('place', args, bot, state);
 
     case 'save':
       cmdSave(args[0], bot, state);
@@ -210,11 +352,11 @@ function handleCommand(cmd, args, username, bot, state, config) {
 
 // === Command Implementations ===
 
-function cmdCome(username, bot) {
-  const player = bot.players[username]?.entity;
+function cmdCome(username, bot, state) {
+  const player = resolvePlayer(bot,username);
   if (!player) { bot.chat('I cannot find you!'); return; }
-  bot.pathfinder.setGoal(new GoalNear(player.position.x, player.position.y, player.position.z, 1));
-  bot.chat('Coming!');
+  if (!state) { bot.chat('请使用 !come，我会安全寻路过来。'); return; }
+  return require('./navigation-task').goTo(bot, state, player.position.clone(), { timeout: 120000, range: 2, allowTower: true, getTarget:()=>resolvePlayer(bot,username)?.position });
 }
 
 function cmdFollow(username, bot, state) {
@@ -229,9 +371,11 @@ function cmdFollow(username, bot, state) {
   followTarget = username;
   bot.chat('Following you...');
   followInterval = setInterval(() => {
-    const player = bot.players[username]?.entity;
+    if (state._gameInventoryTask) { clearInterval(followInterval); followTarget = null; followInterval = null; return; }
+    if (state.mode !== 'idle' || state._digTask) return;
+    const player = resolvePlayer(bot,username);
     if (player) {
-      bot.pathfinder.setGoal(new GoalNear(player.position.x, player.position.y, player.position.z, config.maxFollowDistance));
+      bot.pathfinder.setGoal(new GoalNear(player.position.x, player.position.y, player.position.z, global.config?.maxFollowDistance ?? 2));
     }
   }, 1000);
 }
@@ -240,15 +384,26 @@ function cmdStop(bot, state) {
   clearInterval(followInterval);
   followTarget = null;
   followInterval = null;
-  bot.pathfinder.setGoal(null);
-  if (bot.collectBlock) bot.collectBlock.cancelTask();
-  state.currentTask = null;
-  state.mode = 'idle';
-  state._wanderEnabled = false;
+  stopCurrentTask(bot, state);
   bot.chat('All tasks stopped.');
 }
 
+async function cmdCraftOrPlace(tool, args, bot, state) {
+  if (state._aiRequest) throw new Error('正在处理上一条指令，请稍等；可先用 !stop 取消。');
+  const item = args[0] || (tool === 'place' ? bot.heldItem?.name : null);
+  if (!item) throw new Error(`用法：!${tool} <物品名>，例如 !${tool} 工作台`);
+  const placeFlag = value => ['place', '--place', '放置'].includes(value);
+  const count = args[1] && !placeFlag(args[1]) ? Number(args[1]) : 1;
+  const result = await runCraftingTask(tool, { item, count, place: args.some(placeFlag) }, bot, state);
+  state._lastActionResult = { tool, success: true, message: result.message };
+  bot.chat(result.message);
+}
+
 function cmdWander(username, bot, state, config) {
+  if (state._aiRequest || state._craftTask) {
+    bot.chat('正在处理任务，请先发 !stop，再切换漫游。');
+    return;
+  }
   if (state._wanderEnabled) {
     state._wanderEnabled = false;
     stopWandering();
@@ -260,15 +415,13 @@ function cmdWander(username, bot, state, config) {
   }
 }
 
-function cmdMine(target, bot, state, count) {
+function cmdMine(target, bot, state, count, config, options = {}) {
   if (!target) { bot.chat('Usage: !mine <ore_name> [count] (e.g. !mine iron_ore 10)'); return; }
   const blockName = resolveItemName(target);
   if (!blockName) { bot.chat(`Cannot recognize: ${target}`); return; }
-  state.mode = 'mining';
-  state.currentTask = count > 0 ? `Mining ${count}x ${blockName}` : `Mining: ${blockName}`;
   bot.chat(count > 0 ? `Searching and mining ${count}x ${blockName}...` : `Searching and mining ${blockName}...`);
   const { startMiner } = require('./miner');
-  startMiner(blockName, bot, state, config, count);
+  return startMiner(blockName, bot, state, config, count, options);
 }
 
 function cmdFind(itemName, bot, state) {
@@ -354,9 +507,7 @@ function cmdCollect(itemName, bot, state, count) {
 
 function cmdGoto(x, y, z, bot, state) {
   bot.chat(`Going to (${Math.round(x)}, ${Math.round(y)}, ${Math.round(z)})...`);
-  state.mode = 'navigating';
-  state.currentTask = `Going to (${Math.round(x)}, ${Math.round(y)}, ${Math.round(z)})`;
-  bot.pathfinder.setGoal(new GoalNear(x, y, z, 1));
+  return require('./navigation-task').goTo(bot, state, { x, y, z });
 }
 
 function cmdGotoSaved(name, bot, state) {
@@ -365,14 +516,15 @@ function cmdGotoSaved(name, bot, state) {
   const wp = waypoints[name];
   if (!wp) { bot.chat(`No saved waypoint: ${name}`); return; }
   bot.chat(`Going to "${name}" (${Math.round(wp.x)}, ${Math.round(wp.y)}, ${Math.round(wp.z)})...`);
-  bot.pathfinder.setGoal(new GoalNear(wp.x, wp.y, wp.z, 1));
+  return cmdGoto(wp.x, wp.y, wp.z, bot, state);
 }
 
 function cmdBuild(args, bot, state) {
+  commandPermissions.requireAllowed(bot,state);
   state.mode = 'building';
   state.currentTask = `Building: ${args.join(' ')}`;
   const { startBuilder } = require('./builder');
-  startBuilder(args, bot, state);
+  return startBuilder(args, bot, state);
 }
 
 function cmdStatus(bot, state) {
@@ -706,7 +858,7 @@ function loadWaypoints() {
 
 function resolveItemName(input) {
   const lower = input.toLowerCase().replace(/\s/g, '_');
-  if (global.itemNames[lower]) return global.itemNames[lower];
+  if (global.itemNames?.[lower]) return global.itemNames[lower];
   return lower;
 }
 

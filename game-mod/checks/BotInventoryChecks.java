@@ -1,0 +1,78 @@
+package local.botui;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
+import net.minecraft.Bootstrap;
+import net.minecraft.SharedConstants;
+import net.minecraft.command.permission.PermissionPredicate;
+import net.minecraft.component.DataComponentTypes;
+import net.minecraft.entity.EntityEquipment;
+import net.minecraft.entity.EquipmentSlot;
+import net.minecraft.entity.effect.StatusEffectInstance;
+import net.minecraft.entity.effect.StatusEffects;
+import net.minecraft.entity.player.HungerManager;
+import net.minecraft.entity.player.PlayerInventory;
+import net.minecraft.inventory.SimpleInventory;
+import net.minecraft.item.ItemStack;
+import net.minecraft.item.Items;
+import net.minecraft.screen.PlayerScreenHandler;
+import net.minecraft.screen.slot.SlotActionType;
+import net.minecraft.server.command.ServerCommandSource;
+import net.minecraft.server.network.ServerPlayerEntity;
+import net.minecraft.server.world.ServerWorld;
+import net.minecraft.text.Text;
+import java.util.List;
+import static org.mockito.Mockito.*;
+public class BotInventoryChecks {
+    static void check(boolean condition,String message){if(!condition)throw new AssertionError(message);System.out.println("PASS "+message);}
+    public static void main(String[] args) throws Exception {
+        SharedConstants.createGameVersion(); Bootstrap.initialize();
+        ServerPlayerEntity target=mock(ServerPlayerEntity.class), viewer=mock(ServerPlayerEntity.class);
+        ServerWorld world=mock(ServerWorld.class);
+        when(viewer.getPermissions()).thenReturn(PermissionPredicate.ALL);
+        when(target.getEntityWorld()).thenReturn(world);when(viewer.getEntityWorld()).thenReturn(world);
+        when(world.getEnabledFeatures()).thenReturn(net.minecraft.resource.featuretoggle.FeatureFlags.DEFAULT_ENABLED_FEATURES);
+        when(viewer.getAbilities()).thenReturn(new net.minecraft.entity.player.PlayerAbilities());
+        when(target.isAlive()).thenReturn(true);when(viewer.isAlive()).thenReturn(true);
+        when(viewer.getName()).thenReturn(Text.literal("Owner"));when(target.getName()).thenReturn(Text.literal("Claude_Bot"));
+        when(target.getUuid()).thenReturn(java.util.UUID.randomUUID());
+        PlayerInventory botInventory=new PlayerInventory(target,new EntityEquipment()), ownerInventory=new PlayerInventory(viewer,new EntityEquipment());
+        when(target.getInventory()).thenReturn(botInventory);when(viewer.getInventory()).thenReturn(ownerInventory);
+        when(target.getPreferredEquipmentSlot(any())).thenAnswer(invocation -> {
+            ItemStack stack=invocation.getArgument(0);var equippable=stack.get(DataComponentTypes.EQUIPPABLE);return equippable==null?EquipmentSlot.MAINHAND:equippable.slot();
+        });
+        when(target.canUseSlot(any())).thenReturn(true);
+        when(target.canEquip(any(),any())).thenAnswer(invocation -> target.getPreferredEquipmentSlot(invocation.getArgument(0)) == invocation.getArgument(1));
+        var playerScreenField=ServerPlayerEntity.class.getField("playerScreenHandler");playerScreenField.setAccessible(true);playerScreenField.set(target,mock(PlayerScreenHandler.class));
+        HungerManager hunger=new HungerManager();hunger.setFoodLevel(14);when(target.getHungerManager()).thenReturn(hunger);
+        when(target.getHealth()).thenReturn(13.5f);when(target.getMaxHealth()).thenReturn(20f);when(target.getArmor()).thenReturn(7);
+        when(target.getStatusEffects()).thenReturn(List.of(new StatusEffectInstance(StatusEffects.SPEED,600,1)));
+        BotInventoryHandler handler=new BotInventoryHandler(1,viewer,target);viewer.currentScreenHandler=handler;
+        check(handler.slots.size()==90,"exactly 90 packet slots");
+        check(handler.getSlot(36).getIndex()==39 && handler.getSlot(39).getIndex()==36,"armor labels match real head/feet indices");
+        check(handler.getSlot(36).canInsert(new ItemStack(Items.DIAMOND_HELMET)) && !handler.getSlot(36).canInsert(new ItemStack(Items.DIAMOND_BOOTS)),"wrong armor rejected");
+        check(handler.getSlot(36).getMaxItemCount()==1 && handler.getSlot(40).canInsert(new ItemStack(Items.TORCH)),"armor capped at one; offhand accepts ordinary items");
+        ItemStack helmet=new ItemStack(Items.DIAMOND_HELMET);helmet.set(DataComponentTypes.CUSTOM_NAME,Text.literal("我的头盔"));ownerInventory.setStack(9,helmet);
+        handler.quickMove(viewer,54);
+        check(botInventory.getStack(39).isOf(Items.DIAMOND_HELMET) && ownerInventory.getStack(9).isEmpty(),"shift click equips actual bot head");
+        check(botInventory.getStack(39).getName().getString().equals("我的头盔"),"custom item components preserved");
+        handler.quickMove(viewer,36);check(botInventory.getStack(39).isEmpty() && ownerInventory.getStack(8).isOf(Items.DIAMOND_HELMET),"taking armor returns same item to owner");
+        botInventory.setStack(9,new ItemStack(Items.DIRT,40));ownerInventory.setStack(7,new ItemStack(Items.DIRT,50));handler.quickMove(viewer,0);
+        int total=0;for(int i=0;i<36;i++)if(ownerInventory.getStack(i).isOf(Items.DIRT))total+=ownerInventory.getStack(i).getCount();
+        check(total==90 && botInventory.getStack(9).isEmpty(),"stack transfers conserve counts across merges");
+        ownerInventory.setStack(9,new ItemStack(Items.DIAMOND_HELMET));handler.onSlotClick(54,0,SlotActionType.PICKUP,viewer);
+        check(handler.getCursorStack().isOf(Items.DIAMOND_HELMET),"manual drag picks up actual owner item");
+        handler.onSlotClick(39,0,SlotActionType.PICKUP,viewer);
+        check(botInventory.getStack(36).isEmpty() && handler.getCursorStack().isOf(Items.DIAMOND_HELMET),"manual drag cannot put helmet in boots slot");
+        handler.onSlotClick(36,0,SlotActionType.PICKUP,viewer);
+        check(botInventory.getStack(39).isOf(Items.DIAMOND_HELMET) && handler.getCursorStack().isEmpty(),"manual drag equips and clears cursor without duplication");
+        verify(target,atLeastOnce()).onEquipStack(eq(EquipmentSlot.HEAD),any(),any());check(true,"native equipment change callbacks emitted");
+        JsonObject state=JsonParser.parseString(handler.getSlot(53).getStack().getName().getString()).getAsJsonObject();
+        check(state.get("health").getAsFloat()==13.5f && state.get("food").getAsInt()==14 && state.get("armor").getAsInt()==7,"real health hunger and armor synced");
+        check(state.getAsJsonArray("effects").get(0).getAsJsonObject().get("level").getAsInt()==2,"buff level and duration synced");
+        check(!handler.getSlot(53).canInsert(new ItemStack(Items.DIRT)) && !handler.getSlot(53).canTakeItems(viewer) && handler.quickMove(viewer,53).isEmpty(),"status carrier cannot be taken or replaced");
+        when(target.getHealth()).thenReturn(9f);for(int i=0;i<5;i++)handler.sendContentUpdates();
+        check(JsonParser.parseString(handler.getSlot(53).getStack().getName().getString()).getAsJsonObject().get("health").getAsFloat()==9f,"status updates after five ticks");
+        when(target.isAlive()).thenReturn(false);check(!handler.canUse(viewer),"death invalidates open management window");
+        System.out.println("ALL CHECKS PASSED");
+    }
+}
