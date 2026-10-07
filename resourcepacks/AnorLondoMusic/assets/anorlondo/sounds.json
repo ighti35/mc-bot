@@ -1,0 +1,26 @@
+{
+  "dark": {
+    "sounds": [
+      {
+        "stream": true,
+        "name": "anorlondo:dark"
+      }
+    ]
+  },
+  "combat": {
+    "sounds": [
+      {
+        "stream": true,
+        "name": "anorlondo:combat"
+      }
+    ]
+  },
+  "ambient": {
+    "sounds": [
+      {
+        "stream": true,
+        "name": "anorlondo:ambient"
+      }
+    ]
+  }
+}

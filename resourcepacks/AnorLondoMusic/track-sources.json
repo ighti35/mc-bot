@@ -1,0 +1,18 @@
+{
+  "usage": "Regional Anor Londo soundtrack",
+  "tracks": [
+    {
+      "title": "Ornstein & Smough",
+      "resource": "combat.ogg"
+    },
+    {
+      "title": "Gwynevere, Princess of Sunlight",
+      "resource": "ambient.ogg"
+    },
+    {
+      "title": "Dark Sun Gwyndolin",
+      "resource": "dark.ogg"
+    }
+  ],
+  "source": "User-provided audio"
+}

@@ -4,6 +4,10 @@ Minecraft Java 1.21.11 AI 助手机器人，Mineflayer + DeepSeek。Claude-Bot �
 
 ## 安装
 
+Windows / PCL 用户推荐在 [v2.0.0 发布页面](https://github.com/ighti35/mc-bot/releases/tag/v2.0.0) 下载 **mc-bot-v2.0.0-windows-x64-bundle.zip**。自带 Node.js、依赖、图纸、模组及三首亚诺尔隆德音乐。解压后双击“开始安装.bat”，用中文面板填写 API Key、玩家名、局域网端口，并选择 PCL Fabric 1.21.11 版本目录，即可安装、测试连接和启动机器人。请先通过 PCL 安装 Minecraft 1.21.11 与 Fabric Loader 0.19.3 或以上，并确认版本隔离设置。
+
+下面是源码包或克隆仓库的手动安装方式：
+
 需要 Node.js 22 或更新版本、Minecraft Java 1.21.11，以及你自己的 DeepSeek API Key。
 
 1. 下载完整发布 ZIP 并解压，或克隆仓库。
@@ -20,7 +24,7 @@ Minecraft Java 1.21.11 AI 助手机器人，Mineflayer + DeepSeek。Claude-Bot �
 - 对话记忆、真实背包和独立装备槽，生命/饥饿/护甲/状态效果显示。
 - 游戏内中文建筑菜单、图纸预览、断点续建与建造保护。
 - 地面阶梯带路模块会等待主人跟上，保存路线并确认露天出口。
-- 可选的局部亚诺尔隆德氛围模组，默认关闭；不包含原作音乐。
+- 可选的局部亚诺尔隆德氛围模组，默认关闭效果；整合包同时安装三首区域音乐。
 
 ## 游戏内模组
 
@@ -28,11 +32,13 @@ Minecraft Java 1.21.11 AI 助手机器人，Mineflayer + DeepSeek。Claude-Bot �
 
 `atmosphere-mod/dist` 中的模组同样需要 Fabric API。它默认不绑定任何玩家世界，按该目录说明自行配置。Java 模组更新后必须重启 Minecraft。
 
+音乐资源位于 `resourcepacks/AnorLondoMusic`：日常播放 Gwynevere, Princess of Sunlight，战斗播放 Ornstein & Smough，暗处播放 Dark Sun Gwyndolin。整合包勾选氛围模组时自动安装音乐；手动安装可执行 `powershell -ExecutionPolicy Bypass -File .\install-music.ps1 -GameDirectory "你的游戏目录"`。在氛围模组配置中填写实际存档与建筑边界并启用后，音乐仅在对应区域切换；其余地区维持原有音乐。
+
 ## 图纸与本地数据
 
 完整发布包附带当前建筑图纸目录；仓库只保留较小图纸，新大型图纸通过发布包分发。也可用 tools/convert-litematic.js 转换自有图纸。第三方图纸及音乐的权利属于原作者，图纸来源说明保留在各自元数据中。
 
-发布包不含 API Key、真实配置、对话、日志、游戏存档、背包快照、路线、建造断点、浏览器缓存、Minecraft/Java 安装文件或本机音频。首次启动生成你自己的运行数据。不要提交 config.json、data 中的运行记录或 .env。
+发布包不含 API Key、真实配置、对话、日志、游戏存档、背包快照、路线、建造断点、浏览器缓存、Minecraft/Java 安装文件或私人导入路径。音乐包仅包含用户提供的三首已转换音轨与曲目信息。首次启动生成你自己的运行数据。不要提交 config.json、data 中的运行记录或 .env。
 
 ## 验证
 
