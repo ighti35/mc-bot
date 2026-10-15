@@ -1,0 +1,3747 @@
+{
+  "version": "1.21.11",
+  "source": "https://github.com/misode/mcmeta/tree/c976eb3b2cfcb9f205171527dec46b266afa3ac9",
+  "cooking": {
+    "baked_potato": [
+      "potato"
+    ],
+    "black_glazed_terracotta": [
+      "black_terracotta"
+    ],
+    "blue_glazed_terracotta": [
+      "blue_terracotta"
+    ],
+    "brick": [
+      "clay_ball"
+    ],
+    "brown_glazed_terracotta": [
+      "brown_terracotta"
+    ],
+    "charcoal": [
+      "dark_oak_log",
+      "dark_oak_wood",
+      "stripped_dark_oak_log",
+      "stripped_dark_oak_wood",
+      "pale_oak_log",
+      "pale_oak_wood",
+      "stripped_pale_oak_log",
+      "stripped_pale_oak_wood",
+      "oak_log",
+      "oak_wood",
+      "stripped_oak_log",
+      "stripped_oak_wood",
+      "acacia_log",
+      "acacia_wood",
+      "stripped_acacia_log",
+      "stripped_acacia_wood",
+      "birch_log",
+      "birch_wood",
+      "stripped_birch_log",
+      "stripped_birch_wood",
+      "jungle_log",
+      "jungle_wood",
+      "stripped_jungle_log",
+      "stripped_jungle_wood",
+      "spruce_log",
+      "spruce_wood",
+      "stripped_spruce_log",
+      "stripped_spruce_wood",
+      "mangrove_log",
+      "mangrove_wood",
+      "stripped_mangrove_log",
+      "stripped_mangrove_wood",
+      "cherry_log",
+      "cherry_wood",
+      "stripped_cherry_log",
+      "stripped_cherry_wood"
+    ],
+    "coal": [
+      "coal_ore",
+      "deepslate_coal_ore"
+    ],
+    "cooked_beef": [
+      "beef"
+    ],
+    "cooked_chicken": [
+      "chicken"
+    ],
+    "cooked_cod": [
+      "cod"
+    ],
+    "cooked_mutton": [
+      "mutton"
+    ],
+    "cooked_porkchop": [
+      "porkchop"
+    ],
+    "cooked_rabbit": [
+      "rabbit"
+    ],
+    "cooked_salmon": [
+      "salmon"
+    ],
+    "copper_ingot": [
+      "copper_ore",
+      "deepslate_copper_ore",
+      "raw_copper"
+    ],
+    "copper_nugget": [
+      "copper_pickaxe",
+      "copper_shovel",
+      "copper_axe",
+      "copper_hoe",
+      "copper_sword",
+      "copper_spear",
+      "copper_helmet",
+      "copper_chestplate",
+      "copper_leggings",
+      "copper_boots",
+      "copper_horse_armor",
+      "copper_nautilus_armor"
+    ],
+    "cracked_deepslate_bricks": [
+      "deepslate_bricks"
+    ],
+    "cracked_deepslate_tiles": [
+      "deepslate_tiles"
+    ],
+    "cracked_nether_bricks": [
+      "nether_bricks"
+    ],
+    "cracked_polished_blackstone_bricks": [
+      "polished_blackstone_bricks"
+    ],
+    "cracked_stone_bricks": [
+      "stone_bricks"
+    ],
+    "cyan_glazed_terracotta": [
+      "cyan_terracotta"
+    ],
+    "deepslate": [
+      "cobbled_deepslate"
+    ],
+    "diamond": [
+      "deepslate_diamond_ore",
+      "diamond_ore"
+    ],
+    "dried_kelp": [
+      "kelp"
+    ],
+    "emerald": [
+      "deepslate_emerald_ore",
+      "emerald_ore"
+    ],
+    "glass": [
+      "sand",
+      "red_sand"
+    ],
+    "gold_ingot": [
+      "deepslate_gold_ore",
+      "gold_ore",
+      "nether_gold_ore",
+      "raw_gold"
+    ],
+    "gold_nugget": [
+      "golden_pickaxe",
+      "golden_shovel",
+      "golden_axe",
+      "golden_hoe",
+      "golden_sword",
+      "golden_spear",
+      "golden_helmet",
+      "golden_chestplate",
+      "golden_leggings",
+      "golden_boots",
+      "golden_horse_armor",
+      "golden_nautilus_armor"
+    ],
+    "gray_glazed_terracotta": [
+      "gray_terracotta"
+    ],
+    "green_dye": [
+      "cactus"
+    ],
+    "green_glazed_terracotta": [
+      "green_terracotta"
+    ],
+    "iron_ingot": [
+      "deepslate_iron_ore",
+      "iron_ore",
+      "raw_iron"
+    ],
+    "iron_nugget": [
+      "iron_pickaxe",
+      "iron_shovel",
+      "iron_axe",
+      "iron_hoe",
+      "iron_sword",
+      "iron_spear",
+      "iron_helmet",
+      "iron_chestplate",
+      "iron_leggings",
+      "iron_boots",
+      "iron_horse_armor",
+      "chainmail_helmet",
+      "chainmail_chestplate",
+      "chainmail_leggings",
+      "chainmail_boots",
+      "iron_nautilus_armor"
+    ],
+    "lapis_lazuli": [
+      "deepslate_lapis_ore",
+      "lapis_ore"
+    ],
+    "leaf_litter": [
+      "jungle_leaves",
+      "oak_leaves",
+      "spruce_leaves",
+      "pale_oak_leaves",
+      "dark_oak_leaves",
+      "acacia_leaves",
+      "birch_leaves",
+      "azalea_leaves",
+      "flowering_azalea_leaves",
+      "mangrove_leaves",
+      "cherry_leaves"
+    ],
+    "light_blue_glazed_terracotta": [
+      "light_blue_terracotta"
+    ],
+    "light_gray_glazed_terracotta": [
+      "light_gray_terracotta"
+    ],
+    "lime_dye": [
+      "sea_pickle"
+    ],
+    "lime_glazed_terracotta": [
+      "lime_terracotta"
+    ],
+    "magenta_glazed_terracotta": [
+      "magenta_terracotta"
+    ],
+    "nether_brick": [
+      "netherrack"
+    ],
+    "netherite_scrap": [
+      "ancient_debris"
+    ],
+    "orange_glazed_terracotta": [
+      "orange_terracotta"
+    ],
+    "pink_glazed_terracotta": [
+      "pink_terracotta"
+    ],
+    "popped_chorus_fruit": [
+      "chorus_fruit"
+    ],
+    "purple_glazed_terracotta": [
+      "purple_terracotta"
+    ],
+    "quartz": [
+      "nether_quartz_ore"
+    ],
+    "red_glazed_terracotta": [
+      "red_terracotta"
+    ],
+    "redstone": [
+      "deepslate_redstone_ore",
+      "redstone_ore"
+    ],
+    "resin_brick": [
+      "resin_clump"
+    ],
+    "smooth_basalt": [
+      "basalt"
+    ],
+    "smooth_quartz": [
+      "quartz_block"
+    ],
+    "smooth_red_sandstone": [
+      "red_sandstone"
+    ],
+    "smooth_sandstone": [
+      "sandstone"
+    ],
+    "smooth_stone": [
+      "stone"
+    ],
+    "sponge": [
+      "wet_sponge"
+    ],
+    "stone": [
+      "cobblestone"
+    ],
+    "terracotta": [
+      "clay"
+    ],
+    "white_glazed_terracotta": [
+      "white_terracotta"
+    ],
+    "yellow_glazed_terracotta": [
+      "yellow_terracotta"
+    ]
+  },
+  "smithing": {
+    "netherite_axe": [
+      {
+        "base": "diamond_axe",
+        "addition": "netherite_ingot",
+        "template": "netherite_upgrade_smithing_template"
+      }
+    ],
+    "netherite_boots": [
+      {
+        "base": "diamond_boots",
+        "addition": "netherite_ingot",
+        "template": "netherite_upgrade_smithing_template"
+      }
+    ],
+    "netherite_chestplate": [
+      {
+        "base": "diamond_chestplate",
+        "addition": "netherite_ingot",
+        "template": "netherite_upgrade_smithing_template"
+      }
+    ],
+    "netherite_helmet": [
+      {
+        "base": "diamond_helmet",
+        "addition": "netherite_ingot",
+        "template": "netherite_upgrade_smithing_template"
+      }
+    ],
+    "netherite_hoe": [
+      {
+        "base": "diamond_hoe",
+        "addition": "netherite_ingot",
+        "template": "netherite_upgrade_smithing_template"
+      }
+    ],
+    "netherite_horse_armor": [
+      {
+        "base": "diamond_horse_armor",
+        "addition": "netherite_ingot",
+        "template": "netherite_upgrade_smithing_template"
+      }
+    ],
+    "netherite_leggings": [
+      {
+        "base": "diamond_leggings",
+        "addition": "netherite_ingot",
+        "template": "netherite_upgrade_smithing_template"
+      }
+    ],
+    "netherite_nautilus_armor": [
+      {
+        "base": "diamond_nautilus_armor",
+        "addition": "netherite_ingot",
+        "template": "netherite_upgrade_smithing_template"
+      }
+    ],
+    "netherite_pickaxe": [
+      {
+        "base": "diamond_pickaxe",
+        "addition": "netherite_ingot",
+        "template": "netherite_upgrade_smithing_template"
+      }
+    ],
+    "netherite_shovel": [
+      {
+        "base": "diamond_shovel",
+        "addition": "netherite_ingot",
+        "template": "netherite_upgrade_smithing_template"
+      }
+    ],
+    "netherite_spear": [
+      {
+        "base": "diamond_spear",
+        "addition": "netherite_ingot",
+        "template": "netherite_upgrade_smithing_template"
+      }
+    ],
+    "netherite_sword": [
+      {
+        "base": "diamond_sword",
+        "addition": "netherite_ingot",
+        "template": "netherite_upgrade_smithing_template"
+      }
+    ]
+  },
+  "other": {
+    "andesite_slab": [
+      "stonecutting"
+    ],
+    "andesite_stairs": [
+      "stonecutting"
+    ],
+    "andesite_wall": [
+      "stonecutting"
+    ],
+    "baked_potato": [
+      "campfire_cooking",
+      "smoking"
+    ],
+    "blackstone_slab": [
+      "stonecutting"
+    ],
+    "blackstone_stairs": [
+      "stonecutting"
+    ],
+    "blackstone_wall": [
+      "stonecutting"
+    ],
+    "brick_slab": [
+      "stonecutting"
+    ],
+    "brick_stairs": [
+      "stonecutting"
+    ],
+    "brick_wall": [
+      "stonecutting"
+    ],
+    "chiseled_copper": [
+      "stonecutting"
+    ],
+    "chiseled_deepslate": [
+      "stonecutting"
+    ],
+    "chiseled_nether_bricks": [
+      "stonecutting"
+    ],
+    "chiseled_polished_blackstone": [
+      "stonecutting"
+    ],
+    "chiseled_quartz_block": [
+      "stonecutting"
+    ],
+    "chiseled_red_sandstone": [
+      "stonecutting"
+    ],
+    "chiseled_resin_bricks": [
+      "stonecutting"
+    ],
+    "chiseled_sandstone": [
+      "stonecutting"
+    ],
+    "chiseled_stone_bricks": [
+      "stonecutting"
+    ],
+    "chiseled_tuff_bricks": [
+      "stonecutting"
+    ],
+    "chiseled_tuff": [
+      "stonecutting"
+    ],
+    "coal": [
+      "blasting"
+    ],
+    "cobbled_deepslate_slab": [
+      "stonecutting"
+    ],
+    "cobbled_deepslate_stairs": [
+      "stonecutting"
+    ],
+    "cobbled_deepslate_wall": [
+      "stonecutting"
+    ],
+    "cobblestone_slab": [
+      "stonecutting"
+    ],
+    "cobblestone_stairs": [
+      "stonecutting"
+    ],
+    "cobblestone_wall": [
+      "stonecutting"
+    ],
+    "cooked_beef": [
+      "campfire_cooking",
+      "smoking"
+    ],
+    "cooked_chicken": [
+      "campfire_cooking",
+      "smoking"
+    ],
+    "cooked_cod": [
+      "campfire_cooking",
+      "smoking"
+    ],
+    "cooked_mutton": [
+      "campfire_cooking",
+      "smoking"
+    ],
+    "cooked_porkchop": [
+      "campfire_cooking",
+      "smoking"
+    ],
+    "cooked_rabbit": [
+      "campfire_cooking",
+      "smoking"
+    ],
+    "cooked_salmon": [
+      "campfire_cooking",
+      "smoking"
+    ],
+    "copper_grate": [
+      "stonecutting"
+    ],
+    "copper_ingot": [
+      "blasting"
+    ],
+    "copper_nugget": [
+      "blasting"
+    ],
+    "cut_copper": [
+      "stonecutting"
+    ],
+    "cut_copper_slab": [
+      "stonecutting"
+    ],
+    "cut_copper_stairs": [
+      "stonecutting"
+    ],
+    "cut_red_sandstone": [
+      "stonecutting"
+    ],
+    "cut_red_sandstone_slab": [
+      "stonecutting"
+    ],
+    "cut_sandstone": [
+      "stonecutting"
+    ],
+    "cut_sandstone_slab": [
+      "stonecutting"
+    ],
+    "dark_prismarine_slab": [
+      "stonecutting"
+    ],
+    "dark_prismarine_stairs": [
+      "stonecutting"
+    ],
+    "deepslate_brick_slab": [
+      "stonecutting"
+    ],
+    "deepslate_brick_stairs": [
+      "stonecutting"
+    ],
+    "deepslate_brick_wall": [
+      "stonecutting"
+    ],
+    "deepslate_bricks": [
+      "stonecutting"
+    ],
+    "deepslate_tile_slab": [
+      "stonecutting"
+    ],
+    "deepslate_tile_stairs": [
+      "stonecutting"
+    ],
+    "deepslate_tile_wall": [
+      "stonecutting"
+    ],
+    "deepslate_tiles": [
+      "stonecutting"
+    ],
+    "diamond": [
+      "blasting"
+    ],
+    "diorite_slab": [
+      "stonecutting"
+    ],
+    "diorite_stairs": [
+      "stonecutting"
+    ],
+    "diorite_wall": [
+      "stonecutting"
+    ],
+    "dried_kelp": [
+      "campfire_cooking",
+      "smoking"
+    ],
+    "emerald": [
+      "blasting"
+    ],
+    "end_stone_brick_slab": [
+      "stonecutting"
+    ],
+    "end_stone_brick_stairs": [
+      "stonecutting"
+    ],
+    "end_stone_brick_wall": [
+      "stonecutting"
+    ],
+    "end_stone_bricks": [
+      "stonecutting"
+    ],
+    "exposed_chiseled_copper": [
+      "stonecutting"
+    ],
+    "exposed_copper_grate": [
+      "stonecutting"
+    ],
+    "exposed_cut_copper": [
+      "stonecutting"
+    ],
+    "exposed_cut_copper_slab": [
+      "stonecutting"
+    ],
+    "exposed_cut_copper_stairs": [
+      "stonecutting"
+    ],
+    "gold_ingot": [
+      "blasting"
+    ],
+    "gold_nugget": [
+      "blasting"
+    ],
+    "granite_slab": [
+      "stonecutting"
+    ],
+    "granite_stairs": [
+      "stonecutting"
+    ],
+    "granite_wall": [
+      "stonecutting"
+    ],
+    "iron_ingot": [
+      "blasting"
+    ],
+    "iron_nugget": [
+      "blasting"
+    ],
+    "lapis_lazuli": [
+      "blasting"
+    ],
+    "mossy_cobblestone_slab": [
+      "stonecutting"
+    ],
+    "mossy_cobblestone_stairs": [
+      "stonecutting"
+    ],
+    "mossy_cobblestone_wall": [
+      "stonecutting"
+    ],
+    "mossy_stone_brick_slab": [
+      "stonecutting"
+    ],
+    "mossy_stone_brick_stairs": [
+      "stonecutting"
+    ],
+    "mossy_stone_brick_wall": [
+      "stonecutting"
+    ],
+    "mud_brick_slab": [
+      "stonecutting"
+    ],
+    "mud_brick_stairs": [
+      "stonecutting"
+    ],
+    "mud_brick_wall": [
+      "stonecutting"
+    ],
+    "nether_brick_slab": [
+      "stonecutting"
+    ],
+    "nether_brick_stairs": [
+      "stonecutting"
+    ],
+    "nether_brick_wall": [
+      "stonecutting"
+    ],
+    "netherite_scrap": [
+      "blasting"
+    ],
+    "oxidized_chiseled_copper": [
+      "stonecutting"
+    ],
+    "oxidized_copper_grate": [
+      "stonecutting"
+    ],
+    "oxidized_cut_copper": [
+      "stonecutting"
+    ],
+    "oxidized_cut_copper_slab": [
+      "stonecutting"
+    ],
+    "oxidized_cut_copper_stairs": [
+      "stonecutting"
+    ],
+    "polished_andesite": [
+      "stonecutting"
+    ],
+    "polished_andesite_slab": [
+      "stonecutting"
+    ],
+    "polished_andesite_stairs": [
+      "stonecutting"
+    ],
+    "polished_basalt": [
+      "stonecutting"
+    ],
+    "polished_blackstone_brick_slab": [
+      "stonecutting"
+    ],
+    "polished_blackstone_brick_stairs": [
+      "stonecutting"
+    ],
+    "polished_blackstone_brick_wall": [
+      "stonecutting"
+    ],
+    "polished_blackstone_bricks": [
+      "stonecutting"
+    ],
+    "polished_blackstone": [
+      "stonecutting"
+    ],
+    "polished_blackstone_slab": [
+      "stonecutting"
+    ],
+    "polished_blackstone_stairs": [
+      "stonecutting"
+    ],
+    "polished_blackstone_wall": [
+      "stonecutting"
+    ],
+    "polished_deepslate": [
+      "stonecutting"
+    ],
+    "polished_deepslate_slab": [
+      "stonecutting"
+    ],
+    "polished_deepslate_stairs": [
+      "stonecutting"
+    ],
+    "polished_deepslate_wall": [
+      "stonecutting"
+    ],
+    "polished_diorite": [
+      "stonecutting"
+    ],
+    "polished_diorite_slab": [
+      "stonecutting"
+    ],
+    "polished_diorite_stairs": [
+      "stonecutting"
+    ],
+    "polished_granite": [
+      "stonecutting"
+    ],
+    "polished_granite_slab": [
+      "stonecutting"
+    ],
+    "polished_granite_stairs": [
+      "stonecutting"
+    ],
+    "polished_tuff": [
+      "stonecutting"
+    ],
+    "polished_tuff_slab": [
+      "stonecutting"
+    ],
+    "polished_tuff_stairs": [
+      "stonecutting"
+    ],
+    "polished_tuff_wall": [
+      "stonecutting"
+    ],
+    "prismarine_brick_slab": [
+      "stonecutting"
+    ],
+    "prismarine_brick_stairs": [
+      "stonecutting"
+    ],
+    "prismarine_slab": [
+      "stonecutting"
+    ],
+    "prismarine_stairs": [
+      "stonecutting"
+    ],
+    "prismarine_wall": [
+      "stonecutting"
+    ],
+    "purpur_pillar": [
+      "stonecutting"
+    ],
+    "purpur_slab": [
+      "stonecutting"
+    ],
+    "purpur_stairs": [
+      "stonecutting"
+    ],
+    "quartz_bricks": [
+      "stonecutting"
+    ],
+    "quartz": [
+      "blasting"
+    ],
+    "quartz_pillar": [
+      "stonecutting"
+    ],
+    "quartz_slab": [
+      "stonecutting"
+    ],
+    "quartz_stairs": [
+      "stonecutting"
+    ],
+    "red_nether_brick_slab": [
+      "stonecutting"
+    ],
+    "red_nether_brick_stairs": [
+      "stonecutting"
+    ],
+    "red_nether_brick_wall": [
+      "stonecutting"
+    ],
+    "red_sandstone_slab": [
+      "stonecutting"
+    ],
+    "red_sandstone_stairs": [
+      "stonecutting"
+    ],
+    "red_sandstone_wall": [
+      "stonecutting"
+    ],
+    "redstone": [
+      "blasting"
+    ],
+    "resin_brick_slab": [
+      "stonecutting"
+    ],
+    "resin_brick_stairs": [
+      "stonecutting"
+    ],
+    "resin_brick_wall": [
+      "stonecutting"
+    ],
+    "sandstone_slab": [
+      "stonecutting"
+    ],
+    "sandstone_stairs": [
+      "stonecutting"
+    ],
+    "sandstone_wall": [
+      "stonecutting"
+    ],
+    "smooth_quartz_slab": [
+      "stonecutting"
+    ],
+    "smooth_quartz_stairs": [
+      "stonecutting"
+    ],
+    "smooth_red_sandstone_slab": [
+      "stonecutting"
+    ],
+    "smooth_red_sandstone_stairs": [
+      "stonecutting"
+    ],
+    "smooth_sandstone_slab": [
+      "stonecutting"
+    ],
+    "smooth_sandstone_stairs": [
+      "stonecutting"
+    ],
+    "smooth_stone_slab": [
+      "stonecutting"
+    ],
+    "stone_brick_slab": [
+      "stonecutting"
+    ],
+    "stone_brick_stairs": [
+      "stonecutting"
+    ],
+    "stone_brick_wall": [
+      "stonecutting"
+    ],
+    "stone_bricks": [
+      "stonecutting"
+    ],
+    "stone_slab": [
+      "stonecutting"
+    ],
+    "stone_stairs": [
+      "stonecutting"
+    ],
+    "tuff_brick_slab": [
+      "stonecutting"
+    ],
+    "tuff_brick_stairs": [
+      "stonecutting"
+    ],
+    "tuff_brick_wall": [
+      "stonecutting"
+    ],
+    "tuff_bricks": [
+      "stonecutting"
+    ],
+    "tuff_slab": [
+      "stonecutting"
+    ],
+    "tuff_stairs": [
+      "stonecutting"
+    ],
+    "tuff_wall": [
+      "stonecutting"
+    ],
+    "waxed_chiseled_copper": [
+      "stonecutting"
+    ],
+    "waxed_copper_grate": [
+      "stonecutting"
+    ],
+    "waxed_cut_copper": [
+      "stonecutting"
+    ],
+    "waxed_cut_copper_slab": [
+      "stonecutting"
+    ],
+    "waxed_cut_copper_stairs": [
+      "stonecutting"
+    ],
+    "waxed_exposed_chiseled_copper": [
+      "stonecutting"
+    ],
+    "waxed_exposed_copper_grate": [
+      "stonecutting"
+    ],
+    "waxed_exposed_cut_copper": [
+      "stonecutting"
+    ],
+    "waxed_exposed_cut_copper_slab": [
+      "stonecutting"
+    ],
+    "waxed_exposed_cut_copper_stairs": [
+      "stonecutting"
+    ],
+    "waxed_oxidized_chiseled_copper": [
+      "stonecutting"
+    ],
+    "waxed_oxidized_copper_grate": [
+      "stonecutting"
+    ],
+    "waxed_oxidized_cut_copper": [
+      "stonecutting"
+    ],
+    "waxed_oxidized_cut_copper_slab": [
+      "stonecutting"
+    ],
+    "waxed_oxidized_cut_copper_stairs": [
+      "stonecutting"
+    ],
+    "waxed_weathered_chiseled_copper": [
+      "stonecutting"
+    ],
+    "waxed_weathered_copper_grate": [
+      "stonecutting"
+    ],
+    "waxed_weathered_cut_copper": [
+      "stonecutting"
+    ],
+    "waxed_weathered_cut_copper_slab": [
+      "stonecutting"
+    ],
+    "waxed_weathered_cut_copper_stairs": [
+      "stonecutting"
+    ],
+    "weathered_chiseled_copper": [
+      "stonecutting"
+    ],
+    "weathered_copper_grate": [
+      "stonecutting"
+    ],
+    "weathered_cut_copper": [
+      "stonecutting"
+    ],
+    "weathered_cut_copper_slab": [
+      "stonecutting"
+    ],
+    "weathered_cut_copper_stairs": [
+      "stonecutting"
+    ]
+  },
+  "chestSources": {
+    "golden_apple": [
+      "chests/abandoned_mineshaft",
+      "chests/bastion_hoglin_stable",
+      "chests/bastion_other",
+      "chests/desert_pyramid",
+      "chests/igloo_chest",
+      "chests/ruined_portal",
+      "chests/simple_dungeon",
+      "chests/stronghold_corridor",
+      "chests/trial_chambers/reward_ominous_rare",
+      "chests/trial_chambers/reward_unique",
+      "chests/underwater_ruin_big",
+      "chests/woodland_mansion"
+    ],
+    "enchanted_golden_apple": [
+      "chests/abandoned_mineshaft",
+      "chests/ancient_city",
+      "chests/bastion_treasure",
+      "chests/desert_pyramid",
+      "chests/ruined_portal",
+      "chests/simple_dungeon",
+      "chests/trial_chambers/reward_ominous_unique",
+      "chests/woodland_mansion"
+    ],
+    "name_tag": [
+      "chests/abandoned_mineshaft",
+      "chests/ancient_city",
+      "chests/simple_dungeon",
+      "chests/woodland_mansion"
+    ],
+    "book": [
+      "chests/abandoned_mineshaft",
+      "chests/ancient_city",
+      "chests/bastion_other",
+      "chests/desert_pyramid",
+      "chests/jungle_temple",
+      "chests/pillager_outpost",
+      "chests/shipwreck_map",
+      "chests/simple_dungeon",
+      "chests/stronghold_corridor",
+      "chests/stronghold_crossing",
+      "chests/stronghold_library",
+      "chests/trial_chambers/reward_ominous_rare",
+      "chests/trial_chambers/reward_rare",
+      "chests/underwater_ruin_big",
+      "chests/village/village_desert_house",
+      "chests/village/village_plains_house",
+      "chests/woodland_mansion"
+    ],
+    "iron_pickaxe": [
+      "chests/abandoned_mineshaft",
+      "chests/end_city_treasure",
+      "chests/stronghold_corridor",
+      "chests/stronghold_crossing",
+      "chests/village/village_toolsmith",
+      "chests/village/village_weaponsmith"
+    ],
+    "iron_ingot": [
+      "chests/abandoned_mineshaft",
+      "chests/bastion_bridge",
+      "chests/bastion_other",
+      "chests/bastion_treasure",
+      "chests/buried_treasure",
+      "chests/desert_pyramid",
+      "chests/end_city_treasure",
+      "chests/jungle_temple",
+      "chests/nether_bridge",
+      "chests/pillager_outpost",
+      "chests/shipwreck_treasure",
+      "chests/simple_dungeon",
+      "chests/stronghold_corridor",
+      "chests/stronghold_crossing",
+      "chests/trial_chambers/reward_common",
+      "chests/village/village_armorer",
+      "chests/village/village_toolsmith",
+      "chests/village/village_weaponsmith",
+      "chests/woodland_mansion"
+    ],
+    "gold_ingot": [
+      "chests/abandoned_mineshaft",
+      "chests/bastion_bridge",
+      "chests/bastion_other",
+      "chests/bastion_treasure",
+      "chests/buried_treasure",
+      "chests/desert_pyramid",
+      "chests/end_city_treasure",
+      "chests/jungle_temple",
+      "chests/nether_bridge",
+      "chests/ruined_portal",
+      "chests/shipwreck_treasure",
+      "chests/simple_dungeon",
+      "chests/stronghold_corridor",
+      "chests/stronghold_crossing",
+      "chests/village/village_temple",
+      "chests/village/village_toolsmith",
+      "chests/village/village_weaponsmith",
+      "chests/woodland_mansion"
+    ],
+    "redstone": [
+      "chests/abandoned_mineshaft",
+      "chests/simple_dungeon",
+      "chests/stronghold_corridor",
+      "chests/stronghold_crossing",
+      "chests/village/village_temple",
+      "chests/woodland_mansion"
+    ],
+    "lapis_lazuli": [
+      "chests/abandoned_mineshaft",
+      "chests/shipwreck_treasure",
+      "chests/village/village_temple"
+    ],
+    "diamond": [
+      "chests/abandoned_mineshaft",
+      "chests/bastion_treasure",
+      "chests/buried_treasure",
+      "chests/desert_pyramid",
+      "chests/end_city_treasure",
+      "chests/jungle_temple",
+      "chests/nether_bridge",
+      "chests/shipwreck_treasure",
+      "chests/stronghold_corridor",
+      "chests/trial_chambers/intersection",
+      "chests/trial_chambers/intersection_barrel",
+      "chests/trial_chambers/reward_common",
+      "chests/trial_chambers/reward_ominous_common",
+      "chests/village/village_toolsmith",
+      "chests/village/village_weaponsmith"
+    ],
+    "coal": [
+      "chests/abandoned_mineshaft",
+      "chests/ancient_city",
+      "chests/igloo_chest",
+      "chests/shipwreck_supply",
+      "chests/simple_dungeon",
+      "chests/stronghold_crossing",
+      "chests/underwater_ruin_big",
+      "chests/underwater_ruin_small",
+      "chests/village/village_butcher",
+      "chests/village/village_fisher",
+      "chests/village/village_snowy_house",
+      "chests/village/village_toolsmith",
+      "chests/woodland_mansion"
+    ],
+    "bread": [
+      "chests/abandoned_mineshaft",
+      "chests/simple_dungeon",
+      "chests/spawn_bonus_chest",
+      "chests/stronghold_corridor",
+      "chests/stronghold_crossing",
+      "chests/village/village_armorer",
+      "chests/village/village_cartographer",
+      "chests/village/village_desert_house",
+      "chests/village/village_mason",
+      "chests/village/village_plains_house",
+      "chests/village/village_savanna_house",
+      "chests/village/village_snowy_house",
+      "chests/village/village_taiga_house",
+      "chests/village/village_tannery",
+      "chests/village/village_temple",
+      "chests/village/village_toolsmith",
+      "chests/village/village_weaponsmith",
+      "chests/woodland_mansion"
+    ],
+    "glow_berries": [
+      "chests/abandoned_mineshaft",
+      "chests/ancient_city",
+      "chests/trial_chambers/supply"
+    ],
+    "melon_seeds": [
+      "chests/abandoned_mineshaft",
+      "chests/simple_dungeon",
+      "chests/woodland_mansion"
+    ],
+    "pumpkin_seeds": [
+      "chests/abandoned_mineshaft",
+      "chests/simple_dungeon",
+      "chests/village/village_taiga_house",
+      "chests/woodland_mansion"
+    ],
+    "beetroot_seeds": [
+      "chests/abandoned_mineshaft",
+      "chests/end_city_treasure",
+      "chests/simple_dungeon",
+      "chests/village/village_snowy_house",
+      "chests/woodland_mansion"
+    ],
+    "rail": [
+      "chests/abandoned_mineshaft"
+    ],
+    "powered_rail": [
+      "chests/abandoned_mineshaft"
+    ],
+    "detector_rail": [
+      "chests/abandoned_mineshaft"
+    ],
+    "activator_rail": [
+      "chests/abandoned_mineshaft"
+    ],
+    "torch": [
+      "chests/abandoned_mineshaft",
+      "chests/trial_chambers/corridor",
+      "chests/trial_chambers/supply",
+      "chests/village/village_savanna_house"
+    ],
+    "music_disc_otherside": [
+      "chests/ancient_city",
+      "chests/simple_dungeon",
+      "chests/stronghold_corridor"
+    ],
+    "compass": [
+      "chests/ancient_city",
+      "chests/shipwreck_map",
+      "chests/stronghold_library",
+      "chests/trial_chambers/intersection_barrel",
+      "chests/village/village_cartographer"
+    ],
+    "sculk_catalyst": [
+      "chests/ancient_city"
+    ],
+    "diamond_hoe": [
+      "chests/ancient_city",
+      "chests/woodland_mansion"
+    ],
+    "lead": [
+      "chests/ancient_city",
+      "chests/woodland_mansion"
+    ],
+    "diamond_horse_armor": [
+      "chests/ancient_city",
+      "chests/desert_pyramid",
+      "chests/end_city_treasure",
+      "chests/jungle_temple",
+      "chests/nether_bridge",
+      "chests/simple_dungeon",
+      "chests/stronghold_corridor",
+      "chests/village/village_weaponsmith"
+    ],
+    "leather": [
+      "chests/ancient_city",
+      "chests/bastion_bridge",
+      "chests/bastion_hoglin_stable",
+      "chests/desert_pyramid",
+      "chests/jungle_temple",
+      "chests/simple_dungeon",
+      "chests/stronghold_corridor",
+      "chests/village/village_tannery"
+    ],
+    "music_disc_13": [
+      "chests/ancient_city",
+      "chests/simple_dungeon",
+      "chests/woodland_mansion"
+    ],
+    "music_disc_cat": [
+      "chests/ancient_city",
+      "chests/simple_dungeon",
+      "chests/woodland_mansion"
+    ],
+    "diamond_leggings": [
+      "chests/ancient_city",
+      "chests/bastion_treasure",
+      "chests/end_city_treasure"
+    ],
+    "sculk": [
+      "chests/ancient_city"
+    ],
+    "sculk_sensor": [
+      "chests/ancient_city"
+    ],
+    "candle": [
+      "chests/ancient_city"
+    ],
+    "amethyst_shard": [
+      "chests/ancient_city",
+      "chests/trial_chambers/intersection"
+    ],
+    "experience_bottle": [
+      "chests/ancient_city",
+      "chests/pillager_outpost",
+      "chests/shipwreck_treasure"
+    ],
+    "iron_leggings": [
+      "chests/ancient_city",
+      "chests/end_city_treasure",
+      "chests/stronghold_corridor",
+      "chests/village/village_weaponsmith"
+    ],
+    "echo_shard": [
+      "chests/ancient_city"
+    ],
+    "disc_fragment_5": [
+      "chests/ancient_city"
+    ],
+    "potion": [
+      "chests/ancient_city",
+      "chests/buried_treasure",
+      "chests/trial_chambers/supply"
+    ],
+    "bone": [
+      "chests/ancient_city",
+      "chests/desert_pyramid",
+      "chests/jungle_temple",
+      "chests/simple_dungeon",
+      "chests/woodland_mansion"
+    ],
+    "soul_torch": [
+      "chests/ancient_city"
+    ],
+    "ward_armor_trim_smithing_template": [
+      "chests/ancient_city"
+    ],
+    "silence_armor_trim_smithing_template": [
+      "chests/ancient_city"
+    ],
+    "suspicious_stew": [
+      "chests/ancient_city_ice_box",
+      "chests/shipwreck_supply"
+    ],
+    "golden_carrot": [
+      "chests/ancient_city_ice_box",
+      "chests/bastion_hoglin_stable",
+      "chests/bastion_other",
+      "chests/ruined_portal",
+      "chests/trial_chambers/reward_rare"
+    ],
+    "baked_potato": [
+      "chests/ancient_city_ice_box",
+      "chests/trial_chambers/intersection_barrel",
+      "chests/trial_chambers/supply"
+    ],
+    "packed_ice": [
+      "chests/ancient_city_ice_box"
+    ],
+    "snowball": [
+      "chests/ancient_city_ice_box",
+      "chests/village/village_snowy_house"
+    ],
+    "lodestone": [
+      "chests/bastion_bridge",
+      "chests/ruined_portal"
+    ],
+    "crossbow": [
+      "chests/bastion_bridge",
+      "chests/bastion_other",
+      "chests/pillager_outpost",
+      "chests/trial_chambers/reward_ominous_rare",
+      "chests/trial_chambers/reward_rare"
+    ],
+    "spectral_arrow": [
+      "chests/bastion_bridge",
+      "chests/bastion_other",
+      "chests/bastion_treasure"
+    ],
+    "gilded_blackstone": [
+      "chests/bastion_bridge",
+      "chests/bastion_hoglin_stable",
+      "chests/bastion_other",
+      "chests/bastion_treasure"
+    ],
+    "crying_obsidian": [
+      "chests/bastion_bridge",
+      "chests/bastion_hoglin_stable",
+      "chests/bastion_other",
+      "chests/bastion_treasure"
+    ],
+    "gold_block": [
+      "chests/bastion_bridge",
+      "chests/bastion_hoglin_stable",
+      "chests/bastion_other",
+      "chests/bastion_treasure",
+      "chests/ruined_portal"
+    ],
+    "golden_sword": [
+      "chests/bastion_bridge",
+      "chests/bastion_other",
+      "chests/nether_bridge",
+      "chests/ruined_portal"
+    ],
+    "golden_chestplate": [
+      "chests/bastion_bridge",
+      "chests/bastion_other",
+      "chests/nether_bridge",
+      "chests/ruined_portal"
+    ],
+    "golden_helmet": [
+      "chests/bastion_bridge",
+      "chests/bastion_other",
+      "chests/ruined_portal",
+      "chests/underwater_ruin_big",
+      "chests/underwater_ruin_small"
+    ],
+    "golden_leggings": [
+      "chests/bastion_bridge",
+      "chests/bastion_other",
+      "chests/ruined_portal"
+    ],
+    "golden_boots": [
+      "chests/bastion_bridge",
+      "chests/bastion_other",
+      "chests/ruined_portal"
+    ],
+    "golden_axe": [
+      "chests/bastion_bridge",
+      "chests/bastion_hoglin_stable",
+      "chests/bastion_other",
+      "chests/ruined_portal",
+      "chests/trial_chambers/intersection_barrel"
+    ],
+    "string": [
+      "chests/bastion_bridge",
+      "chests/bastion_hoglin_stable",
+      "chests/bastion_other",
+      "chests/desert_pyramid",
+      "chests/pillager_outpost",
+      "chests/simple_dungeon",
+      "chests/woodland_mansion"
+    ],
+    "arrow": [
+      "chests/bastion_bridge",
+      "chests/bastion_hoglin_stable",
+      "chests/bastion_other",
+      "chests/jungle_temple_dispenser",
+      "chests/pillager_outpost",
+      "chests/trial_chambers/entrance",
+      "chests/trial_chambers/reward_common",
+      "chests/trial_chambers/supply",
+      "chests/village/village_fletcher"
+    ],
+    "iron_nugget": [
+      "chests/bastion_bridge",
+      "chests/bastion_other",
+      "chests/ruined_portal",
+      "chests/shipwreck_treasure",
+      "chests/village/village_taiga_house"
+    ],
+    "gold_nugget": [
+      "chests/bastion_bridge",
+      "chests/bastion_hoglin_stable",
+      "chests/bastion_other",
+      "chests/igloo_chest",
+      "chests/ruined_portal",
+      "chests/shipwreck_treasure",
+      "chests/underwater_ruin_big",
+      "chests/village/village_plains_house",
+      "chests/village/village_savanna_house"
+    ],
+    "snout_armor_trim_smithing_template": [
+      "chests/bastion_bridge",
+      "chests/bastion_hoglin_stable",
+      "chests/bastion_other",
+      "chests/bastion_treasure"
+    ],
+    "netherite_upgrade_smithing_template": [
+      "chests/bastion_bridge",
+      "chests/bastion_hoglin_stable",
+      "chests/bastion_other",
+      "chests/bastion_treasure"
+    ],
+    "diamond_shovel": [
+      "chests/bastion_hoglin_stable",
+      "chests/bastion_other",
+      "chests/end_city_treasure"
+    ],
+    "diamond_pickaxe": [
+      "chests/bastion_hoglin_stable",
+      "chests/bastion_other",
+      "chests/end_city_treasure",
+      "chests/trial_chambers/intersection",
+      "chests/trial_chambers/intersection_barrel"
+    ],
+    "netherite_scrap": [
+      "chests/bastion_hoglin_stable",
+      "chests/bastion_other",
+      "chests/bastion_treasure"
+    ],
+    "ancient_debris": [
+      "chests/bastion_hoglin_stable",
+      "chests/bastion_other",
+      "chests/bastion_treasure"
+    ],
+    "saddle": [
+      "chests/bastion_hoglin_stable",
+      "chests/end_city_treasure",
+      "chests/nether_bridge",
+      "chests/village/village_savanna_house",
+      "chests/village/village_tannery",
+      "chests/village/village_weaponsmith"
+    ],
+    "glowstone": [
+      "chests/bastion_hoglin_stable"
+    ],
+    "soul_sand": [
+      "chests/bastion_hoglin_stable"
+    ],
+    "crimson_nylium": [
+      "chests/bastion_hoglin_stable"
+    ],
+    "porkchop": [
+      "chests/bastion_hoglin_stable",
+      "chests/village/village_butcher"
+    ],
+    "cooked_porkchop": [
+      "chests/bastion_hoglin_stable",
+      "chests/bastion_other"
+    ],
+    "crimson_fungus": [
+      "chests/bastion_hoglin_stable"
+    ],
+    "crimson_roots": [
+      "chests/bastion_hoglin_stable"
+    ],
+    "piglin_banner_pattern": [
+      "chests/bastion_other"
+    ],
+    "music_disc_pigstep": [
+      "chests/bastion_other"
+    ],
+    "iron_sword": [
+      "chests/bastion_other",
+      "chests/buried_treasure",
+      "chests/end_city_treasure",
+      "chests/stronghold_corridor",
+      "chests/village/village_weaponsmith"
+    ],
+    "iron_block": [
+      "chests/bastion_other",
+      "chests/bastion_treasure",
+      "chests/trial_chambers/intersection",
+      "chests/trial_chambers/reward_ominous_rare"
+    ],
+    "iron_chain": [
+      "chests/bastion_other"
+    ],
+    "magma_cream": [
+      "chests/bastion_other",
+      "chests/bastion_treasure"
+    ],
+    "bone_block": [
+      "chests/bastion_other"
+    ],
+    "obsidian": [
+      "chests/bastion_other",
+      "chests/nether_bridge",
+      "chests/ruined_portal",
+      "chests/village/village_weaponsmith"
+    ],
+    "netherite_ingot": [
+      "chests/bastion_treasure"
+    ],
+    "diamond_sword": [
+      "chests/bastion_treasure",
+      "chests/end_city_treasure"
+    ],
+    "diamond_spear": [
+      "chests/bastion_treasure",
+      "chests/end_city_treasure"
+    ],
+    "diamond_chestplate": [
+      "chests/bastion_treasure",
+      "chests/end_city_treasure",
+      "chests/trial_chambers/reward_ominous_rare",
+      "chests/trial_chambers/reward_rare",
+      "chests/woodland_mansion"
+    ],
+    "diamond_helmet": [
+      "chests/bastion_treasure",
+      "chests/end_city_treasure"
+    ],
+    "diamond_boots": [
+      "chests/bastion_treasure",
+      "chests/end_city_treasure"
+    ],
+    "quartz": [
+      "chests/bastion_treasure"
+    ],
+    "heart_of_the_sea": [
+      "chests/buried_treasure"
+    ],
+    "tnt": [
+      "chests/buried_treasure",
+      "chests/shipwreck_supply"
+    ],
+    "emerald": [
+      "chests/buried_treasure",
+      "chests/desert_pyramid",
+      "chests/end_city_treasure",
+      "chests/igloo_chest",
+      "chests/jungle_temple",
+      "chests/shipwreck_treasure",
+      "chests/trial_chambers/reward_common",
+      "chests/trial_chambers/reward_ominous_common",
+      "chests/trial_chambers/reward_rare",
+      "chests/underwater_ruin_big",
+      "chests/underwater_ruin_small",
+      "chests/village/village_armorer",
+      "chests/village/village_butcher",
+      "chests/village/village_desert_house",
+      "chests/village/village_fisher",
+      "chests/village/village_fletcher",
+      "chests/village/village_mason",
+      "chests/village/village_plains_house",
+      "chests/village/village_savanna_house",
+      "chests/village/village_shepherd",
+      "chests/village/village_snowy_house",
+      "chests/village/village_taiga_house",
+      "chests/village/village_tannery",
+      "chests/village/village_temple"
+    ],
+    "prismarine_crystals": [
+      "chests/buried_treasure"
+    ],
+    "leather_chestplate": [
+      "chests/buried_treasure",
+      "chests/shipwreck_supply",
+      "chests/underwater_ruin_big",
+      "chests/underwater_ruin_small",
+      "chests/village/village_tannery"
+    ],
+    "iron_spear": [
+      "chests/buried_treasure",
+      "chests/village/village_weaponsmith"
+    ],
+    "cooked_cod": [
+      "chests/buried_treasure"
+    ],
+    "cooked_salmon": [
+      "chests/buried_treasure"
+    ],
+    "copper_nautilus_armor": [
+      "chests/buried_treasure",
+      "chests/shipwreck_map",
+      "chests/shipwreck_supply",
+      "chests/shipwreck_treasure",
+      "chests/underwater_ruin_big",
+      "chests/underwater_ruin_small"
+    ],
+    "iron_nautilus_armor": [
+      "chests/buried_treasure",
+      "chests/shipwreck_map",
+      "chests/shipwreck_supply",
+      "chests/shipwreck_treasure",
+      "chests/underwater_ruin_big",
+      "chests/underwater_ruin_small"
+    ],
+    "golden_nautilus_armor": [
+      "chests/buried_treasure",
+      "chests/shipwreck_map",
+      "chests/shipwreck_supply",
+      "chests/shipwreck_treasure",
+      "chests/underwater_ruin_big",
+      "chests/underwater_ruin_small"
+    ],
+    "diamond_nautilus_armor": [
+      "chests/buried_treasure",
+      "chests/shipwreck_map",
+      "chests/shipwreck_supply",
+      "chests/shipwreck_treasure",
+      "chests/underwater_ruin_big",
+      "chests/underwater_ruin_small"
+    ],
+    "spider_eye": [
+      "chests/desert_pyramid"
+    ],
+    "rotten_flesh": [
+      "chests/desert_pyramid",
+      "chests/igloo_chest",
+      "chests/jungle_temple",
+      "chests/shipwreck_supply",
+      "chests/simple_dungeon",
+      "chests/underwater_ruin_small",
+      "chests/village/village_temple",
+      "chests/woodland_mansion"
+    ],
+    "copper_horse_armor": [
+      "chests/desert_pyramid",
+      "chests/end_city_treasure",
+      "chests/jungle_temple",
+      "chests/nether_bridge",
+      "chests/simple_dungeon",
+      "chests/stronghold_corridor",
+      "chests/village/village_weaponsmith"
+    ],
+    "iron_horse_armor": [
+      "chests/desert_pyramid",
+      "chests/end_city_treasure",
+      "chests/jungle_temple",
+      "chests/nether_bridge",
+      "chests/simple_dungeon",
+      "chests/stronghold_corridor",
+      "chests/village/village_weaponsmith"
+    ],
+    "golden_horse_armor": [
+      "chests/desert_pyramid",
+      "chests/end_city_treasure",
+      "chests/jungle_temple",
+      "chests/nether_bridge",
+      "chests/ruined_portal",
+      "chests/simple_dungeon",
+      "chests/stronghold_corridor",
+      "chests/village/village_weaponsmith"
+    ],
+    "gunpowder": [
+      "chests/desert_pyramid",
+      "chests/shipwreck_supply",
+      "chests/simple_dungeon",
+      "chests/woodland_mansion"
+    ],
+    "sand": [
+      "chests/desert_pyramid"
+    ],
+    "dune_armor_trim_smithing_template": [
+      "chests/desert_pyramid"
+    ],
+    "iron_boots": [
+      "chests/end_city_treasure",
+      "chests/stronghold_corridor",
+      "chests/village/village_weaponsmith"
+    ],
+    "iron_chestplate": [
+      "chests/end_city_treasure",
+      "chests/stronghold_corridor",
+      "chests/trial_chambers/reward_rare",
+      "chests/village/village_weaponsmith"
+    ],
+    "iron_helmet": [
+      "chests/end_city_treasure",
+      "chests/stronghold_corridor",
+      "chests/village/village_armorer",
+      "chests/village/village_weaponsmith"
+    ],
+    "iron_shovel": [
+      "chests/end_city_treasure",
+      "chests/village/village_toolsmith"
+    ],
+    "spire_armor_trim_smithing_template": [
+      "chests/end_city_treasure"
+    ],
+    "apple": [
+      "chests/igloo_chest",
+      "chests/spawn_bonus_chest",
+      "chests/stronghold_corridor",
+      "chests/stronghold_crossing",
+      "chests/village/village_plains_house",
+      "chests/village/village_weaponsmith"
+    ],
+    "stone_axe": [
+      "chests/igloo_chest",
+      "chests/spawn_bonus_chest",
+      "chests/trial_chambers/corridor",
+      "chests/underwater_ruin_small"
+    ],
+    "wheat": [
+      "chests/igloo_chest",
+      "chests/pillager_outpost",
+      "chests/shipwreck_supply",
+      "chests/simple_dungeon",
+      "chests/underwater_ruin_big",
+      "chests/underwater_ruin_small",
+      "chests/village/village_butcher",
+      "chests/village/village_desert_house",
+      "chests/village/village_shepherd",
+      "chests/woodland_mansion"
+    ],
+    "bamboo": [
+      "chests/jungle_temple",
+      "chests/shipwreck_supply"
+    ],
+    "wild_armor_trim_smithing_template": [
+      "chests/jungle_temple"
+    ],
+    "flint_and_steel": [
+      "chests/nether_bridge",
+      "chests/ruined_portal"
+    ],
+    "nether_wart": [
+      "chests/nether_bridge"
+    ],
+    "rib_armor_trim_smithing_template": [
+      "chests/nether_bridge"
+    ],
+    "potato": [
+      "chests/pillager_outpost",
+      "chests/shipwreck_supply",
+      "chests/village/village_plains_house",
+      "chests/village/village_snowy_house",
+      "chests/village/village_taiga_house"
+    ],
+    "carrot": [
+      "chests/pillager_outpost",
+      "chests/shipwreck_supply"
+    ],
+    "dark_oak_log": [
+      "chests/pillager_outpost",
+      "chests/spawn_bonus_chest"
+    ],
+    "tripwire_hook": [
+      "chests/pillager_outpost"
+    ],
+    "goat_horn": [
+      "chests/pillager_outpost"
+    ],
+    "sentry_armor_trim_smithing_template": [
+      "chests/pillager_outpost"
+    ],
+    "flint": [
+      "chests/ruined_portal",
+      "chests/village/village_fletcher"
+    ],
+    "fire_charge": [
+      "chests/ruined_portal"
+    ],
+    "golden_hoe": [
+      "chests/ruined_portal"
+    ],
+    "golden_shovel": [
+      "chests/ruined_portal"
+    ],
+    "golden_pickaxe": [
+      "chests/ruined_portal",
+      "chests/trial_chambers/intersection_barrel"
+    ],
+    "glistering_melon_slice": [
+      "chests/ruined_portal"
+    ],
+    "light_weighted_pressure_plate": [
+      "chests/ruined_portal"
+    ],
+    "clock": [
+      "chests/ruined_portal",
+      "chests/shipwreck_map"
+    ],
+    "bell": [
+      "chests/ruined_portal"
+    ],
+    "map": [
+      "chests/shipwreck_map",
+      "chests/stronghold_library",
+      "chests/underwater_ruin_big",
+      "chests/underwater_ruin_small",
+      "chests/village/village_cartographer"
+    ],
+    "paper": [
+      "chests/shipwreck_map",
+      "chests/shipwreck_supply",
+      "chests/stronghold_library",
+      "chests/village/village_cartographer"
+    ],
+    "feather": [
+      "chests/shipwreck_map",
+      "chests/village/village_fletcher",
+      "chests/village/village_plains_house"
+    ],
+    "coast_armor_trim_smithing_template": [
+      "chests/shipwreck_map",
+      "chests/shipwreck_supply",
+      "chests/shipwreck_treasure"
+    ],
+    "moss_block": [
+      "chests/shipwreck_supply",
+      "chests/trial_chambers/supply"
+    ],
+    "poisonous_potato": [
+      "chests/shipwreck_supply"
+    ],
+    "pumpkin": [
+      "chests/shipwreck_supply"
+    ],
+    "leather_helmet": [
+      "chests/shipwreck_supply",
+      "chests/village/village_tannery"
+    ],
+    "leather_leggings": [
+      "chests/shipwreck_supply",
+      "chests/village/village_tannery"
+    ],
+    "leather_boots": [
+      "chests/shipwreck_supply",
+      "chests/village/village_tannery"
+    ],
+    "bucket": [
+      "chests/simple_dungeon",
+      "chests/trial_chambers/intersection_barrel",
+      "chests/village/village_savanna_house",
+      "chests/woodland_mansion"
+    ],
+    "wooden_axe": [
+      "chests/spawn_bonus_chest",
+      "chests/trial_chambers/entrance"
+    ],
+    "stone_pickaxe": [
+      "chests/spawn_bonus_chest",
+      "chests/trial_chambers/corridor",
+      "chests/trial_chambers/supply"
+    ],
+    "wooden_pickaxe": [
+      "chests/spawn_bonus_chest"
+    ],
+    "salmon": [
+      "chests/spawn_bonus_chest",
+      "chests/village/village_fisher"
+    ],
+    "stick": [
+      "chests/spawn_bonus_chest",
+      "chests/trial_chambers/entrance",
+      "chests/village/village_cartographer",
+      "chests/village/village_fletcher",
+      "chests/village/village_toolsmith"
+    ],
+    "oak_planks": [
+      "chests/spawn_bonus_chest"
+    ],
+    "oak_log": [
+      "chests/spawn_bonus_chest"
+    ],
+    "spruce_log": [
+      "chests/spawn_bonus_chest",
+      "chests/village/village_taiga_house"
+    ],
+    "birch_log": [
+      "chests/spawn_bonus_chest"
+    ],
+    "jungle_log": [
+      "chests/spawn_bonus_chest"
+    ],
+    "acacia_log": [
+      "chests/spawn_bonus_chest"
+    ],
+    "mangrove_log": [
+      "chests/spawn_bonus_chest"
+    ],
+    "ender_pearl": [
+      "chests/stronghold_corridor",
+      "chests/trial_chambers/corridor"
+    ],
+    "eye_armor_trim_smithing_template": [
+      "chests/stronghold_corridor",
+      "chests/stronghold_library"
+    ],
+    "iron_axe": [
+      "chests/trial_chambers/corridor",
+      "chests/trial_chambers/reward_rare"
+    ],
+    "honeycomb": [
+      "chests/trial_chambers/corridor",
+      "chests/trial_chambers/entrance"
+    ],
+    "bamboo_hanging_sign": [
+      "chests/trial_chambers/corridor"
+    ],
+    "bamboo_planks": [
+      "chests/trial_chambers/corridor",
+      "chests/trial_chambers/intersection_barrel"
+    ],
+    "scaffolding": [
+      "chests/trial_chambers/corridor"
+    ],
+    "tuff": [
+      "chests/trial_chambers/corridor",
+      "chests/trial_chambers/supply"
+    ],
+    "trial_key": [
+      "chests/trial_chambers/entrance"
+    ],
+    "diamond_block": [
+      "chests/trial_chambers/intersection",
+      "chests/trial_chambers/reward_ominous_rare"
+    ],
+    "emerald_block": [
+      "chests/trial_chambers/intersection",
+      "chests/trial_chambers/reward_ominous_rare"
+    ],
+    "diamond_axe": [
+      "chests/trial_chambers/intersection",
+      "chests/trial_chambers/intersection_barrel",
+      "chests/trial_chambers/reward_ominous_rare",
+      "chests/trial_chambers/reward_rare"
+    ],
+    "cake": [
+      "chests/trial_chambers/intersection"
+    ],
+    "tipped_arrow": [
+      "chests/trial_chambers/reward_common",
+      "chests/trial_chambers/reward_ominous_common",
+      "chests/trial_chambers/supply"
+    ],
+    "wind_charge": [
+      "chests/trial_chambers/reward_common",
+      "chests/trial_chambers/reward_ominous_common"
+    ],
+    "honey_bottle": [
+      "chests/trial_chambers/reward_common"
+    ],
+    "ominous_bottle": [
+      "chests/trial_chambers/reward_common",
+      "chests/trial_chambers/reward_ominous_common"
+    ],
+    "flow_armor_trim_smithing_template": [
+      "chests/trial_chambers/reward_ominous_unique"
+    ],
+    "flow_banner_pattern": [
+      "chests/trial_chambers/reward_ominous_unique"
+    ],
+    "music_disc_creator": [
+      "chests/trial_chambers/reward_ominous_unique"
+    ],
+    "heavy_core": [
+      "chests/trial_chambers/reward_ominous_unique"
+    ],
+    "shield": [
+      "chests/trial_chambers/reward_rare"
+    ],
+    "bow": [
+      "chests/trial_chambers/reward_rare"
+    ],
+    "bolt_armor_trim_smithing_template": [
+      "chests/trial_chambers/reward_unique"
+    ],
+    "guster_banner_pattern": [
+      "chests/trial_chambers/reward_unique"
+    ],
+    "music_disc_precipice": [
+      "chests/trial_chambers/reward_unique"
+    ],
+    "trident": [
+      "chests/trial_chambers/reward_unique"
+    ],
+    "acacia_planks": [
+      "chests/trial_chambers/supply"
+    ],
+    "bone_meal": [
+      "chests/trial_chambers/supply"
+    ],
+    "milk_bucket": [
+      "chests/trial_chambers/supply"
+    ],
+    "stone_spear": [
+      "chests/underwater_ruin_big",
+      "chests/underwater_ruin_small"
+    ],
+    "fishing_rod": [
+      "chests/underwater_ruin_big",
+      "chests/underwater_ruin_small"
+    ],
+    "beef": [
+      "chests/village/village_butcher"
+    ],
+    "mutton": [
+      "chests/village/village_butcher"
+    ],
+    "bundle": [
+      "chests/village/village_cartographer",
+      "chests/village/village_desert_house",
+      "chests/village/village_plains_house",
+      "chests/village/village_savanna_house",
+      "chests/village/village_snowy_house",
+      "chests/village/village_taiga_house",
+      "chests/village/village_tannery",
+      "chests/village/village_weaponsmith"
+    ],
+    "clay_ball": [
+      "chests/village/village_desert_house",
+      "chests/village/village_mason"
+    ],
+    "green_dye": [
+      "chests/village/village_desert_house"
+    ],
+    "cactus": [
+      "chests/village/village_desert_house"
+    ],
+    "dead_bush": [
+      "chests/village/village_desert_house"
+    ],
+    "cod": [
+      "chests/village/village_fisher"
+    ],
+    "water_bucket": [
+      "chests/village/village_fisher"
+    ],
+    "barrel": [
+      "chests/village/village_fisher"
+    ],
+    "wheat_seeds": [
+      "chests/village/village_fisher",
+      "chests/village/village_savanna_house"
+    ],
+    "egg": [
+      "chests/village/village_fletcher"
+    ],
+    "flower_pot": [
+      "chests/village/village_mason"
+    ],
+    "stone": [
+      "chests/village/village_mason"
+    ],
+    "stone_bricks": [
+      "chests/village/village_mason"
+    ],
+    "yellow_dye": [
+      "chests/village/village_mason"
+    ],
+    "smooth_stone": [
+      "chests/village/village_mason"
+    ],
+    "dandelion": [
+      "chests/village/village_plains_house"
+    ],
+    "poppy": [
+      "chests/village/village_plains_house"
+    ],
+    "oak_sapling": [
+      "chests/village/village_plains_house",
+      "chests/village/village_weaponsmith"
+    ],
+    "short_grass": [
+      "chests/village/village_savanna_house"
+    ],
+    "tall_grass": [
+      "chests/village/village_savanna_house"
+    ],
+    "acacia_sapling": [
+      "chests/village/village_savanna_house"
+    ],
+    "white_wool": [
+      "chests/village/village_shepherd"
+    ],
+    "black_wool": [
+      "chests/village/village_shepherd"
+    ],
+    "gray_wool": [
+      "chests/village/village_shepherd"
+    ],
+    "brown_wool": [
+      "chests/village/village_shepherd"
+    ],
+    "light_gray_wool": [
+      "chests/village/village_shepherd"
+    ],
+    "shears": [
+      "chests/village/village_shepherd"
+    ],
+    "blue_ice": [
+      "chests/village/village_snowy_house"
+    ],
+    "snow_block": [
+      "chests/village/village_snowy_house"
+    ],
+    "beetroot_soup": [
+      "chests/village/village_snowy_house"
+    ],
+    "furnace": [
+      "chests/village/village_snowy_house"
+    ],
+    "fern": [
+      "chests/village/village_taiga_house"
+    ],
+    "large_fern": [
+      "chests/village/village_taiga_house"
+    ],
+    "sweet_berries": [
+      "chests/village/village_taiga_house"
+    ],
+    "pumpkin_pie": [
+      "chests/village/village_taiga_house"
+    ],
+    "spruce_sapling": [
+      "chests/village/village_taiga_house"
+    ],
+    "spruce_sign": [
+      "chests/village/village_taiga_house"
+    ],
+    "copper_spear": [
+      "chests/village/village_weaponsmith"
+    ],
+    "chainmail_chestplate": [
+      "chests/woodland_mansion"
+    ],
+    "resin_clump": [
+      "chests/woodland_mansion"
+    ],
+    "vex_armor_trim_smithing_template": [
+      "chests/woodland_mansion"
+    ]
+  },
+  "aliases": {
+    "金合欢木按钮": "acacia_button",
+    "金合欢木门": "acacia_door",
+    "金合欢木栅栏": "acacia_fence",
+    "金合欢木栅栏门": "acacia_fence_gate",
+    "悬挂式金合欢木告示牌": "acacia_hanging_sign",
+    "金合欢树叶": "acacia_leaves",
+    "金合欢原木": "acacia_log",
+    "金合欢木板": "acacia_planks",
+    "金合欢木压力板": "acacia_pressure_plate",
+    "金合欢树苗": "acacia_sapling",
+    "金合欢木展示架": "acacia_shelf",
+    "金合欢木告示牌": "acacia_sign",
+    "金合欢木台阶": "acacia_slab",
+    "金合欢木楼梯": "acacia_stairs",
+    "金合欢木活板门": "acacia_trapdoor",
+    "墙上的悬挂式金合欢木告示牌": "acacia_wall_hanging_sign",
+    "墙上的金合欢木告示牌": "acacia_wall_sign",
+    "金合欢木": "acacia_wood",
+    "激活铁轨": "activator_rail",
+    "空气": "air",
+    "绒球葱": "allium",
+    "紫水晶块": "amethyst_block",
+    "紫水晶簇": "amethyst_cluster",
+    "远古残骸": "ancient_debris",
+    "安山岩": "andesite",
+    "安山岩台阶": "andesite_slab",
+    "安山岩楼梯": "andesite_stairs",
+    "安山岩墙": "andesite_wall",
+    "铁砧": "anvil",
+    "结果的西瓜茎": "attached_melon_stem",
+    "结果的南瓜茎": "attached_pumpkin_stem",
+    "杜鹃花丛": "azalea",
+    "杜鹃树叶": "azalea_leaves",
+    "蓝花美耳草": "azure_bluet",
+    "竹子": "bamboo",
+    "竹块": "bamboo_block",
+    "竹按钮": "bamboo_button",
+    "竹门": "bamboo_door",
+    "竹栅栏": "bamboo_fence",
+    "竹栅栏门": "bamboo_fence_gate",
+    "悬挂式竹告示牌": "bamboo_hanging_sign",
+    "竹马赛克": "bamboo_mosaic",
+    "竹马赛克台阶": "bamboo_mosaic_slab",
+    "竹马赛克楼梯": "bamboo_mosaic_stairs",
+    "竹板": "bamboo_planks",
+    "竹压力板": "bamboo_pressure_plate",
+    "竹笋": "bamboo_sapling",
+    "竹展示架": "bamboo_shelf",
+    "竹告示牌": "bamboo_sign",
+    "竹台阶": "bamboo_slab",
+    "竹楼梯": "bamboo_stairs",
+    "竹活板门": "bamboo_trapdoor",
+    "墙上的悬挂式竹告示牌": "bamboo_wall_hanging_sign",
+    "墙上的竹告示牌": "bamboo_wall_sign",
+    "木桶": "barrel",
+    "屏障": "barrier",
+    "玄武岩": "basalt",
+    "信标": "beacon",
+    "基岩": "bedrock",
+    "蜂巢": "bee_nest",
+    "蜂箱": "beehive",
+    "甜菜根": "beetroot",
+    "钟": "bell",
+    "大型垂滴叶": "big_dripleaf",
+    "大型垂滴叶茎": "big_dripleaf_stem",
+    "白桦木按钮": "birch_button",
+    "白桦木门": "birch_door",
+    "白桦木栅栏": "birch_fence",
+    "白桦木栅栏门": "birch_fence_gate",
+    "悬挂式白桦木告示牌": "birch_hanging_sign",
+    "白桦树叶": "birch_leaves",
+    "白桦原木": "birch_log",
+    "白桦木板": "birch_planks",
+    "白桦木压力板": "birch_pressure_plate",
+    "白桦树苗": "birch_sapling",
+    "白桦木展示架": "birch_shelf",
+    "白桦木告示牌": "birch_sign",
+    "白桦木台阶": "birch_slab",
+    "白桦木楼梯": "birch_stairs",
+    "白桦木活板门": "birch_trapdoor",
+    "墙上的悬挂式白桦木告示牌": "birch_wall_hanging_sign",
+    "墙上的白桦木告示牌": "birch_wall_sign",
+    "白桦木": "birch_wood",
+    "黑色旗帜": "black_banner",
+    "黑色床": "black_bed",
+    "黑色蜡烛": "black_candle",
+    "插上黑色蜡烛的蛋糕": "black_candle_cake",
+    "黑色地毯": "black_carpet",
+    "黑色混凝土": "black_concrete",
+    "黑色混凝土粉末": "black_concrete_powder",
+    "黑色带釉陶瓦": "black_glazed_terracotta",
+    "黑色潜影盒": "black_shulker_box",
+    "黑色染色玻璃": "black_stained_glass",
+    "黑色染色玻璃板": "black_stained_glass_pane",
+    "黑色陶瓦": "black_terracotta",
+    "黑色羊毛": "black_wool",
+    "黑石": "blackstone",
+    "黑石台阶": "blackstone_slab",
+    "黑石楼梯": "blackstone_stairs",
+    "黑石墙": "blackstone_wall",
+    "高炉": "blast_furnace",
+    "蓝色旗帜": "blue_banner",
+    "蓝色床": "blue_bed",
+    "蓝色蜡烛": "blue_candle",
+    "插上蓝色蜡烛的蛋糕": "blue_candle_cake",
+    "蓝色地毯": "blue_carpet",
+    "蓝色混凝土": "blue_concrete",
+    "蓝色混凝土粉末": "blue_concrete_powder",
+    "蓝色带釉陶瓦": "blue_glazed_terracotta",
+    "蓝冰": "blue_ice",
+    "兰花": "blue_orchid",
+    "蓝色潜影盒": "blue_shulker_box",
+    "蓝色染色玻璃": "blue_stained_glass",
+    "蓝色染色玻璃板": "blue_stained_glass_pane",
+    "蓝色陶瓦": "blue_terracotta",
+    "蓝色羊毛": "blue_wool",
+    "骨块": "bone_block",
+    "书架": "bookshelf",
+    "脑纹珊瑚": "brain_coral",
+    "脑纹珊瑚块": "brain_coral_block",
+    "脑纹珊瑚扇": "brain_coral_fan",
+    "墙上的脑纹珊瑚扇": "brain_coral_wall_fan",
+    "酿造台": "brewing_stand",
+    "红砖台阶": "brick_slab",
+    "红砖楼梯": "brick_stairs",
+    "红砖墙": "brick_wall",
+    "红砖块": "bricks",
+    "棕色旗帜": "brown_banner",
+    "棕色床": "brown_bed",
+    "棕色蜡烛": "brown_candle",
+    "插上棕色蜡烛的蛋糕": "brown_candle_cake",
+    "棕色地毯": "brown_carpet",
+    "棕色混凝土": "brown_concrete",
+    "棕色混凝土粉末": "brown_concrete_powder",
+    "棕色带釉陶瓦": "brown_glazed_terracotta",
+    "棕色蘑菇": "brown_mushroom",
+    "棕色蘑菇方块": "brown_mushroom_block",
+    "棕色潜影盒": "brown_shulker_box",
+    "棕色染色玻璃": "brown_stained_glass",
+    "棕色染色玻璃板": "brown_stained_glass_pane",
+    "棕色陶瓦": "brown_terracotta",
+    "棕色羊毛": "brown_wool",
+    "气泡柱": "bubble_column",
+    "气泡珊瑚": "bubble_coral",
+    "气泡珊瑚块": "bubble_coral_block",
+    "气泡珊瑚扇": "bubble_coral_fan",
+    "墙上的气泡珊瑚扇": "bubble_coral_wall_fan",
+    "紫水晶母岩": "budding_amethyst",
+    "灌木丛": "bush",
+    "仙人掌": "cactus",
+    "仙人掌花": "cactus_flower",
+    "蛋糕": "cake",
+    "方解石": "calcite",
+    "校频幽匿感测体": "calibrated_sculk_sensor",
+    "营火": "campfire",
+    "蜡烛": "candle",
+    "插上蜡烛的蛋糕": "candle_cake",
+    "胡萝卜": "carrot",
+    "制图台": "cartography_table",
+    "雕刻南瓜": "carved_pumpkin",
+    "炼药锅": "cauldron",
+    "洞穴空气": "cave_air",
+    "洞穴藤蔓": "cave_vines",
+    "洞穴藤蔓植株": "cave_vines_plant",
+    "锁链": "chain",
+    "连锁型命令方块": "chain_command_block",
+    "樱花木按钮": "cherry_button",
+    "樱花木门": "cherry_door",
+    "樱花木栅栏": "cherry_fence",
+    "樱花木栅栏门": "cherry_fence_gate",
+    "悬挂式樱花木告示牌": "cherry_hanging_sign",
+    "樱花树叶": "cherry_leaves",
+    "樱花原木": "cherry_log",
+    "樱花木板": "cherry_planks",
+    "樱花木压力板": "cherry_pressure_plate",
+    "樱花树苗": "cherry_sapling",
+    "樱花木展示架": "cherry_shelf",
+    "樱花木告示牌": "cherry_sign",
+    "樱花木台阶": "cherry_slab",
+    "樱花木楼梯": "cherry_stairs",
+    "樱花木活板门": "cherry_trapdoor",
+    "墙上的悬挂式樱花木告示牌": "cherry_wall_hanging_sign",
+    "墙上的樱花木告示牌": "cherry_wall_sign",
+    "樱花木": "cherry_wood",
+    "箱子": "chest",
+    "开裂的铁砧": "chipped_anvil",
+    "雕纹书架": "chiseled_bookshelf",
+    "雕纹铜块": "chiseled_copper",
+    "雕纹深板岩": "chiseled_deepslate",
+    "雕纹下界砖块": "chiseled_nether_bricks",
+    "雕纹磨制黑石": "chiseled_polished_blackstone",
+    "雕纹石英块": "chiseled_quartz_block",
+    "雕纹红砂岩": "chiseled_red_sandstone",
+    "雕纹树脂砖块": "chiseled_resin_bricks",
+    "雕纹砂岩": "chiseled_sandstone",
+    "雕纹石砖": "chiseled_stone_bricks",
+    "雕纹凝灰岩": "chiseled_tuff",
+    "雕纹凝灰岩砖": "chiseled_tuff_bricks",
+    "紫颂花": "chorus_flower",
+    "紫颂植株": "chorus_plant",
+    "黏土": "clay",
+    "闭合的眼眸花": "closed_eyeblossom",
+    "煤炭块": "coal_block",
+    "煤矿石": "coal_ore",
+    "砂土": "coarse_dirt",
+    "深板岩圆石": "cobbled_deepslate",
+    "深板岩圆石台阶": "cobbled_deepslate_slab",
+    "深板岩圆石楼梯": "cobbled_deepslate_stairs",
+    "深板岩圆石墙": "cobbled_deepslate_wall",
+    "圆石": "cobblestone",
+    "圆石台阶": "cobblestone_slab",
+    "圆石楼梯": "cobblestone_stairs",
+    "圆石墙": "cobblestone_wall",
+    "蜘蛛网": "cobweb",
+    "可可果": "cocoa",
+    "命令方块": "command_block",
+    "红石比较器": "comparator",
+    "堆肥桶": "composter",
+    "潮涌核心": "conduit",
+    "铜栏杆": "copper_bars",
+    "铜块": "copper_block",
+    "铜灯": "copper_bulb",
+    "铜链": "copper_chain",
+    "铜箱子": "copper_chest",
+    "铜门": "copper_door",
+    "铜傀儡像": "copper_golem_statue",
+    "铜格栅": "copper_grate",
+    "铜灯笼": "copper_lantern",
+    "铜矿石": "copper_ore",
+    "铜火把": "copper_torch",
+    "铜活板门": "copper_trapdoor",
+    "墙上的铜火把": "copper_wall_torch",
+    "矢车菊": "cornflower",
+    "裂纹深板岩砖": "cracked_deepslate_bricks",
+    "裂纹深板岩瓦": "cracked_deepslate_tiles",
+    "裂纹下界砖块": "cracked_nether_bricks",
+    "裂纹磨制黑石砖": "cracked_polished_blackstone_bricks",
+    "裂纹石砖": "cracked_stone_bricks",
+    "合成器": "crafter",
+    "工作台": "crafting_table",
+    "嘎枝之心": "creaking_heart",
+    "苦力怕的头": "creeper_head",
+    "墙上的苦力怕的头": "creeper_wall_head",
+    "绯红木按钮": "crimson_button",
+    "绯红木门": "crimson_door",
+    "绯红木栅栏": "crimson_fence",
+    "绯红木栅栏门": "crimson_fence_gate",
+    "绯红菌": "crimson_fungus",
+    "悬挂式绯红木告示牌": "crimson_hanging_sign",
+    "绯红菌核": "crimson_hyphae",
+    "绯红菌岩": "crimson_nylium",
+    "绯红木板": "crimson_planks",
+    "绯红木压力板": "crimson_pressure_plate",
+    "绯红菌索": "crimson_roots",
+    "绯红木展示架": "crimson_shelf",
+    "绯红木告示牌": "crimson_sign",
+    "绯红木台阶": "crimson_slab",
+    "绯红木楼梯": "crimson_stairs",
+    "绯红菌柄": "crimson_stem",
+    "绯红木活板门": "crimson_trapdoor",
+    "墙上的悬挂式绯红木告示牌": "crimson_wall_hanging_sign",
+    "墙上的绯红木告示牌": "crimson_wall_sign",
+    "哭泣的黑曜石": "crying_obsidian",
+    "切制铜块": "cut_copper",
+    "切制铜台阶": "cut_copper_slab",
+    "切制铜楼梯": "cut_copper_stairs",
+    "切制红砂岩": "cut_red_sandstone",
+    "切制红砂岩台阶": "cut_red_sandstone_slab",
+    "切制砂岩": "cut_sandstone",
+    "切制砂岩台阶": "cut_sandstone_slab",
+    "青色旗帜": "cyan_banner",
+    "青色床": "cyan_bed",
+    "青色蜡烛": "cyan_candle",
+    "插上青色蜡烛的蛋糕": "cyan_candle_cake",
+    "青色地毯": "cyan_carpet",
+    "青色混凝土": "cyan_concrete",
+    "青色混凝土粉末": "cyan_concrete_powder",
+    "青色带釉陶瓦": "cyan_glazed_terracotta",
+    "青色潜影盒": "cyan_shulker_box",
+    "青色染色玻璃": "cyan_stained_glass",
+    "青色染色玻璃板": "cyan_stained_glass_pane",
+    "青色陶瓦": "cyan_terracotta",
+    "青色羊毛": "cyan_wool",
+    "损坏的铁砧": "damaged_anvil",
+    "蒲公英": "dandelion",
+    "深色橡木按钮": "dark_oak_button",
+    "深色橡木门": "dark_oak_door",
+    "深色橡木栅栏": "dark_oak_fence",
+    "深色橡木栅栏门": "dark_oak_fence_gate",
+    "悬挂式深色橡木告示牌": "dark_oak_hanging_sign",
+    "深色橡树树叶": "dark_oak_leaves",
+    "深色橡木原木": "dark_oak_log",
+    "深色橡木木板": "dark_oak_planks",
+    "深色橡木压力板": "dark_oak_pressure_plate",
+    "深色橡树树苗": "dark_oak_sapling",
+    "深色橡木展示架": "dark_oak_shelf",
+    "深色橡木告示牌": "dark_oak_sign",
+    "深色橡木台阶": "dark_oak_slab",
+    "深色橡木楼梯": "dark_oak_stairs",
+    "深色橡木活板门": "dark_oak_trapdoor",
+    "墙上的悬挂式深色橡木告示牌": "dark_oak_wall_hanging_sign",
+    "墙上的深色橡木告示牌": "dark_oak_wall_sign",
+    "深色橡木": "dark_oak_wood",
+    "暗海晶石": "dark_prismarine",
+    "暗海晶石台阶": "dark_prismarine_slab",
+    "暗海晶石楼梯": "dark_prismarine_stairs",
+    "阳光探测器": "daylight_detector",
+    "失活的脑纹珊瑚": "dead_brain_coral",
+    "失活的脑纹珊瑚块": "dead_brain_coral_block",
+    "失活的脑纹珊瑚扇": "dead_brain_coral_fan",
+    "墙上的失活脑纹珊瑚扇": "dead_brain_coral_wall_fan",
+    "失活的气泡珊瑚": "dead_bubble_coral",
+    "失活的气泡珊瑚块": "dead_bubble_coral_block",
+    "失活的气泡珊瑚扇": "dead_bubble_coral_fan",
+    "墙上的失活气泡珊瑚扇": "dead_bubble_coral_wall_fan",
+    "枯萎的灌木": "dead_bush",
+    "失活的火珊瑚": "dead_fire_coral",
+    "失活的火珊瑚块": "dead_fire_coral_block",
+    "失活的火珊瑚扇": "dead_fire_coral_fan",
+    "墙上的失活火珊瑚扇": "dead_fire_coral_wall_fan",
+    "失活的鹿角珊瑚": "dead_horn_coral",
+    "失活的鹿角珊瑚块": "dead_horn_coral_block",
+    "失活的鹿角珊瑚扇": "dead_horn_coral_fan",
+    "墙上的失活鹿角珊瑚扇": "dead_horn_coral_wall_fan",
+    "失活的管珊瑚": "dead_tube_coral",
+    "失活的管珊瑚块": "dead_tube_coral_block",
+    "失活的管珊瑚扇": "dead_tube_coral_fan",
+    "墙上的失活管珊瑚扇": "dead_tube_coral_wall_fan",
+    "饰纹陶罐": "decorated_pot",
+    "深板岩": "deepslate",
+    "深板岩砖台阶": "deepslate_brick_slab",
+    "深板岩砖楼梯": "deepslate_brick_stairs",
+    "深板岩砖墙": "deepslate_brick_wall",
+    "深板岩砖": "deepslate_bricks",
+    "深层煤矿石": "deepslate_coal_ore",
+    "深层铜矿石": "deepslate_copper_ore",
+    "深层钻石矿石": "deepslate_diamond_ore",
+    "深层绿宝石矿石": "deepslate_emerald_ore",
+    "深层金矿石": "deepslate_gold_ore",
+    "深层铁矿石": "deepslate_iron_ore",
+    "深层青金石矿石": "deepslate_lapis_ore",
+    "深层红石矿石": "deepslate_redstone_ore",
+    "深板岩瓦台阶": "deepslate_tile_slab",
+    "深板岩瓦楼梯": "deepslate_tile_stairs",
+    "深板岩瓦墙": "deepslate_tile_wall",
+    "深板岩瓦": "deepslate_tiles",
+    "探测铁轨": "detector_rail",
+    "钻石块": "diamond_block",
+    "钻石矿石": "diamond_ore",
+    "闪长岩": "diorite",
+    "闪长岩台阶": "diorite_slab",
+    "闪长岩楼梯": "diorite_stairs",
+    "闪长岩墙": "diorite_wall",
+    "泥土": "dirt",
+    "土径": "dirt_path",
+    "发射器": "dispenser",
+    "龙蛋": "dragon_egg",
+    "龙首": "dragon_head",
+    "墙上的龙首": "dragon_wall_head",
+    "失水恶魂": "dried_ghast",
+    "干海带块": "dried_kelp_block",
+    "滴水石块": "dripstone_block",
+    "投掷器": "dropper",
+    "绿宝石块": "emerald_block",
+    "绿宝石矿石": "emerald_ore",
+    "附魔台": "enchanting_table",
+    "末地折跃门": "end_gateway",
+    "末地传送门": "end_portal",
+    "末地传送门框架": "end_portal_frame",
+    "末地烛": "end_rod",
+    "末地石": "end_stone",
+    "末地石砖台阶": "end_stone_brick_slab",
+    "末地石砖楼梯": "end_stone_brick_stairs",
+    "末地石砖墙": "end_stone_brick_wall",
+    "末地石砖": "end_stone_bricks",
+    "末影箱": "ender_chest",
+    "斑驳的雕纹铜块": "exposed_chiseled_copper",
+    "斑驳的铜块": "exposed_copper",
+    "斑驳的铜栏杆": "exposed_copper_bars",
+    "斑驳的铜灯": "exposed_copper_bulb",
+    "斑驳的铜链": "exposed_copper_chain",
+    "斑驳的铜箱子": "exposed_copper_chest",
+    "斑驳的铜门": "exposed_copper_door",
+    "斑驳的铜傀儡像": "exposed_copper_golem_statue",
+    "斑驳的铜格栅": "exposed_copper_grate",
+    "斑驳的铜灯笼": "exposed_copper_lantern",
+    "斑驳的铜活板门": "exposed_copper_trapdoor",
+    "斑驳的切制铜块": "exposed_cut_copper",
+    "斑驳的切制铜台阶": "exposed_cut_copper_slab",
+    "斑驳的切制铜楼梯": "exposed_cut_copper_stairs",
+    "斑驳的避雷针": "exposed_lightning_rod",
+    "耕地": "farmland",
+    "蕨": "fern",
+    "火": "fire",
+    "火珊瑚": "fire_coral",
+    "火珊瑚块": "fire_coral_block",
+    "火珊瑚扇": "fire_coral_fan",
+    "墙上的火珊瑚扇": "fire_coral_wall_fan",
+    "萤火虫灌木丛": "firefly_bush",
+    "制箭台": "fletching_table",
+    "花盆": "flower_pot",
+    "盛开的杜鹃花丛": "flowering_azalea",
+    "盛开的杜鹃树叶": "flowering_azalea_leaves",
+    "青蛙卵": "frogspawn",
+    "霜冰": "frosted_ice",
+    "熔炉": "furnace",
+    "镶金黑石": "gilded_blackstone",
+    "玻璃": "glass",
+    "玻璃板": "glass_pane",
+    "发光地衣": "glow_lichen",
+    "荧石": "glowstone",
+    "金块": "gold_block",
+    "金矿石": "gold_ore",
+    "花岗岩": "granite",
+    "花岗岩台阶": "granite_slab",
+    "花岗岩楼梯": "granite_stairs",
+    "花岗岩墙": "granite_wall",
+    "草": "grass",
+    "草方块": "grass_block",
+    "沙砾": "gravel",
+    "灰色旗帜": "gray_banner",
+    "灰色床": "gray_bed",
+    "灰色蜡烛": "gray_candle",
+    "插上灰色蜡烛的蛋糕": "gray_candle_cake",
+    "灰色地毯": "gray_carpet",
+    "灰色混凝土": "gray_concrete",
+    "灰色混凝土粉末": "gray_concrete_powder",
+    "灰色带釉陶瓦": "gray_glazed_terracotta",
+    "灰色潜影盒": "gray_shulker_box",
+    "灰色染色玻璃": "gray_stained_glass",
+    "灰色染色玻璃板": "gray_stained_glass_pane",
+    "灰色陶瓦": "gray_terracotta",
+    "灰色羊毛": "gray_wool",
+    "绿色旗帜": "green_banner",
+    "绿色床": "green_bed",
+    "绿色蜡烛": "green_candle",
+    "插上绿色蜡烛的蛋糕": "green_candle_cake",
+    "绿色地毯": "green_carpet",
+    "绿色混凝土": "green_concrete",
+    "绿色混凝土粉末": "green_concrete_powder",
+    "绿色带釉陶瓦": "green_glazed_terracotta",
+    "绿色潜影盒": "green_shulker_box",
+    "绿色染色玻璃": "green_stained_glass",
+    "绿色染色玻璃板": "green_stained_glass_pane",
+    "绿色陶瓦": "green_terracotta",
+    "绿色羊毛": "green_wool",
+    "砂轮": "grindstone",
+    "垂根": "hanging_roots",
+    "干草捆": "hay_block",
+    "沉重核心": "heavy_core",
+    "重质测重压力板": "heavy_weighted_pressure_plate",
+    "蜂蜜块": "honey_block",
+    "蜜脾块": "honeycomb_block",
+    "漏斗": "hopper",
+    "鹿角珊瑚": "horn_coral",
+    "鹿角珊瑚块": "horn_coral_block",
+    "鹿角珊瑚扇": "horn_coral_fan",
+    "墙上的鹿角珊瑚扇": "horn_coral_wall_fan",
+    "冰": "ice",
+    "虫蚀雕纹石砖": "infested_chiseled_stone_bricks",
+    "虫蚀圆石": "infested_cobblestone",
+    "虫蚀裂纹石砖": "infested_cracked_stone_bricks",
+    "虫蚀深板岩": "infested_deepslate",
+    "虫蚀苔石砖": "infested_mossy_stone_bricks",
+    "虫蚀石头": "infested_stone",
+    "虫蚀石砖": "infested_stone_bricks",
+    "铁栏杆": "iron_bars",
+    "铁块": "iron_block",
+    "铁链": "iron_chain",
+    "铁门": "iron_door",
+    "铁矿石": "iron_ore",
+    "铁活板门": "iron_trapdoor",
+    "南瓜灯": "jack_o_lantern",
+    "拼图方块": "jigsaw",
+    "唱片机": "jukebox",
+    "丛林木按钮": "jungle_button",
+    "丛林木门": "jungle_door",
+    "丛林木栅栏": "jungle_fence",
+    "丛林木栅栏门": "jungle_fence_gate",
+    "悬挂式丛林木告示牌": "jungle_hanging_sign",
+    "丛林树叶": "jungle_leaves",
+    "丛林原木": "jungle_log",
+    "丛林木板": "jungle_planks",
+    "丛林木压力板": "jungle_pressure_plate",
+    "丛林树苗": "jungle_sapling",
+    "丛林木展示架": "jungle_shelf",
+    "丛林木告示牌": "jungle_sign",
+    "丛林木台阶": "jungle_slab",
+    "丛林木楼梯": "jungle_stairs",
+    "丛林木活板门": "jungle_trapdoor",
+    "墙上的悬挂式丛林木告示牌": "jungle_wall_hanging_sign",
+    "墙上的丛林木告示牌": "jungle_wall_sign",
+    "丛林木": "jungle_wood",
+    "海带": "kelp",
+    "海带植株": "kelp_plant",
+    "梯子": "ladder",
+    "灯笼": "lantern",
+    "青金石块": "lapis_block",
+    "青金石矿石": "lapis_ore",
+    "大型紫晶芽": "large_amethyst_bud",
+    "大型蕨": "large_fern",
+    "熔岩": "lava",
+    "装有熔岩的炼药锅": "lava_cauldron",
+    "枯叶堆": "leaf_litter",
+    "讲台": "lectern",
+    "拉杆": "lever",
+    "光源方块": "light",
+    "淡蓝色旗帜": "light_blue_banner",
+    "淡蓝色床": "light_blue_bed",
+    "淡蓝色蜡烛": "light_blue_candle",
+    "插上淡蓝色蜡烛的蛋糕": "light_blue_candle_cake",
+    "淡蓝色地毯": "light_blue_carpet",
+    "淡蓝色混凝土": "light_blue_concrete",
+    "淡蓝色混凝土粉末": "light_blue_concrete_powder",
+    "淡蓝色带釉陶瓦": "light_blue_glazed_terracotta",
+    "淡蓝色潜影盒": "light_blue_shulker_box",
+    "淡蓝色染色玻璃": "light_blue_stained_glass",
+    "淡蓝色染色玻璃板": "light_blue_stained_glass_pane",
+    "淡蓝色陶瓦": "light_blue_terracotta",
+    "淡蓝色羊毛": "light_blue_wool",
+    "淡灰色旗帜": "light_gray_banner",
+    "淡灰色床": "light_gray_bed",
+    "淡灰色蜡烛": "light_gray_candle",
+    "插上淡灰色蜡烛的蛋糕": "light_gray_candle_cake",
+    "淡灰色地毯": "light_gray_carpet",
+    "淡灰色混凝土": "light_gray_concrete",
+    "淡灰色混凝土粉末": "light_gray_concrete_powder",
+    "淡灰色带釉陶瓦": "light_gray_glazed_terracotta",
+    "淡灰色潜影盒": "light_gray_shulker_box",
+    "淡灰色染色玻璃": "light_gray_stained_glass",
+    "淡灰色染色玻璃板": "light_gray_stained_glass_pane",
+    "淡灰色陶瓦": "light_gray_terracotta",
+    "淡灰色羊毛": "light_gray_wool",
+    "轻质测重压力板": "light_weighted_pressure_plate",
+    "避雷针": "lightning_rod",
+    "丁香": "lilac",
+    "铃兰": "lily_of_the_valley",
+    "睡莲": "lily_pad",
+    "黄绿色旗帜": "lime_banner",
+    "黄绿色床": "lime_bed",
+    "黄绿色蜡烛": "lime_candle",
+    "插上黄绿色蜡烛的蛋糕": "lime_candle_cake",
+    "黄绿色地毯": "lime_carpet",
+    "黄绿色混凝土": "lime_concrete",
+    "黄绿色混凝土粉末": "lime_concrete_powder",
+    "黄绿色带釉陶瓦": "lime_glazed_terracotta",
+    "黄绿色潜影盒": "lime_shulker_box",
+    "黄绿色染色玻璃": "lime_stained_glass",
+    "黄绿色染色玻璃板": "lime_stained_glass_pane",
+    "黄绿色陶瓦": "lime_terracotta",
+    "黄绿色羊毛": "lime_wool",
+    "磁石": "lodestone",
+    "织布机": "loom",
+    "品红色旗帜": "magenta_banner",
+    "品红色床": "magenta_bed",
+    "品红色蜡烛": "magenta_candle",
+    "插上品红色蜡烛的蛋糕": "magenta_candle_cake",
+    "品红色地毯": "magenta_carpet",
+    "品红色混凝土": "magenta_concrete",
+    "品红色混凝土粉末": "magenta_concrete_powder",
+    "品红色带釉陶瓦": "magenta_glazed_terracotta",
+    "品红色潜影盒": "magenta_shulker_box",
+    "品红色染色玻璃": "magenta_stained_glass",
+    "品红色染色玻璃板": "magenta_stained_glass_pane",
+    "品红色陶瓦": "magenta_terracotta",
+    "品红色羊毛": "magenta_wool",
+    "岩浆块": "magma_block",
+    "红树木按钮": "mangrove_button",
+    "红树木门": "mangrove_door",
+    "红树木栅栏": "mangrove_fence",
+    "红树木栅栏门": "mangrove_fence_gate",
+    "悬挂式红树木告示牌": "mangrove_hanging_sign",
+    "红树树叶": "mangrove_leaves",
+    "红树原木": "mangrove_log",
+    "红树木板": "mangrove_planks",
+    "红树木压力板": "mangrove_pressure_plate",
+    "红树胎生苗": "mangrove_propagule",
+    "红树根": "mangrove_roots",
+    "红树木展示架": "mangrove_shelf",
+    "红树木告示牌": "mangrove_sign",
+    "红树木台阶": "mangrove_slab",
+    "红树木楼梯": "mangrove_stairs",
+    "红树木活板门": "mangrove_trapdoor",
+    "墙上的悬挂式红树木告示牌": "mangrove_wall_hanging_sign",
+    "墙上的红树木告示牌": "mangrove_wall_sign",
+    "红树木": "mangrove_wood",
+    "中型紫晶芽": "medium_amethyst_bud",
+    "西瓜": "melon",
+    "西瓜茎": "melon_stem",
+    "苔藓块": "moss_block",
+    "覆地苔藓": "moss_carpet",
+    "苔石": "mossy_cobblestone",
+    "苔石台阶": "mossy_cobblestone_slab",
+    "苔石楼梯": "mossy_cobblestone_stairs",
+    "苔石墙": "mossy_cobblestone_wall",
+    "苔石砖台阶": "mossy_stone_brick_slab",
+    "苔石砖楼梯": "mossy_stone_brick_stairs",
+    "苔石砖墙": "mossy_stone_brick_wall",
+    "苔石砖": "mossy_stone_bricks",
+    "移动的活塞": "moving_piston",
+    "泥巴": "mud",
+    "泥砖台阶": "mud_brick_slab",
+    "泥砖楼梯": "mud_brick_stairs",
+    "泥砖墙": "mud_brick_wall",
+    "泥砖": "mud_bricks",
+    "沾泥的红树根": "muddy_mangrove_roots",
+    "蘑菇柄": "mushroom_stem",
+    "菌丝体": "mycelium",
+    "下界砖栅栏": "nether_brick_fence",
+    "下界砖台阶": "nether_brick_slab",
+    "下界砖楼梯": "nether_brick_stairs",
+    "下界砖墙": "nether_brick_wall",
+    "下界砖块": "nether_bricks",
+    "下界金矿石": "nether_gold_ore",
+    "下界传送门": "nether_portal",
+    "下界石英矿石": "nether_quartz_ore",
+    "下界苗": "nether_sprouts",
+    "下界疣": "nether_wart",
+    "下界疣块": "nether_wart_block",
+    "下界合金块": "netherite_block",
+    "下界岩": "netherrack",
+    "音符盒": "note_block",
+    "橡木按钮": "oak_button",
+    "橡木门": "oak_door",
+    "橡木栅栏": "oak_fence",
+    "橡木栅栏门": "oak_fence_gate",
+    "悬挂式橡木告示牌": "oak_hanging_sign",
+    "橡树树叶": "oak_leaves",
+    "橡木原木": "oak_log",
+    "橡木木板": "oak_planks",
+    "橡木压力板": "oak_pressure_plate",
+    "橡树树苗": "oak_sapling",
+    "橡木展示架": "oak_shelf",
+    "橡木告示牌": "oak_sign",
+    "橡木台阶": "oak_slab",
+    "橡木楼梯": "oak_stairs",
+    "橡木活板门": "oak_trapdoor",
+    "墙上的悬挂式橡木告示牌": "oak_wall_hanging_sign",
+    "墙上的橡木告示牌": "oak_wall_sign",
+    "橡木": "oak_wood",
+    "侦测器": "observer",
+    "黑曜石": "obsidian",
+    "赭黄蛙明灯": "ochre_froglight",
+    "不祥旗帜": "ominous_banner",
+    "张开的眼眸花": "open_eyeblossom",
+    "橙色旗帜": "orange_banner",
+    "橙色床": "orange_bed",
+    "橙色蜡烛": "orange_candle",
+    "插上橙色蜡烛的蛋糕": "orange_candle_cake",
+    "橙色地毯": "orange_carpet",
+    "橙色混凝土": "orange_concrete",
+    "橙色混凝土粉末": "orange_concrete_powder",
+    "橙色带釉陶瓦": "orange_glazed_terracotta",
+    "橙色潜影盒": "orange_shulker_box",
+    "橙色染色玻璃": "orange_stained_glass",
+    "橙色染色玻璃板": "orange_stained_glass_pane",
+    "橙色陶瓦": "orange_terracotta",
+    "橙色郁金香": "orange_tulip",
+    "橙色羊毛": "orange_wool",
+    "滨菊": "oxeye_daisy",
+    "氧化的雕纹铜块": "oxidized_chiseled_copper",
+    "氧化的铜块": "oxidized_copper",
+    "氧化的铜栏杆": "oxidized_copper_bars",
+    "氧化的铜灯": "oxidized_copper_bulb",
+    "氧化的铜链": "oxidized_copper_chain",
+    "氧化的铜箱子": "oxidized_copper_chest",
+    "氧化的铜门": "oxidized_copper_door",
+    "氧化的铜傀儡像": "oxidized_copper_golem_statue",
+    "氧化的铜格栅": "oxidized_copper_grate",
+    "氧化的铜灯笼": "oxidized_copper_lantern",
+    "氧化的铜活板门": "oxidized_copper_trapdoor",
+    "氧化的切制铜块": "oxidized_cut_copper",
+    "氧化的切制铜台阶": "oxidized_cut_copper_slab",
+    "氧化的切制铜楼梯": "oxidized_cut_copper_stairs",
+    "氧化的避雷针": "oxidized_lightning_rod",
+    "浮冰": "packed_ice",
+    "泥坯": "packed_mud",
+    "苍白垂须": "pale_hanging_moss",
+    "苍白苔藓块": "pale_moss_block",
+    "苍白覆地苔藓": "pale_moss_carpet",
+    "苍白橡木按钮": "pale_oak_button",
+    "苍白橡木门": "pale_oak_door",
+    "苍白橡木栅栏": "pale_oak_fence",
+    "苍白橡木栅栏门": "pale_oak_fence_gate",
+    "悬挂式苍白橡木告示牌": "pale_oak_hanging_sign",
+    "苍白橡树树叶": "pale_oak_leaves",
+    "苍白橡木原木": "pale_oak_log",
+    "苍白橡木木板": "pale_oak_planks",
+    "苍白橡木压力板": "pale_oak_pressure_plate",
+    "苍白橡树树苗": "pale_oak_sapling",
+    "苍白橡木展示架": "pale_oak_shelf",
+    "苍白橡木告示牌": "pale_oak_sign",
+    "苍白橡木台阶": "pale_oak_slab",
+    "苍白橡木楼梯": "pale_oak_stairs",
+    "苍白橡木活板门": "pale_oak_trapdoor",
+    "墙上的悬挂式苍白橡木告示牌": "pale_oak_wall_hanging_sign",
+    "墙上的苍白橡木告示牌": "pale_oak_wall_sign",
+    "苍白橡木": "pale_oak_wood",
+    "珠光蛙明灯": "pearlescent_froglight",
+    "牡丹": "peony",
+    "石化橡木台阶": "petrified_oak_slab",
+    "猪灵的头": "piglin_head",
+    "墙上的猪灵的头": "piglin_wall_head",
+    "粉红色旗帜": "pink_banner",
+    "粉红色床": "pink_bed",
+    "粉红色蜡烛": "pink_candle",
+    "插上粉红色蜡烛的蛋糕": "pink_candle_cake",
+    "粉红色地毯": "pink_carpet",
+    "粉红色混凝土": "pink_concrete",
+    "粉红色混凝土粉末": "pink_concrete_powder",
+    "粉红色带釉陶瓦": "pink_glazed_terracotta",
+    "粉红色花簇": "pink_petals",
+    "粉红色潜影盒": "pink_shulker_box",
+    "粉红色染色玻璃": "pink_stained_glass",
+    "粉红色染色玻璃板": "pink_stained_glass_pane",
+    "粉红色陶瓦": "pink_terracotta",
+    "粉红色郁金香": "pink_tulip",
+    "粉红色羊毛": "pink_wool",
+    "活塞": "piston",
+    "活塞头": "piston_head",
+    "瓶子草植株": "pitcher_crop",
+    "瓶子草": "pitcher_plant",
+    "玩家的头": "player_head",
+    "墙上的玩家的头": "player_wall_head",
+    "灰化土": "podzol",
+    "滴水石锥": "pointed_dripstone",
+    "磨制安山岩": "polished_andesite",
+    "磨制安山岩台阶": "polished_andesite_slab",
+    "磨制安山岩楼梯": "polished_andesite_stairs",
+    "磨制玄武岩": "polished_basalt",
+    "磨制黑石": "polished_blackstone",
+    "磨制黑石砖台阶": "polished_blackstone_brick_slab",
+    "磨制黑石砖楼梯": "polished_blackstone_brick_stairs",
+    "磨制黑石砖墙": "polished_blackstone_brick_wall",
+    "磨制黑石砖": "polished_blackstone_bricks",
+    "磨制黑石按钮": "polished_blackstone_button",
+    "磨制黑石压力板": "polished_blackstone_pressure_plate",
+    "磨制黑石台阶": "polished_blackstone_slab",
+    "磨制黑石楼梯": "polished_blackstone_stairs",
+    "磨制黑石墙": "polished_blackstone_wall",
+    "磨制深板岩": "polished_deepslate",
+    "磨制深板岩台阶": "polished_deepslate_slab",
+    "磨制深板岩楼梯": "polished_deepslate_stairs",
+    "磨制深板岩墙": "polished_deepslate_wall",
+    "磨制闪长岩": "polished_diorite",
+    "磨制闪长岩台阶": "polished_diorite_slab",
+    "磨制闪长岩楼梯": "polished_diorite_stairs",
+    "磨制花岗岩": "polished_granite",
+    "磨制花岗岩台阶": "polished_granite_slab",
+    "磨制花岗岩楼梯": "polished_granite_stairs",
+    "磨制凝灰岩": "polished_tuff",
+    "磨制凝灰岩台阶": "polished_tuff_slab",
+    "磨制凝灰岩楼梯": "polished_tuff_stairs",
+    "磨制凝灰岩墙": "polished_tuff_wall",
+    "虞美人": "poppy",
+    "马铃薯": "potato",
+    "金合欢树苗盆栽": "potted_acacia_sapling",
+    "绒球葱盆栽": "potted_allium",
+    "杜鹃花丛盆栽": "potted_azalea_bush",
+    "蓝花美耳草盆栽": "potted_azure_bluet",
+    "竹子盆栽": "potted_bamboo",
+    "白桦树苗盆栽": "potted_birch_sapling",
+    "兰花盆栽": "potted_blue_orchid",
+    "棕色蘑菇盆栽": "potted_brown_mushroom",
+    "仙人掌盆栽": "potted_cactus",
+    "樱花树苗盆栽": "potted_cherry_sapling",
+    "闭合的眼眸花盆栽": "potted_closed_eyeblossom",
+    "矢车菊盆栽": "potted_cornflower",
+    "绯红菌盆栽": "potted_crimson_fungus",
+    "绯红菌索盆栽": "potted_crimson_roots",
+    "蒲公英盆栽": "potted_dandelion",
+    "深色橡树树苗盆栽": "potted_dark_oak_sapling",
+    "枯萎的灌木盆栽": "potted_dead_bush",
+    "蕨盆栽": "potted_fern",
+    "盛开的杜鹃花丛盆栽": "potted_flowering_azalea_bush",
+    "丛林树苗盆栽": "potted_jungle_sapling",
+    "铃兰盆栽": "potted_lily_of_the_valley",
+    "红树胎生苗盆栽": "potted_mangrove_propagule",
+    "橡树树苗盆栽": "potted_oak_sapling",
+    "张开的眼眸花盆栽": "potted_open_eyeblossom",
+    "橙色郁金香盆栽": "potted_orange_tulip",
+    "滨菊盆栽": "potted_oxeye_daisy",
+    "苍白橡树树苗盆栽": "potted_pale_oak_sapling",
+    "粉红色郁金香盆栽": "potted_pink_tulip",
+    "虞美人盆栽": "potted_poppy",
+    "红色蘑菇盆栽": "potted_red_mushroom",
+    "红色郁金香盆栽": "potted_red_tulip",
+    "云杉树苗盆栽": "potted_spruce_sapling",
+    "火把花盆栽": "potted_torchflower",
+    "诡异菌盆栽": "potted_warped_fungus",
+    "诡异菌索盆栽": "potted_warped_roots",
+    "白色郁金香盆栽": "potted_white_tulip",
+    "凋灵玫瑰盆栽": "potted_wither_rose",
+    "细雪": "powder_snow",
+    "装有细雪的炼药锅": "powder_snow_cauldron",
+    "动力铁轨": "powered_rail",
+    "海晶石": "prismarine",
+    "海晶石砖台阶": "prismarine_brick_slab",
+    "海晶石砖楼梯": "prismarine_brick_stairs",
+    "海晶石砖": "prismarine_bricks",
+    "海晶石台阶": "prismarine_slab",
+    "海晶石楼梯": "prismarine_stairs",
+    "海晶石墙": "prismarine_wall",
+    "南瓜": "pumpkin",
+    "南瓜茎": "pumpkin_stem",
+    "紫色旗帜": "purple_banner",
+    "紫色床": "purple_bed",
+    "紫色蜡烛": "purple_candle",
+    "插上紫色蜡烛的蛋糕": "purple_candle_cake",
+    "紫色地毯": "purple_carpet",
+    "紫色混凝土": "purple_concrete",
+    "紫色混凝土粉末": "purple_concrete_powder",
+    "紫色带釉陶瓦": "purple_glazed_terracotta",
+    "紫色潜影盒": "purple_shulker_box",
+    "紫色染色玻璃": "purple_stained_glass",
+    "紫色染色玻璃板": "purple_stained_glass_pane",
+    "紫色陶瓦": "purple_terracotta",
+    "紫色羊毛": "purple_wool",
+    "紫珀块": "purpur_block",
+    "紫珀柱": "purpur_pillar",
+    "紫珀台阶": "purpur_slab",
+    "紫珀楼梯": "purpur_stairs",
+    "石英块": "quartz_block",
+    "石英砖": "quartz_bricks",
+    "石英柱": "quartz_pillar",
+    "石英台阶": "quartz_slab",
+    "石英楼梯": "quartz_stairs",
+    "铁轨": "rail",
+    "粗铜块": "raw_copper_block",
+    "粗金块": "raw_gold_block",
+    "粗铁块": "raw_iron_block",
+    "红色旗帜": "red_banner",
+    "红色床": "red_bed",
+    "红色蜡烛": "red_candle",
+    "插上红色蜡烛的蛋糕": "red_candle_cake",
+    "红色地毯": "red_carpet",
+    "红色混凝土": "red_concrete",
+    "红色混凝土粉末": "red_concrete_powder",
+    "红色带釉陶瓦": "red_glazed_terracotta",
+    "红色蘑菇": "red_mushroom",
+    "红色蘑菇方块": "red_mushroom_block",
+    "红色下界砖台阶": "red_nether_brick_slab",
+    "红色下界砖楼梯": "red_nether_brick_stairs",
+    "红色下界砖墙": "red_nether_brick_wall",
+    "红色下界砖块": "red_nether_bricks",
+    "红沙": "red_sand",
+    "红砂岩": "red_sandstone",
+    "红砂岩台阶": "red_sandstone_slab",
+    "红砂岩楼梯": "red_sandstone_stairs",
+    "红砂岩墙": "red_sandstone_wall",
+    "红色潜影盒": "red_shulker_box",
+    "红色染色玻璃": "red_stained_glass",
+    "红色染色玻璃板": "red_stained_glass_pane",
+    "红色陶瓦": "red_terracotta",
+    "红色郁金香": "red_tulip",
+    "红色羊毛": "red_wool",
+    "红石块": "redstone_block",
+    "红石灯": "redstone_lamp",
+    "红石矿石": "redstone_ore",
+    "红石火把": "redstone_torch",
+    "墙上的红石火把": "redstone_wall_torch",
+    "红石线": "redstone_wire",
+    "强化深板岩": "reinforced_deepslate",
+    "红石中继器": "repeater",
+    "循环型命令方块": "repeating_command_block",
+    "树脂块": "resin_block",
+    "树脂砖台阶": "resin_brick_slab",
+    "树脂砖楼梯": "resin_brick_stairs",
+    "树脂砖墙": "resin_brick_wall",
+    "树脂砖块": "resin_bricks",
+    "树脂团": "resin_clump",
+    "重生锚": "respawn_anchor",
+    "缠根泥土": "rooted_dirt",
+    "玫瑰丛": "rose_bush",
+    "沙子": "sand",
+    "砂岩": "sandstone",
+    "砂岩台阶": "sandstone_slab",
+    "砂岩楼梯": "sandstone_stairs",
+    "砂岩墙": "sandstone_wall",
+    "脚手架": "scaffolding",
+    "幽匿块": "sculk",
+    "幽匿催发体": "sculk_catalyst",
+    "幽匿感测体": "sculk_sensor",
+    "幽匿尖啸体": "sculk_shrieker",
+    "幽匿脉络": "sculk_vein",
+    "海晶灯": "sea_lantern",
+    "海泡菜": "sea_pickle",
+    "海草": "seagrass",
+    "已设置重生点": "set_spawn",
+    "矮枯草丛": "short_dry_grass",
+    "矮草丛": "short_grass",
+    "菌光体": "shroomlight",
+    "潜影盒": "shulker_box",
+    "骷髅头颅": "skeleton_skull",
+    "墙上的骷髅头颅": "skeleton_wall_skull",
+    "黏液块": "slime_block",
+    "小型紫晶芽": "small_amethyst_bud",
+    "小型垂滴叶": "small_dripleaf",
+    "锻造台": "smithing_table",
+    "烟熏炉": "smoker",
+    "平滑玄武岩": "smooth_basalt",
+    "平滑石英块": "smooth_quartz",
+    "平滑石英台阶": "smooth_quartz_slab",
+    "平滑石英楼梯": "smooth_quartz_stairs",
+    "平滑红砂岩": "smooth_red_sandstone",
+    "平滑红砂岩台阶": "smooth_red_sandstone_slab",
+    "平滑红砂岩楼梯": "smooth_red_sandstone_stairs",
+    "平滑砂岩": "smooth_sandstone",
+    "平滑砂岩台阶": "smooth_sandstone_slab",
+    "平滑砂岩楼梯": "smooth_sandstone_stairs",
+    "平滑石头": "smooth_stone",
+    "平滑石头台阶": "smooth_stone_slab",
+    "嗅探兽蛋": "sniffer_egg",
+    "雪": "snow",
+    "雪块": "snow_block",
+    "灵魂营火": "soul_campfire",
+    "灵魂火": "soul_fire",
+    "灵魂灯笼": "soul_lantern",
+    "灵魂沙": "soul_sand",
+    "灵魂土": "soul_soil",
+    "灵魂火把": "soul_torch",
+    "墙上的灵魂火把": "soul_wall_torch",
+    "刷怪笼": "spawner",
+    "海绵": "sponge",
+    "孢子花": "spore_blossom",
+    "云杉木按钮": "spruce_button",
+    "云杉木门": "spruce_door",
+    "云杉木栅栏": "spruce_fence",
+    "云杉木栅栏门": "spruce_fence_gate",
+    "悬挂式云杉木告示牌": "spruce_hanging_sign",
+    "云杉树叶": "spruce_leaves",
+    "云杉原木": "spruce_log",
+    "云杉木板": "spruce_planks",
+    "云杉木压力板": "spruce_pressure_plate",
+    "云杉树苗": "spruce_sapling",
+    "云杉木展示架": "spruce_shelf",
+    "云杉木告示牌": "spruce_sign",
+    "云杉木台阶": "spruce_slab",
+    "云杉木楼梯": "spruce_stairs",
+    "云杉木活板门": "spruce_trapdoor",
+    "墙上的悬挂式云杉木告示牌": "spruce_wall_hanging_sign",
+    "墙上的云杉木告示牌": "spruce_wall_sign",
+    "云杉木": "spruce_wood",
+    "黏性活塞": "sticky_piston",
+    "石头": "stone",
+    "石砖台阶": "stone_brick_slab",
+    "石砖楼梯": "stone_brick_stairs",
+    "石砖墙": "stone_brick_wall",
+    "石砖": "stone_bricks",
+    "石头按钮": "stone_button",
+    "石头压力板": "stone_pressure_plate",
+    "石头台阶": "stone_slab",
+    "石头楼梯": "stone_stairs",
+    "切石机": "stonecutter",
+    "去皮金合欢原木": "stripped_acacia_log",
+    "去皮金合欢木": "stripped_acacia_wood",
+    "去皮竹块": "stripped_bamboo_block",
+    "去皮白桦原木": "stripped_birch_log",
+    "去皮白桦木": "stripped_birch_wood",
+    "去皮樱花原木": "stripped_cherry_log",
+    "去皮樱花木": "stripped_cherry_wood",
+    "去皮绯红菌核": "stripped_crimson_hyphae",
+    "去皮绯红菌柄": "stripped_crimson_stem",
+    "去皮深色橡木原木": "stripped_dark_oak_log",
+    "去皮深色橡木": "stripped_dark_oak_wood",
+    "去皮丛林原木": "stripped_jungle_log",
+    "去皮丛林木": "stripped_jungle_wood",
+    "去皮红树原木": "stripped_mangrove_log",
+    "去皮红树木": "stripped_mangrove_wood",
+    "去皮橡木原木": "stripped_oak_log",
+    "去皮橡木": "stripped_oak_wood",
+    "去皮苍白橡木原木": "stripped_pale_oak_log",
+    "去皮苍白橡木": "stripped_pale_oak_wood",
+    "去皮云杉原木": "stripped_spruce_log",
+    "去皮云杉木": "stripped_spruce_wood",
+    "去皮诡异菌核": "stripped_warped_hyphae",
+    "去皮诡异菌柄": "stripped_warped_stem",
+    "结构方块": "structure_block",
+    "结构空位": "structure_void",
+    "甘蔗": "sugar_cane",
+    "向日葵": "sunflower",
+    "可疑的沙砾": "suspicious_gravel",
+    "可疑的沙子": "suspicious_sand",
+    "甜浆果丛": "sweet_berry_bush",
+    "高枯草丛": "tall_dry_grass",
+    "高草丛": "tall_grass",
+    "高海草": "tall_seagrass",
+    "标靶": "target",
+    "陶瓦": "terracotta",
+    "测试方块": "test_block",
+    "测试实例方块": "test_instance_block",
+    "遮光玻璃": "tinted_glass",
+    "TNT": "tnt",
+    "火把": "torch",
+    "火把花": "torchflower",
+    "火把花植株": "torchflower_crop",
+    "陷阱箱": "trapped_chest",
+    "试炼刷怪笼": "trial_spawner",
+    "绊线": "tripwire",
+    "绊线钩": "tripwire_hook",
+    "管珊瑚": "tube_coral",
+    "管珊瑚块": "tube_coral_block",
+    "管珊瑚扇": "tube_coral_fan",
+    "墙上的管珊瑚扇": "tube_coral_wall_fan",
+    "凝灰岩": "tuff",
+    "凝灰岩砖台阶": "tuff_brick_slab",
+    "凝灰岩砖楼梯": "tuff_brick_stairs",
+    "凝灰岩砖墙": "tuff_brick_wall",
+    "凝灰岩砖": "tuff_bricks",
+    "凝灰岩台阶": "tuff_slab",
+    "凝灰岩楼梯": "tuff_stairs",
+    "凝灰岩墙": "tuff_wall",
+    "海龟蛋": "turtle_egg",
+    "缠怨藤": "twisting_vines",
+    "缠怨藤植株": "twisting_vines_plant",
+    "宝库": "vault",
+    "青翠蛙明灯": "verdant_froglight",
+    "藤蔓": "vine",
+    "虚空空气": "void_air",
+    "墙上的火把": "wall_torch",
+    "诡异木按钮": "warped_button",
+    "诡异木门": "warped_door",
+    "诡异木栅栏": "warped_fence",
+    "诡异木栅栏门": "warped_fence_gate",
+    "诡异菌": "warped_fungus",
+    "悬挂式诡异木告示牌": "warped_hanging_sign",
+    "诡异菌核": "warped_hyphae",
+    "诡异菌岩": "warped_nylium",
+    "诡异木板": "warped_planks",
+    "诡异木压力板": "warped_pressure_plate",
+    "诡异菌索": "warped_roots",
+    "诡异木展示架": "warped_shelf",
+    "诡异木告示牌": "warped_sign",
+    "诡异木台阶": "warped_slab",
+    "诡异木楼梯": "warped_stairs",
+    "诡异菌柄": "warped_stem",
+    "诡异木活板门": "warped_trapdoor",
+    "墙上的悬挂式诡异木告示牌": "warped_wall_hanging_sign",
+    "墙上的诡异木告示牌": "warped_wall_sign",
+    "诡异疣块": "warped_wart_block",
+    "水": "water",
+    "装有水的炼药锅": "water_cauldron",
+    "涂蜡的雕纹铜块": "waxed_chiseled_copper",
+    "涂蜡的铜栏杆": "waxed_copper_bars",
+    "涂蜡的铜块": "waxed_copper_block",
+    "涂蜡的铜灯": "waxed_copper_bulb",
+    "涂蜡的铜链": "waxed_copper_chain",
+    "涂蜡的铜箱子": "waxed_copper_chest",
+    "涂蜡的铜门": "waxed_copper_door",
+    "涂蜡的铜傀儡像": "waxed_copper_golem_statue",
+    "涂蜡的铜格栅": "waxed_copper_grate",
+    "涂蜡的铜灯笼": "waxed_copper_lantern",
+    "涂蜡的铜活板门": "waxed_copper_trapdoor",
+    "涂蜡的切制铜块": "waxed_cut_copper",
+    "涂蜡的切制铜台阶": "waxed_cut_copper_slab",
+    "涂蜡的切制铜楼梯": "waxed_cut_copper_stairs",
+    "涂蜡的斑驳雕纹铜块": "waxed_exposed_chiseled_copper",
+    "涂蜡的斑驳铜块": "waxed_exposed_copper",
+    "涂蜡的斑驳铜栏杆": "waxed_exposed_copper_bars",
+    "涂蜡的斑驳铜灯": "waxed_exposed_copper_bulb",
+    "涂蜡的斑驳铜链": "waxed_exposed_copper_chain",
+    "涂蜡的斑驳铜箱子": "waxed_exposed_copper_chest",
+    "涂蜡的斑驳铜门": "waxed_exposed_copper_door",
+    "涂蜡的斑驳铜傀儡像": "waxed_exposed_copper_golem_statue",
+    "涂蜡的斑驳铜格栅": "waxed_exposed_copper_grate",
+    "涂蜡的斑驳铜灯笼": "waxed_exposed_copper_lantern",
+    "涂蜡的斑驳铜活板门": "waxed_exposed_copper_trapdoor",
+    "涂蜡的斑驳切制铜块": "waxed_exposed_cut_copper",
+    "涂蜡的斑驳切制铜台阶": "waxed_exposed_cut_copper_slab",
+    "涂蜡的斑驳切制铜楼梯": "waxed_exposed_cut_copper_stairs",
+    "涂蜡的斑驳避雷针": "waxed_exposed_lightning_rod",
+    "涂蜡的避雷针": "waxed_lightning_rod",
+    "涂蜡的氧化雕纹铜块": "waxed_oxidized_chiseled_copper",
+    "涂蜡的氧化铜块": "waxed_oxidized_copper",
+    "涂蜡的氧化铜栏杆": "waxed_oxidized_copper_bars",
+    "涂蜡的氧化铜灯": "waxed_oxidized_copper_bulb",
+    "涂蜡的氧化铜链": "waxed_oxidized_copper_chain",
+    "涂蜡的氧化铜箱子": "waxed_oxidized_copper_chest",
+    "涂蜡的氧化铜门": "waxed_oxidized_copper_door",
+    "涂蜡的氧化铜傀儡像": "waxed_oxidized_copper_golem_statue",
+    "涂蜡的氧化铜格栅": "waxed_oxidized_copper_grate",
+    "涂蜡的氧化铜灯笼": "waxed_oxidized_copper_lantern",
+    "涂蜡的氧化铜活板门": "waxed_oxidized_copper_trapdoor",
+    "涂蜡的氧化切制铜块": "waxed_oxidized_cut_copper",
+    "涂蜡的氧化切制铜台阶": "waxed_oxidized_cut_copper_slab",
+    "涂蜡的氧化切制铜楼梯": "waxed_oxidized_cut_copper_stairs",
+    "涂蜡的氧化避雷针": "waxed_oxidized_lightning_rod",
+    "涂蜡的锈蚀雕纹铜块": "waxed_weathered_chiseled_copper",
+    "涂蜡的锈蚀铜块": "waxed_weathered_copper",
+    "涂蜡的锈蚀铜栏杆": "waxed_weathered_copper_bars",
+    "涂蜡的锈蚀铜灯": "waxed_weathered_copper_bulb",
+    "涂蜡的锈蚀铜链": "waxed_weathered_copper_chain",
+    "涂蜡的锈蚀铜箱子": "waxed_weathered_copper_chest",
+    "涂蜡的锈蚀铜门": "waxed_weathered_copper_door",
+    "涂蜡的锈蚀铜傀儡像": "waxed_weathered_copper_golem_statue",
+    "涂蜡的锈蚀铜格栅": "waxed_weathered_copper_grate",
+    "涂蜡的锈蚀铜灯笼": "waxed_weathered_copper_lantern",
+    "涂蜡的锈蚀铜活板门": "waxed_weathered_copper_trapdoor",
+    "涂蜡的锈蚀切制铜块": "waxed_weathered_cut_copper",
+    "涂蜡的锈蚀切制铜台阶": "waxed_weathered_cut_copper_slab",
+    "涂蜡的锈蚀切制铜楼梯": "waxed_weathered_cut_copper_stairs",
+    "涂蜡的锈蚀避雷针": "waxed_weathered_lightning_rod",
+    "锈蚀的雕纹铜块": "weathered_chiseled_copper",
+    "锈蚀的铜块": "weathered_copper",
+    "锈蚀的铜栏杆": "weathered_copper_bars",
+    "锈蚀的铜灯": "weathered_copper_bulb",
+    "锈蚀的铜链": "weathered_copper_chain",
+    "锈蚀的铜箱子": "weathered_copper_chest",
+    "锈蚀的铜门": "weathered_copper_door",
+    "锈蚀的铜傀儡像": "weathered_copper_golem_statue",
+    "锈蚀的铜格栅": "weathered_copper_grate",
+    "锈蚀的铜灯笼": "weathered_copper_lantern",
+    "锈蚀的铜活板门": "weathered_copper_trapdoor",
+    "锈蚀的切制铜块": "weathered_cut_copper",
+    "锈蚀的切制铜台阶": "weathered_cut_copper_slab",
+    "锈蚀的切制铜楼梯": "weathered_cut_copper_stairs",
+    "锈蚀的避雷针": "weathered_lightning_rod",
+    "垂泪藤": "weeping_vines",
+    "垂泪藤植株": "weeping_vines_plant",
+    "湿海绵": "wet_sponge",
+    "小麦植株": "wheat",
+    "白色旗帜": "white_banner",
+    "白色床": "white_bed",
+    "白色蜡烛": "white_candle",
+    "插上白色蜡烛的蛋糕": "white_candle_cake",
+    "白色地毯": "white_carpet",
+    "白色混凝土": "white_concrete",
+    "白色混凝土粉末": "white_concrete_powder",
+    "白色带釉陶瓦": "white_glazed_terracotta",
+    "白色潜影盒": "white_shulker_box",
+    "白色染色玻璃": "white_stained_glass",
+    "白色染色玻璃板": "white_stained_glass_pane",
+    "白色陶瓦": "white_terracotta",
+    "白色郁金香": "white_tulip",
+    "白色羊毛": "white_wool",
+    "野花簇": "wildflowers",
+    "凋灵玫瑰": "wither_rose",
+    "凋灵骷髅头颅": "wither_skeleton_skull",
+    "墙上的凋灵骷髅头颅": "wither_skeleton_wall_skull",
+    "黄色旗帜": "yellow_banner",
+    "黄色床": "yellow_bed",
+    "黄色蜡烛": "yellow_candle",
+    "插上黄色蜡烛的蛋糕": "yellow_candle_cake",
+    "黄色地毯": "yellow_carpet",
+    "黄色混凝土": "yellow_concrete",
+    "黄色混凝土粉末": "yellow_concrete_powder",
+    "黄色带釉陶瓦": "yellow_glazed_terracotta",
+    "黄色潜影盒": "yellow_shulker_box",
+    "黄色染色玻璃": "yellow_stained_glass",
+    "黄色染色玻璃板": "yellow_stained_glass_pane",
+    "黄色陶瓦": "yellow_terracotta",
+    "黄色羊毛": "yellow_wool",
+    "僵尸的头": "zombie_head",
+    "墙上的僵尸的头": "zombie_wall_head",
+    "金合欢木船": "acacia_boat",
+    "金合欢木运输船": "acacia_chest_boat",
+    "悦灵刷怪蛋": "allay_spawn_egg",
+    "紫水晶碎片": "amethyst_shard",
+    "垂钓纹样陶片": "angler_pottery_sherd",
+    "苹果": "apple",
+    "弓箭纹样陶片": "pottery_shard_archer",
+    "犰狳鳞甲": "armadillo_scute",
+    "犰狳刷怪蛋": "armadillo_spawn_egg",
+    "盔甲架": "armor_stand",
+    "举臂纹样陶片": "pottery_shard_arms_up",
+    "箭": "arrow",
+    "美西螈桶": "axolotl_bucket",
+    "美西螈刷怪蛋": "axolotl_spawn_egg",
+    "烤马铃薯": "baked_potato",
+    "运输竹筏": "bamboo_chest_raft",
+    "竹筏": "bamboo_raft",
+    "蝙蝠刷怪蛋": "bat_spawn_egg",
+    "蜜蜂刷怪蛋": "bee_spawn_egg",
+    "生牛肉": "beef",
+    "甜菜种子": "beetroot_seeds",
+    "甜菜汤": "beetroot_soup",
+    "白桦木船": "birch_boat",
+    "白桦木运输船": "birch_chest_boat",
+    "黑色收纳袋": "black_bundle",
+    "黑色染料": "black_dye",
+    "黑色挽具": "black_harness",
+    "利刃纹样陶片": "blade_pottery_sherd",
+    "烈焰粉": "blaze_powder",
+    "烈焰棒": "blaze_rod",
+    "烈焰人刷怪蛋": "blaze_spawn_egg",
+    "蓝色收纳袋": "blue_bundle",
+    "蓝色染料": "blue_dye",
+    "蓝色鸡蛋": "blue_egg",
+    "蓝色挽具": "blue_harness",
+    "沼骸刷怪蛋": "bogged_spawn_egg",
+    "锻造模板": "wild_armor_trim_smithing_template",
+    "骨头": "bone",
+    "骨粉": "bone_meal",
+    "书": "book",
+    "波纹边旗帜图案": "bordure_indented_banner_pattern",
+    "弓": "bow",
+    "碗": "bowl",
+    "面包": "bread",
+    "旋风棒": "breeze_rod",
+    "旋风人刷怪蛋": "breeze_spawn_egg",
+    "佳酿纹样陶片": "brewer_pottery_sherd",
+    "红砖": "brick",
+    "棕色收纳袋": "brown_bundle",
+    "棕色染料": "brown_dye",
+    "棕色鸡蛋": "brown_egg",
+    "棕色挽具": "brown_harness",
+    "刷子": "brush",
+    "铁桶": "bucket",
+    "收纳袋": "bundle",
+    "烈焰纹样陶片": "burn_pottery_sherd",
+    "骆驼尸壳刷怪蛋": "camel_husk_spawn_egg",
+    "骆驼刷怪蛋": "camel_spawn_egg",
+    "胡萝卜钓竿": "carrot_on_a_stick",
+    "猫刷怪蛋": "cat_spawn_egg",
+    "洞穴蜘蛛刷怪蛋": "cave_spider_spawn_egg",
+    "锁链靴子": "chainmail_boots",
+    "锁链胸甲": "chainmail_chestplate",
+    "锁链头盔": "chainmail_helmet",
+    "锁链护腿": "chainmail_leggings",
+    "木炭": "charcoal",
+    "樱花木船": "cherry_boat",
+    "樱花木运输船": "cherry_chest_boat",
+    "运输矿车": "chest_minecart",
+    "生鸡肉": "chicken",
+    "鸡刷怪蛋": "chicken_spawn_egg",
+    "紫颂果": "chorus_fruit",
+    "黏土球": "clay_ball",
+    "时钟": "clock",
+    "煤炭": "coal",
+    "可可豆": "cocoa_beans",
+    "生鳕鱼": "cod",
+    "鳕鱼桶": "cod_bucket",
+    "鳕鱼刷怪蛋": "cod_spawn_egg",
+    "命令方块矿车": "command_block_minecart",
+    "指南针": "compass",
+    "牛排": "cooked_beef",
+    "熟鸡肉": "cooked_chicken",
+    "熟鳕鱼": "cooked_cod",
+    "熟羊肉": "cooked_mutton",
+    "熟猪排": "cooked_porkchop",
+    "熟兔肉": "cooked_rabbit",
+    "熟鲑鱼": "cooked_salmon",
+    "曲奇": "cookie",
+    "铜斧": "copper_axe",
+    "铜靴子": "copper_boots",
+    "铜胸甲": "copper_chestplate",
+    "铜傀儡刷怪蛋": "copper_golem_spawn_egg",
+    "铜头盔": "copper_helmet",
+    "铜锄": "copper_hoe",
+    "铜马铠": "copper_horse_armor",
+    "铜锭": "copper_ingot",
+    "铜护腿": "copper_leggings",
+    "铜鹦鹉螺铠": "copper_nautilus_armor",
+    "铜粒": "copper_nugget",
+    "铜镐": "copper_pickaxe",
+    "铜锹": "copper_shovel",
+    "铜矛": "copper_spear",
+    "铜剑": "copper_sword",
+    "牛刷怪蛋": "cow_spawn_egg",
+    "嘎枝刷怪蛋": "creaking_spawn_egg",
+    "旗帜图案": "skull_banner_pattern",
+    "苦力怕刷怪蛋": "creeper_spawn_egg",
+    "弩": "crossbow",
+    "青色收纳袋": "cyan_bundle",
+    "青色染料": "cyan_dye",
+    "青色挽具": "cyan_harness",
+    "危机纹样陶片": "danger_pottery_sherd",
+    "深色橡木船": "dark_oak_boat",
+    "深色橡木运输船": "dark_oak_chest_boat",
+    "调试棒": "debug_stick",
+    "钻石": "diamond",
+    "钻石斧": "diamond_axe",
+    "钻石靴子": "diamond_boots",
+    "钻石胸甲": "diamond_chestplate",
+    "钻石头盔": "diamond_helmet",
+    "钻石锄": "diamond_hoe",
+    "钻石马铠": "diamond_horse_armor",
+    "钻石护腿": "diamond_leggings",
+    "钻石鹦鹉螺铠": "diamond_nautilus_armor",
+    "钻石镐": "diamond_pickaxe",
+    "钻石锹": "diamond_shovel",
+    "钻石矛": "diamond_spear",
+    "钻石剑": "diamond_sword",
+    "海豚刷怪蛋": "dolphin_spawn_egg",
+    "驴刷怪蛋": "donkey_spawn_egg",
+    "龙息": "dragon_breath",
+    "干海带": "dried_kelp",
+    "溺尸刷怪蛋": "drowned_spawn_egg",
+    "回响碎片": "echo_shard",
+    "鸡蛋": "egg",
+    "远古守卫者刷怪蛋": "elder_guardian_spawn_egg",
+    "鞘翅": "elytra",
+    "绿宝石": "emerald",
+    "附魔书": "enchanted_book",
+    "附魔金苹果": "enchanted_golden_apple",
+    "末地水晶": "end_crystal",
+    "末影龙刷怪蛋": "ender_dragon_spawn_egg",
+    "末影之眼": "ender_eye",
+    "末影珍珠": "ender_pearl",
+    "末影人刷怪蛋": "enderman_spawn_egg",
+    "末影螨刷怪蛋": "endermite_spawn_egg",
+    "唤魔者刷怪蛋": "evoker_spawn_egg",
+    "附魔之瓶": "experience_bottle",
+    "探险纹样陶片": "explorer_pottery_sherd",
+    "羽毛": "feather",
+    "发酵蛛眼": "fermented_spider_eye",
+    "砖纹旗帜图案": "field_masoned_banner_pattern",
+    "地图": "filled_map",
+    "火焰弹": "fire_charge",
+    "烟花火箭": "firework_rocket",
+    "烟火之星": "firework_star",
+    "钓鱼竿": "fishing_rod",
+    "燧石": "flint",
+    "打火石": "flint_and_steel",
+    "涡流纹样陶片": "flow_pottery_sherd",
+    "狐狸刷怪蛋": "fox_spawn_egg",
+    "挚友纹样陶片": "friend_pottery_sherd",
+    "青蛙刷怪蛋": "frog_spawn_egg",
+    "动力矿车": "furnace_minecart",
+    "恶魂刷怪蛋": "ghast_spawn_egg",
+    "恶魂之泪": "ghast_tear",
+    "玻璃瓶": "glass_bottle",
+    "闪烁的西瓜片": "glistering_melon_slice",
+    "发光浆果": "glow_berries",
+    "荧光墨囊": "glow_ink_sac",
+    "荧光物品展示框": "glow_item_frame",
+    "发光鱿鱼刷怪蛋": "glow_squid_spawn_egg",
+    "荧石粉": "glowstone_dust",
+    "山羊角": "goat_horn",
+    "山羊刷怪蛋": "goat_spawn_egg",
+    "金锭": "gold_ingot",
+    "金粒": "gold_nugget",
+    "金苹果": "golden_apple",
+    "金斧": "golden_axe",
+    "金靴子": "golden_boots",
+    "金胡萝卜": "golden_carrot",
+    "金胸甲": "golden_chestplate",
+    "金头盔": "golden_helmet",
+    "金锄": "golden_hoe",
+    "金马铠": "golden_horse_armor",
+    "金护腿": "golden_leggings",
+    "金鹦鹉螺铠": "golden_nautilus_armor",
+    "金镐": "golden_pickaxe",
+    "金锹": "golden_shovel",
+    "金矛": "golden_spear",
+    "金剑": "golden_sword",
+    "灰色收纳袋": "gray_bundle",
+    "灰色染料": "gray_dye",
+    "灰色挽具": "gray_harness",
+    "绿色收纳袋": "green_bundle",
+    "绿色染料": "green_dye",
+    "绿色挽具": "green_harness",
+    "守卫者刷怪蛋": "guardian_spawn_egg",
+    "火药": "gunpowder",
+    "旋风纹样陶片": "guster_pottery_sherd",
+    "快乐恶魂刷怪蛋": "happy_ghast_spawn_egg",
+    "挽具": "harness",
+    "海洋之心": "heart_of_the_sea",
+    "爱心纹样陶片": "heart_pottery_sherd",
+    "心碎纹样陶片": "heartbreak_pottery_sherd",
+    "疣猪兽刷怪蛋": "hoglin_spawn_egg",
+    "蜂蜜瓶": "honey_bottle",
+    "蜜脾": "honeycomb",
+    "漏斗矿车": "hopper_minecart",
+    "马刷怪蛋": "horse_spawn_egg",
+    "狼嚎纹样陶片": "howl_pottery_sherd",
+    "尸壳刷怪蛋": "husk_spawn_egg",
+    "墨囊": "ink_sac",
+    "铁斧": "iron_axe",
+    "铁靴子": "iron_boots",
+    "铁胸甲": "iron_chestplate",
+    "铁傀儡刷怪蛋": "iron_golem_spawn_egg",
+    "铁头盔": "iron_helmet",
+    "铁锄": "iron_hoe",
+    "铁马铠": "iron_horse_armor",
+    "铁锭": "iron_ingot",
+    "铁护腿": "iron_leggings",
+    "铁鹦鹉螺铠": "iron_nautilus_armor",
+    "铁粒": "iron_nugget",
+    "铁镐": "iron_pickaxe",
+    "铁锹": "iron_shovel",
+    "铁矛": "iron_spear",
+    "铁剑": "iron_sword",
+    "物品展示框": "item_frame",
+    "丛林木船": "jungle_boat",
+    "丛林木运输船": "jungle_chest_boat",
+    "知识之书": "knowledge_book",
+    "青金石": "lapis_lazuli",
+    "熔岩桶": "lava_bucket",
+    "拴绳": "lead",
+    "皮革": "leather",
+    "皮革靴子": "leather_boots",
+    "皮革外套": "leather_chestplate",
+    "皮革帽子": "leather_helmet",
+    "皮革马铠": "leather_horse_armor",
+    "皮革裤子": "leather_leggings",
+    "淡蓝色收纳袋": "light_blue_bundle",
+    "淡蓝色染料": "light_blue_dye",
+    "淡蓝色挽具": "light_blue_harness",
+    "淡灰色收纳袋": "light_gray_bundle",
+    "淡灰色染料": "light_gray_dye",
+    "淡灰色挽具": "light_gray_harness",
+    "黄绿色收纳袋": "lime_bundle",
+    "黄绿色染料": "lime_dye",
+    "黄绿色挽具": "lime_harness",
+    "滞留药水": "lingering_potion",
+    "羊驼刷怪蛋": "llama_spawn_egg",
+    "磁石指针": "lodestone_compass",
+    "重锤": "mace",
+    "品红色收纳袋": "magenta_bundle",
+    "品红色染料": "magenta_dye",
+    "品红色挽具": "magenta_harness",
+    "岩浆膏": "magma_cream",
+    "岩浆怪刷怪蛋": "magma_cube_spawn_egg",
+    "红树木船": "mangrove_boat",
+    "红树木运输船": "mangrove_chest_boat",
+    "空地图": "map",
+    "西瓜种子": "melon_seeds",
+    "西瓜片": "melon_slice",
+    "奶桶": "milk_bucket",
+    "矿车": "minecart",
+    "采矿纹样陶片": "miner_pottery_sherd",
+    "哞菇刷怪蛋": "mooshroom_spawn_egg",
+    "悲恸纹样陶片": "mourner_pottery_sherd",
+    "骡刷怪蛋": "mule_spawn_egg",
+    "蘑菇煲": "mushroom_stew",
+    "音乐唱片": "music_disc_ward",
+    "生羊肉": "mutton",
+    "命名牌": "name_tag",
+    "鹦鹉螺壳": "nautilus_shell",
+    "鹦鹉螺刷怪蛋": "nautilus_spawn_egg",
+    "下界砖": "nether_brick",
+    "下界之星": "nether_star",
+    "下界合金斧": "netherite_axe",
+    "下界合金靴子": "netherite_boots",
+    "下界合金胸甲": "netherite_chestplate",
+    "下界合金头盔": "netherite_helmet",
+    "下界合金锄": "netherite_hoe",
+    "下界合金马铠": "netherite_horse_armor",
+    "下界合金锭": "netherite_ingot",
+    "下界合金护腿": "netherite_leggings",
+    "下界合金鹦鹉螺铠": "netherite_nautilus_armor",
+    "下界合金镐": "netherite_pickaxe",
+    "下界合金碎片": "netherite_scrap",
+    "下界合金锹": "netherite_shovel",
+    "下界合金矛": "netherite_spear",
+    "下界合金剑": "netherite_sword",
+    "橡木船": "oak_boat",
+    "橡木运输船": "oak_chest_boat",
+    "豹猫刷怪蛋": "ocelot_spawn_egg",
+    "不祥之瓶": "ominous_bottle",
+    "不祥试炼钥匙": "ominous_trial_key",
+    "橙色收纳袋": "orange_bundle",
+    "橙色染料": "orange_dye",
+    "橙色挽具": "orange_harness",
+    "画": "painting",
+    "苍白橡木船": "pale_oak_boat",
+    "苍白橡木运输船": "pale_oak_chest_boat",
+    "熊猫刷怪蛋": "panda_spawn_egg",
+    "纸": "paper",
+    "焦骸刷怪蛋": "parched_spawn_egg",
+    "鹦鹉刷怪蛋": "parrot_spawn_egg",
+    "幻翼膜": "phantom_membrane",
+    "幻翼刷怪蛋": "phantom_spawn_egg",
+    "猪刷怪蛋": "pig_spawn_egg",
+    "猪灵蛮兵刷怪蛋": "piglin_brute_spawn_egg",
+    "猪灵刷怪蛋": "piglin_spawn_egg",
+    "掠夺者刷怪蛋": "pillager_spawn_egg",
+    "粉红色收纳袋": "pink_bundle",
+    "粉红色染料": "pink_dye",
+    "粉红色挽具": "pink_harness",
+    "瓶子草荚果": "pitcher_pod",
+    "富饶纹样陶片": "plenty_pottery_sherd",
+    "毒马铃薯": "poisonous_potato",
+    "北极熊刷怪蛋": "polar_bear_spawn_egg",
+    "爆裂紫颂果": "popped_chorus_fruit",
+    "生猪排": "porkchop",
+    "药水": "potion",
+    "珍宝纹样陶片": "prize_pottery_sherd",
+    "头颅纹样陶片": "skull_pottery_sherd",
+    "细雪桶": "powder_snow_bucket",
+    "海晶砂粒": "prismarine_crystals",
+    "海晶碎片": "prismarine_shard",
+    "河豚": "pufferfish",
+    "河豚桶": "pufferfish_bucket",
+    "河豚刷怪蛋": "pufferfish_spawn_egg",
+    "南瓜派": "pumpkin_pie",
+    "南瓜种子": "pumpkin_seeds",
+    "紫色收纳袋": "purple_bundle",
+    "紫色染料": "purple_dye",
+    "紫色挽具": "purple_harness",
+    "下界石英": "quartz",
+    "生兔肉": "rabbit",
+    "兔子脚": "rabbit_foot",
+    "兔子皮": "rabbit_hide",
+    "兔子刷怪蛋": "rabbit_spawn_egg",
+    "兔肉煲": "rabbit_stew",
+    "劫掠兽刷怪蛋": "ravager_spawn_egg",
+    "粗铜": "raw_copper",
+    "粗金": "raw_gold",
+    "粗铁": "raw_iron",
+    "追溯指针": "recovery_compass",
+    "红色收纳袋": "red_bundle",
+    "红色染料": "red_dye",
+    "红色挽具": "red_harness",
+    "红石粉": "redstone",
+    "树脂砖": "resin_brick",
+    "腐肉": "rotten_flesh",
+    "鞍": "saddle",
+    "生鲑鱼": "salmon",
+    "鲑鱼桶": "salmon_bucket",
+    "鲑鱼刷怪蛋": "salmon_spawn_egg",
+    "刮削纹样陶片": "scrape_pottery_sherd",
+    "鳞甲": "scute",
+    "麦捆纹样陶片": "sheaf_pottery_sherd",
+    "剪刀": "shears",
+    "绵羊刷怪蛋": "sheep_spawn_egg",
+    "树荫纹样陶片": "shelter_pottery_sherd",
+    "盾牌": "shield",
+    "潜影壳": "shulker_shell",
+    "潜影贝刷怪蛋": "shulker_spawn_egg",
+    "告示牌": "sign",
+    "蠹虫刷怪蛋": "silverfish_spawn_egg",
+    "骷髅马刷怪蛋": "skeleton_horse_spawn_egg",
+    "骷髅刷怪蛋": "skeleton_spawn_egg",
+    "黏液球": "slime_ball",
+    "史莱姆刷怪蛋": "slime_spawn_egg",
+    "嗅探兽刷怪蛋": "sniffer_spawn_egg",
+    "嗅探纹样陶片": "snort_pottery_sherd",
+    "雪傀儡刷怪蛋": "snow_golem_spawn_egg",
+    "雪球": "snowball",
+    "光灵箭": "spectral_arrow",
+    "蜘蛛眼": "spider_eye",
+    "蜘蛛刷怪蛋": "spider_spawn_egg",
+    "喷溅药水": "splash_potion",
+    "云杉木船": "spruce_boat",
+    "云杉木运输船": "spruce_chest_boat",
+    "望远镜": "spyglass",
+    "鱿鱼刷怪蛋": "squid_spawn_egg",
+    "木棍": "stick",
+    "石斧": "stone_axe",
+    "石锄": "stone_hoe",
+    "石镐": "stone_pickaxe",
+    "石锹": "stone_shovel",
+    "石矛": "stone_spear",
+    "石剑": "stone_sword",
+    "流浪者刷怪蛋": "stray_spawn_egg",
+    "炽足兽刷怪蛋": "strider_spawn_egg",
+    "线": "string",
+    "糖": "sugar",
+    "谜之炖菜": "suspicious_stew",
+    "甜浆果": "sweet_berries",
+    "蝌蚪桶": "tadpole_bucket",
+    "蝌蚪刷怪蛋": "tadpole_spawn_egg",
+    "药箭": "tipped_arrow",
+    "TNT矿车": "tnt_minecart",
+    "火把花种子": "torchflower_seeds",
+    "不死图腾": "totem_of_undying",
+    "行商羊驼刷怪蛋": "trader_llama_spawn_egg",
+    "试炼钥匙": "trial_key",
+    "三叉戟": "trident",
+    "热带鱼": "tropical_fish",
+    "热带鱼桶": "tropical_fish_bucket",
+    "热带鱼刷怪蛋": "tropical_fish_spawn_egg",
+    "海龟壳": "turtle_helmet",
+    "海龟鳞甲": "turtle_scute",
+    "海龟刷怪蛋": "turtle_spawn_egg",
+    "恼鬼刷怪蛋": "vex_spawn_egg",
+    "村民刷怪蛋": "villager_spawn_egg",
+    "卫道士刷怪蛋": "vindicator_spawn_egg",
+    "流浪商人刷怪蛋": "wandering_trader_spawn_egg",
+    "监守者刷怪蛋": "warden_spawn_egg",
+    "诡异菌钓竿": "warped_fungus_on_a_stick",
+    "水桶": "water_bucket",
+    "小麦": "wheat",
+    "小麦种子": "wheat_seeds",
+    "白色收纳袋": "white_bundle",
+    "白色染料": "white_dye",
+    "白色挽具": "white_harness",
+    "风弹": "wind_charge",
+    "女巫刷怪蛋": "witch_spawn_egg",
+    "凋灵骷髅刷怪蛋": "wither_skeleton_spawn_egg",
+    "凋灵刷怪蛋": "wither_spawn_egg",
+    "狼铠": "wolf_armor",
+    "狼刷怪蛋": "wolf_spawn_egg",
+    "木斧": "wooden_axe",
+    "木锄": "wooden_hoe",
+    "木镐": "wooden_pickaxe",
+    "木锹": "wooden_shovel",
+    "木矛": "wooden_spear",
+    "木剑": "wooden_sword",
+    "书与笔": "writable_book",
+    "成书": "written_book",
+    "黄色收纳袋": "yellow_bundle",
+    "黄色染料": "yellow_dye",
+    "黄色挽具": "yellow_harness",
+    "僵尸疣猪兽刷怪蛋": "zoglin_spawn_egg",
+    "僵尸马刷怪蛋": "zombie_horse_spawn_egg",
+    "僵尸鹦鹉螺刷怪蛋": "zombie_nautilus_spawn_egg",
+    "僵尸刷怪蛋": "zombie_spawn_egg",
+    "僵尸村民刷怪蛋": "zombie_villager_spawn_egg",
+    "僵尸猪灵刷怪蛋": "zombified_piglin_spawn_egg"
+  }
+}

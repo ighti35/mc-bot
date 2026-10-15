@@ -19,7 +19,7 @@ function initAntiStuck(bot, state, config) {
 
   checkInterval = setInterval(() => {
     if (!bot.entity || !bot.entity.position) return;
-    if (state.mode === 'sleeping') return;
+    if (state.mode === 'sleeping' || state._itemGoal || state._enchanting) return; // 目标任务使用有超时的寻路，不触发传送自救
     if (inEscape) return; // 自救过程中不重复检测
 
     const pos = bot.entity.position;

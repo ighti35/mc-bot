@@ -19,7 +19,7 @@ function initCombat(bot, state, config) {
   // 正确的 bot 被攻击事件是比较 health 下降
   // mineflayer 用 "health" 事件监听血量变化
   bot.on('health', () => {
-    if (state.mode === 'combat') return; // 已经在战斗中
+    if (state.mode === 'combat' || state.mode === 'crafting' || state._itemGoal || state._enchanting) return; // 目标任务自行检查低血量并暂停
     if (state.mode === 'mining' || state.mode === 'collecting' || state.mode === 'chopping') return; // 工作时不触发
     if (bot.health <= 0) return;
 
@@ -32,7 +32,7 @@ function initCombat(bot, state, config) {
 
   // 周期性检查附近是否有敌对生物在攻击 bot
   combatInterval = setInterval(() => {
-    if (state.mode === 'combat') return; // 已经在战斗
+    if (state.mode === 'combat' || state.mode === 'crafting' || state._itemGoal || state._enchanting) return;
     if (state.mode === 'mining' || state.mode === 'collecting' || state.mode === 'enchanting' || state.mode === 'chopping') return; // 工作时不打扰
     if (bot.health <= 0) return;
 

@@ -20,6 +20,9 @@ CRITICAL: You can see your inventory in the "Inv" field of the game state. You c
 Talk naturally in Chinese. Be friendly, helpful, and playful.
 
 ## Response Rules
+Interpret every ordinary player message using its meaning, conversation history and current game state. There are no fixed phrases or local keyword shortcuts. Distinguish instructions from questions, negation, hypotheticals and corrections. Choose the appropriate tool and normalize item/enchantment IDs and numeric counts/levels yourself; ask a brief clarification when the target is ambiguous. Never ask the player to rephrase as a !command.
+While a task is active, continue interpreting messages: cancellation uses stop, questions use chat/status/inventory, and switching tasks requires stopping the current task before starting another. A stop request may take time to settle; do not assume the task lock is released immediately.
+For enchantment, use the bot's HeldItem and inventory to resolve references. Use enchant with the desired enchantment/level, or omit enchant to select a compatible book automatically. Missing books, equipment and XP are reported by the executor. Do not replace survival crafting or book/anvil requests with /give, /enchant or creative commands.
 To chat: respond with plain text (it will be sent to Minecraft chat).
 To act: respond ONLY with this JSON format (no other text):
 {"chat":"your message","actions":[{"tool":"name","args":{}}]}
@@ -30,6 +33,8 @@ To act: respond ONLY with this JSON format (no other text):
 - stop: stop all tasks. args: {}
 - mine: mine blocks. args: {"block":"coal_ore","count":5}
 - collect: collect blocks. args: {"block":"oak_log","count":10}
+- obtain: autonomously obtain an item, including gathering resources, prerequisite tools, workstations, crafting and smelting. args: {"item":"diamond_pickaxe","count":1}. Count is the desired TOTAL in bot inventory. Use this for requests to 合成/制作/获取 an item; the goal executor handles prerequisites and verifies the final inventory. Never substitute /give or creative mode. Report progress, not success before execution finishes.
+- craft: immediate crafting from current inventory only. args: {"item":"stick","count":4}. Count is NEW output items. Use only if the player explicitly requests inventory-only crafting; prefer obtain for final goals.
 - chop_tree: chop nearest tree. args: {}
 - goto: go to coords. args: {"x":100,"y":64,"z":200}
 - status: report HP/food/position. args: {}
@@ -39,7 +44,7 @@ To act: respond ONLY with this JSON format (no other text):
 - attack: attack mob. args: {"mob":"zombie"}
 - wander: toggle auto-wander. args: {}
 - scout: scan for rare ores. args: {}
-- enchant: enchant YOUR item with an enchanted book using anvil. args: {"item":"sword","enchant":"sharpness"}
+- enchant: enchant YOUR item with an enchanted book using anvil. args: {"item":"diamond_sword","enchant":"sharpness","level":5}. Requires equipment and book in inventory, nearby anvil and sufficient XP. level is optional; never claim success before the tool completes.
 - search_web: search the internet to learn something. args: {"query":"how to find diamonds in minecraft 1.21"}
 - find_village: try to locate a village via command or exploration. args: {}
 - explore: pick a direction and walk exploring new terrain. args: {"direction":"north"} or args:{"x":1000,"z":-500}
@@ -67,7 +72,11 @@ To act: respond ONLY with this JSON format (no other text):
 }
 
 function initAI(config) {
+  conversationHistory = [];
   if (!config.aiApiKey) {
+    apiKey = null;
+    apiUrl = null;
+    model = null;
     console.log('[AI] 未配置 AI API Key，使用本地命令模式');
     return false;
   }
@@ -83,7 +92,7 @@ function initAI(config) {
 async function processMessage(username, message, bot, state, config) {
   if (!apiKey) return null;
 
-  const isOwner = username === config.owner;
+  const isOwner = !config.owner || username === config.owner;
   const isMentioned = message.toLowerCase().includes('claude');
 
   if (!isOwner && !isMentioned) return null;
@@ -175,6 +184,8 @@ async function processMessage(username, message, bot, state, config) {
 
     // 执行动作
     if (parsed.actions && parsed.actions.length > 0) {
+      if (!isOwner) { bot.chat('只有主人可以让我执行操作。'); return parsed; }
+      state.stats ||= {};
       if (!state.stats.actionHistory) state.stats.actionHistory = [];
       for (const action of parsed.actions) {
         try {
@@ -189,6 +200,7 @@ async function processMessage(username, message, bot, state, config) {
           });
         } catch (e) {
           think.actionFail(action.tool, e.message);
+          bot.chat(`操作失败：${e.message}`);
           console.error(`[AI] Action error (${action.tool}):`, e.message);
           state.stats.actionHistory.push({
             time: Date.now(),
@@ -231,7 +243,7 @@ function buildGameContext(bot, state) {
     .filter(i => i.name === 'enchanted_book')
     .map(i => {
       try {
-        const enchants = i.enchants || [];
+        const enchants = require('./anvil').enchants(i, bot.registry);
         return enchants.map(e => `${e.name}:${e.lvl}`).join('+') || 'book';
       } catch { return 'book'; }
     })
@@ -246,14 +258,38 @@ function buildGameContext(bot, state) {
   const history = state.stats.actionHistory || [];
   const recentActions = history.slice(-5).map(a => `[${a.success ? '✓' : '✗'} ${a.action}]`).join(' ') || 'none';
 
-  return `Pos:(${Math.round(pos.x)},${Math.round(pos.y)},${Math.round(pos.z)}) HP:${hp} Food:${food} Mode:${mode} Task:${task} Inv:[${items}] Nearby:[${nearby}] EnchBooks:[${books}] Search:${searchInfo} Recent:[${recentActions}]`;
+  return `Pos:(${Math.round(pos.x)},${Math.round(pos.y)},${Math.round(pos.z)}) HP:${hp} Food:${food} Mode:${mode} Task:${task} HeldItem:${bot.heldItem?.name || 'none'} XP:${bot.experience?.level ?? 'unknown'} Inv:[${items}] Nearby:[${nearby}] EnchBooks:[${books}] Search:${searchInfo} Recent:[${recentActions}]`;
 }
 
 async function executeAction(action, bot, state, config) {
   const { tool, args = {} } = action;
   console.log(`[AI Action] ${tool}:`, JSON.stringify(args));
+  if ((state._itemGoal || state._enchanting) && !['stop', 'status', 'inventory', 'chat'].includes(tool)) {
+    throw new Error('目标任务仍在执行，请先停止它');
+  }
 
   switch (tool) {
+    case 'obtain': {
+      const { obtainItem } = require('./item-goal');
+      try {
+        await obtainItem(args.item, args.count === undefined ? 1 : args.count, bot, state);
+      } catch (error) {
+        bot.chat(`目标任务：${error.message}`);
+        throw error;
+      }
+      break;
+    }
+    case 'craft': {
+      const { craftItem } = require('./crafting');
+      try {
+        await craftItem(args.item, args.count === undefined ? 1 : args.count, bot, state);
+      } catch (error) {
+        bot.chat(`合成失败：${error.message}`);
+        throw error;
+      }
+      break;
+    }
+
     case 'chat':
       bot.chat(args.message);
       break;
@@ -290,6 +326,19 @@ async function executeAction(action, bot, state, config) {
     }
 
     case 'stop': {
+      if (state._enchanting) {
+        state._enchanting.cancelled = true;
+        bot.pathfinder.setGoal(null);
+        break;
+      }
+      if (require('./item-goal').stopItemGoal(state)) {
+        bot.chat('已请求停止目标任务，正在结束当前动作。');
+        break;
+      }
+      if (state._crafting) {
+        bot.chat('Mineflayer 合成不支持中途取消，请等待当前批次完成。');
+        break;
+      }
       const { stopWandering } = require('./wander');
       bot.pathfinder.setGoal(null);
       if (bot.collectBlock) bot.collectBlock.cancelTask();
@@ -463,9 +512,8 @@ async function executeAction(action, bot, state, config) {
     }
 
     case 'enchant': {
-      if (state.mode === 'enchanting' || state.mode === 'mining') break; // 防止重复
       const { enchantItem: ei } = require('./anvil');
-      ei(bot, args.item, args.enchant || null, state);
+      await ei(bot, args.item, [args.enchant, args.level].filter(v => v !== undefined && v !== null).join(' ') || null, state);
       break;
     }
 

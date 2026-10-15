@@ -5,6 +5,9 @@ const fs = require('fs');
 const path = require('path');
 const { startWandering, stopWandering } = require('./wander');
 const { processMessage } = require('./ai');
+const { craftItem } = require('./crafting');
+const { obtainItem, stopItemGoal } = require('./item-goal');
+const { describeItem } = require('./item-goal-data');
 
 const HELP_MSG = [
   '========== Claude AI Commands ==========',
@@ -16,13 +19,16 @@ const HELP_MSG = [
   '!mine <ore> [count] - Auto mine (e.g. !mine iron_ore 10)',
   '!find <item> - Find nearby resources',
   '!collect <item> [count] - Collect items (e.g. !collect oak_log 20)',
+  '!craft <item> [count] - 合成物品，如 !craft 木棍 4',
+  '!obtain <item> [count] - 自动收集材料并制作，如 !obtain diamond_pickaxe 1',
+  '!recipe <item> - 查询物品的获取方式与所需条件',
   '!goto <x y z> - Go to coordinates',
   '!home / !gohome - Set/go home',
   '!status - Bot status',
   '!inv - Show inventory',
   '!drop <item> - Drop items',
   '!sword / !axe / !pickaxe - Get best tool',
-  '!enchant <item> [附魔] - 用铁砧附魔装备',
+  '!enchant/!附魔 <物品> [附魔] [等级] - 铁砧与附魔书',
   '!kill <mob> - Attack a mob',
   '!tree - Chop a tree',
   '!dig - Dig block under feet',
@@ -39,38 +45,41 @@ let followInterval = null;
 function handleChat(username, message, bot, state, config) {
   const msg = message.trim();
 
-  // === AI 模式：把消息发给 Claude API ===
-  processMessage(username, msg, bot, state, config).then((result) => {
-    if (result !== null) return; // AI 已处理，跳过本地命令
-
-    // === 本地命令回退（无 AI 时使用）===
-    if (!msg.startsWith('!')) {
-      if (config.owner && username === config.owner) {
-        handleCasualChat(username, msg, bot);
-      }
-      return;
-    }
-
-    const parts = msg.slice(1).split(' ');
-    const cmd = parts[0].toLowerCase();
-    const args = parts.slice(1);
-
-    if (config.owner && username !== config.owner && cmd !== 'help') {
-      bot.chat(`Sorry, only ${config.owner} can command me.`);
-      return;
-    }
-
-    try {
-      handleCommand(cmd, args, username, bot, state, config);
-    } catch (e) {
-      bot.chat(`Command error: ${e.message}`);
-      console.error(e);
-    }
+  // Only explicit commands bypass the API. All ordinary language, including
+  // cancellation during a task, is interpreted by the configured model.
+  const command = msg.startsWith('!');
+  const [cmd, ...args] = command ? msg.slice(1).split(/\s+/) : [];
+  if (config.owner && username !== config.owner && !(command && cmd.toLowerCase() === 'help')) {
+    bot.chat(`Sorry, only ${config.owner} can command me.`);
+    return Promise.resolve();
+  }
+  if (command) {
+    return Promise.resolve().then(() => handleCommand(cmd.toLowerCase(), args, username, bot, state, config))
+      .catch(error => bot.chat(`操作失败：${error.message}`));
+  }
+  return processMessage(username, msg, bot, state, config).then(result => {
+    if (result === null) bot.chat('AI 接口未配置或暂时不可用，无法理解这条请求；未执行任何本地猜测操作。');
   });
 }
 
 function handleCommand(cmd, args, username, bot, state, config) {
+  if ((state._itemGoal || state._enchanting) && !['stop', 'status', 'inventory', 'inv', 'help', 'recipe', '配方'].includes(cmd)) {
+    bot.chat('目标任务仍在执行，请先 !stop。');
+    return;
+  }
   switch (cmd) {
+    case 'recipe':
+    case '配方': {
+      const input = args.join(' ').replace(/^minecraft:/, '');
+      const name = require('./item-names')[input] || input;
+      const text = `${name}：${describeItem(bot, name)}`;
+      for (let i=0; i<text.length; i+=90) bot.chat(text.slice(i, i+90));
+      return;
+    }
+    case 'obtain':
+    case '获取':
+      if (!args[0] || args.length > 2) { bot.chat('用法：!obtain <物品> [背包目标数量]'); return; }
+      return obtainItem(args[0], args[1] === undefined ? 1 : args[1], bot, state);
     case 'help':
       for (const line of HELP_MSG) {
         bot.chat(line);
@@ -104,6 +113,17 @@ function handleCommand(cmd, args, username, bot, state, config) {
     case 'collect':
       cmdCollect(args[0], bot, state, parseInt(args[1]) || 0);
       break;
+
+    case 'craft':
+    case '合成':
+      if (!args[0] || args.length > 2) {
+        bot.chat('用法：!craft <物品英文ID或中文名> [数量]，例如 !craft stick 4');
+        return;
+      }
+      clearInterval(followInterval);
+      followTarget = null;
+      followInterval = null;
+      return craftItem(args[0], args[1] === undefined ? 1 : args[1], bot, state);
 
     case 'goto':
       if (!args[0]) { bot.chat('Usage: !goto <x> <y> <z> or !goto <name>'); return; }
@@ -200,8 +220,8 @@ function handleCommand(cmd, args, username, bot, state, config) {
       break;
 
     case 'enchant':
-      cmdEnchant(args, bot, state);
-      break;
+    case '附魔':
+      return cmdEnchant(args, bot, state);
 
     default:
       bot.chat(`Unknown command: ${cmd}. Type !help for all commands.`);
@@ -229,6 +249,7 @@ function cmdFollow(username, bot, state) {
   followTarget = username;
   bot.chat('Following you...');
   followInterval = setInterval(() => {
+    if (state.mode === 'crafting' || state._itemGoal || state._enchanting) return;
     const player = bot.players[username]?.entity;
     if (player) {
       bot.pathfinder.setGoal(new GoalNear(player.position.x, player.position.y, player.position.z, config.maxFollowDistance));
@@ -237,6 +258,20 @@ function cmdFollow(username, bot, state) {
 }
 
 function cmdStop(bot, state) {
+  if (state._enchanting) {
+    state._enchanting.cancelled = true;
+    bot.pathfinder.setGoal(null);
+    bot.chat('已请求停止附魔，正在结束当前操作。');
+    return;
+  }
+  if (stopItemGoal(state)) {
+    bot.chat('已请求停止目标任务，正在结束当前动作。');
+    return;
+  }
+  if (state._crafting) {
+    bot.chat('Mineflayer 合成不支持中途取消，请等待当前批次完成。');
+    return;
+  }
   clearInterval(followInterval);
   followTarget = null;
   followInterval = null;
@@ -633,45 +668,9 @@ function cmdGivePickaxe(bot) {
 // === Enchant Command ===
 
 function cmdEnchant(args, bot, state) {
-  const { enchantItem } = require('./anvil');
-  if (args.length === 0) {
-    // 自动模式：给所有装备逐件附魔
-    autoEnchantAll(bot, state);
-    return;
-  }
-  const itemKeyword = args[0].toLowerCase();
-  const enchantKeyword = args.length >= 2 ? args.slice(1).join('_').toLowerCase() : null;
-  enchantItem(bot, itemKeyword, enchantKeyword, state);
-}
-
-async function autoEnchantAll(bot, state) {
-  const { enchantItem } = require('./anvil');
-
-  // 优先附魔手持物品
-  const toEnchant = [];
-  if (bot.heldItem) {
-    const tools = ['sword', 'pickaxe', 'axe', 'shovel', 'hoe', 'bow', 'crossbow', 'trident'];
-    const match = tools.find(t => bot.heldItem.name.includes(t));
-    if (match) toEnchant.push(match);
-  }
-  // 再加盔甲
-  const armor = ['helmet', 'chestplate', 'leggings', 'boots'];
-  for (const a of armor) {
-    const item = bot.inventory.slots.find((s, idx) => idx >= 5 && idx <= 8 && s && s.name.includes(a));
-    if (item) toEnchant.push(a);
-  }
-
-  if (toEnchant.length === 0) {
-    bot.chat('没有可附魔的装备！');
-    return;
-  }
-
-  bot.chat(`开始自动附魔: ${toEnchant.join(', ')}`);
-  for (const keyword of toEnchant) {
-    await enchantItem(bot, keyword, null, state);
-    if (state.mode === 'enchanting') break; // 出错了就停
-  }
-  bot.chat('自动附魔完成！');
+  const item = args[0] || bot.heldItem?.name;
+  if (!item) { bot.chat('用法：!enchant <物品> [附魔] [等级]；装备和附魔书须在背包中。'); return; }
+  return require('./anvil').enchantItem(bot, item, args.slice(1).join(' ') || null, state);
 }
 
 function findOrCraftItem(bot, toolType) {
@@ -708,23 +707,6 @@ function resolveItemName(input) {
   const lower = input.toLowerCase().replace(/\s/g, '_');
   if (global.itemNames[lower]) return global.itemNames[lower];
   return lower;
-}
-
-function handleCasualChat(username, msg, bot) {
-  const lower = msg.toLowerCase();
-  if (lower.includes('hello') || lower.includes('hi') || lower.includes('hey')) {
-    bot.chat(`Hello ${username}! Need help? Type !help for commands.`);
-  } else if (lower.includes('mine') || lower.includes('dig')) {
-    bot.chat('I can mine for you! Try !mine <ore_name> or !dig to dig below me.');
-  } else if (lower.includes('build')) {
-    bot.chat('I can build! Try !build box 5');
-  } else if (lower.includes('come') || lower.includes('here')) {
-    cmdCome(username, bot);
-  } else if (lower.includes('thanks') || lower.includes('thank')) {
-    bot.chat('You are welcome!');
-  } else {
-    bot.chat(`Got it! Type !help to see what I can do.`);
-  }
 }
 
 module.exports = { handleChat };
