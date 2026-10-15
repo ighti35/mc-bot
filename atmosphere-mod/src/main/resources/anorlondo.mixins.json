@@ -1,0 +1,1 @@
+{"required":true,"package":"local.anorlondo.mixin","compatibilityLevel":"JAVA_21","client":["AttributeMixin","WeatherMixin","MusicMixin","RendererMixin","ClientTickMixin","PostProcessorAccessor","PostPassAccessor"],"injectors":{"defaultRequire":1}}

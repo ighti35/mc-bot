@@ -1,0 +1,45 @@
+Claude Bot 2.0 · Windows x64 一键整合包
+
+1. 解压整个压缩包。双击「开始安装.bat」打开中文配置面板。
+2. 在 PCL 安装 Minecraft 1.21.11 和 Fabric Loader 0.19.3 或更高版本。
+   本包自带 Fabric API，无需另外下载。建议在 PCL 开启版本隔离。
+3. 填写自己的游戏名、API Key、服务器地址和端口。
+   默认使用 DeepSeek；其他服务需支持 OpenAI Chat Completions 格式。
+   API 地址需填写完整的 /v1/chat/completions 地址。
+   在 PCL 版本管理中打开版本文件夹，复制路径或在面板选择该目录。
+   请确认面板「版本隔离」勾选状态与 PCL 一致。
+4. 退出 Minecraft，点击「一键安装并保存」。机器人默认安装到当前
+   用户的 LocalAppData\ClaudeBot；可选其他专用目录，不需要管理员权限。
+5. 用 PCL 启动刚才选择的 Fabric 版本，进入世界，按 Esc 对局域网开放。
+   游戏每次开放的端口可能变化，请把实际端口填入面板。
+   使用游戏内背包功能需要打开作弊，或在服务器为你的玩家授予 OP。
+6. 点击「测试游戏连接」和「测试 API」，然后「启动机器人」。
+   输入 !help 查看聊天命令；/botinv Claude_Bot 打开背包，
+   /botbuild 打开建筑菜单。如果修改机器人名称，请使用实际名称。
+7. 下次双击「开始安装.bat」，配置会自动读取。修改局域网端口后
+   保存，再启动机器人即可。关闭配置面板不会停止机器人。
+
+本包自带 Node.js 与机器人依赖，安装过程无需 npm 或联网下载。
+PCL 安装游戏、API 请求和使用机器人联网功能仍需要网络。
+游戏内建筑面板接口固定为本机 52592，支持同机单人局域网使用。
+机器人连接在线验证服务器可能需要额外正版登录支持，本包默认用于
+本机单人局域网世界。端口连接测试仅检查网络可达性。
+
+安装会备份同名系列的旧模组到游戏目录下 claude-bot-backups，
+不会删除世界存档。现有机器人对话、物品恢复数据不会在更新中清空。
+API Key 保存在安装目录 app\config.json，请勿把安装后的目录分享给别人。
+只分享本整合包原始 ZIP；其中没有作者的个人配置、密钥或存档。
+
+亚诺尔隆德氛围模组可选安装，首次启动默认关闭效果。
+在游戏 config\anor-londo-atmosphere.json 配置存档文件夹名称、建筑
+区域边界与 enabled=true 后，通过 /anorlondo reload 重载。
+本整合包已包含三首音乐：Ornstein & Smough（战斗）、Gwynevere,
+Princess of Sunlight（日常）、Dark Sun Gwyndolin（暗处）。
+勾选安装氛围模组时，会同时安装 AnorLondoMusic 资源包，模组自动
+启用资源包，并仅在配置区域内按场景切换。其余地区不应用区域效果。
+
+遇到问题先打开日志；不要把含密钥的 config.json 发给他人。
+公开项目：https://github.com/ighti35/mc-bot
+Node.js：MIT 等许可证见 runtime\LICENSE，官方来源 nodejs.org。
+Fabric API：Apache-2.0，官方项目 https://github.com/FabricMC/fabric
+建筑图纸的作者与来源信息保留在 app\data\schematics 内。

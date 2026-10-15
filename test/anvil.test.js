@@ -21,7 +21,7 @@ function fixture({ cost = 5, level = 20, result = [['sharpness', 3]], failTake =
     close() { inventory.push(...window.slots.slice(0, 2).filter(Boolean)); window.slots.fill(null); bot.currentWindow = null; } };
   Object.assign(bot, { registry, _client: new EventEmitter(), entity: { position: new Vec3(0, 0, 0) },
     game: { gameMode: 'survival' }, experience: { level }, inventory: { items: () => inventory },
-    chat: message => messages.push(message), pathfinder: { setGoal() {} },
+    clearControlStates() {}, chat: message => messages.push(message), pathfinder: { setGoal() {} },
     findBlock: () => ({ name: 'anvil', position: new Vec3(1, 0, 0) }),
     async openAnvil() { bot.currentWindow = window; return window; },
     async moveSlotItem(source, dest) {

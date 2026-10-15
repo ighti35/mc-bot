@@ -1,12 +1,12 @@
 {
-  "host": "localhost",
-  "port": 62452,
+  "host": "127.0.0.1",
+  "port": 25565,
   "username": "Claude_Bot",
   "version": "1.21.11",
-  "owner": "你的游戏ID",
-  "aiApiKey": "sk-你的DeepSeek-API-Key",
+  "owner": "YourMinecraftName",
+  "aiApiKey": "",
   "aiApiUrl": "https://api.deepseek.com/v1/chat/completions",
-  "aiModel": "deepseek-chat",
+  "aiModel": "deepseek-flash",
   "chatPrefix": "[ClaudeBot]",
   "autoEat": true,
   "autoEquipArmor": true,
@@ -16,5 +16,6 @@
   "maxFollowDistance": 3,
   "miningSpeed": 1200,
   "collectRadius": 16,
-  "welcomeMessage": "Hello! I am your AI assistant. Type !help for commands."
+  "welcomeMessage": "Hello! I am your AI assistant. Type !help for commands.",
+  "inventoryPanelPort": 52592
 }

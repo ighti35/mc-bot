@@ -5,6 +5,7 @@
 const itemNames = require('./item-names');
 
 async function craftItem(name, count = 1, bot, state) {
+  if (name && typeof name === 'object') return require('./crafting-basic').craftItem(name, count, bot ?? 1, state || {});
   const requested = Number(count);
   if (!['number', 'string'].includes(typeof count) || !Number.isSafeInteger(requested) || requested < 1 || requested > 2304) {
     throw new Error('合成数量必须是 1–2304 的整数');
@@ -51,4 +52,4 @@ async function craftItem(name, count = 1, bot, state) {
   }
 }
 
-module.exports = { craftItem };
+module.exports = { craftItem, placeItem: require('./crafting-basic').placeItem };

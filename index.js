@@ -95,6 +95,9 @@ const { initAI } = require('./modules/ai');
 const { initDeathAnalyzer } = require('./modules/death-analyzer');
 const { initAntiStuck, stopAntiStuck, escapeWater } = require('./modules/anti-stuck');
 const itemNames = require('./data/items.json');
+const { startInventoryPanel, attachInventoryHooks } = require('./modules/inventory-panel');
+const { attachGameInventory } = require('./modules/game-inventory');
+const { runGameModeTask, desiredGameMode } = require('./modules/game-mode');
 
 let bot;
 let reconnectCount = 0;
@@ -108,10 +111,12 @@ function createBot() {
   bot = mineflayer.createBot({
     host: config.host,
     port: config.port,
-    username: config.username + (reconnectCount > 0 ? `_${reconnectCount}` : ''),
+    // Offline player data is keyed by username-derived UUID: reconnect with the same identity.
+    username: config.username,
     version: config.version,
   });
 
+  attachInventoryHooks(bot);
   bot.loadPlugin(pathfinder.pathfinder);
   bot.loadPlugin(collectBlock.plugin);
   // auto-eat is ESM: exports { loader }
@@ -139,6 +144,7 @@ function createBot() {
   // 全局暴露
   global.bot = bot;
   global.state = state;
+  attachGameInventory(bot, state, config);
   global.config = config;
   global.itemNames = itemNames;
 
@@ -148,6 +154,8 @@ function createBot() {
       reconnectCount = 0;
     }
     console.log(`[Bot] 已生成: ${bot.username}`);
+    require('./modules/command-permissions').installCommandGuard(bot,state,config);
+    require('./modules/tower-placement').installTowerPlacement(bot,state);
 
     // === 安全化 stopDigging，防止 Digging aborted 崩溃 ===
     // 注意：只 patch stopDigging，不要 patch dig（pathfinder 依赖其返回值）
@@ -161,6 +169,8 @@ function createBot() {
 
     const mcData = require('minecraft-data')(bot.version);
     bot.mcData = mcData;
+    require('./modules/item-enchantments').installItemEnchantments(bot);
+    require('./modules/mining-speed').installMiningSpeed(bot);
 
     const movements = new pathfinder.Movements(bot, mcData);
     // === 寻路配置：允许挖掘和搭高，否则 bot 会被任何障碍物困死 ===
@@ -198,17 +208,27 @@ function createBot() {
     bot.autoEat.setOpts({ minHunger: 14, priority: 'foodPoints' });
     bot.autoEat.enableAuto();
 
-    bot.armorManager.equipAll();
+    // Keep the exact armor restored by the server, including manually selected equipment.
+    if (config.autoEquipArmor === true) {
+      bot.armorManager.equipAll().catch(error => console.log('[Armor]', error.message));
+    }
 
     // === 水域生存：检测溺水自动上浮（增强版：找岸边而非原地扑腾）===
     waterCheckInterval = setInterval(() => {
+      if(require('./modules/build-protection').isBuilding(state))return;
+      if (state._gameInventoryTask || state._inventoryTask) return;
       if (!bot.entity || !bot.entity.position) return;
       const head = bot.blockAt(bot.entity.position.offset(0, 1.6, 0));
       const feet = bot.blockAt(bot.entity.position);
       const inWater = (head && (head.name === 'water' || head.name === 'bubble_column')) ||
                       (feet && (feet.name === 'water' || feet.name === 'bubble_column'));
       if (inWater) {
-        const oxygen = bot.entity.oxygen || 10;
+        const oxygen = bot.oxygenLevel ?? 20;
+        if (state._journeyTask||state._playerCombatTask) {
+          // The journey owns swimming direction; surface without replacing its goal.
+          if ((head && head.name === 'water') || oxygen < 8) bot.setControlState('jump', true);
+          return;
+        }
         if (oxygen < 8 || bot.entity.position.y < 50) {
           // 使用 anti-stuck 的智能上岸：找最近岸边游过去
           if (!escapeWater(bot, state)) {
@@ -217,7 +237,7 @@ function createBot() {
             if (oxygen < 4) bot.pathfinder.setGoal(null);
           }
         }
-      } else {
+      } else if (!state._journeyTask && !state._navigationTask && !state._playerCombatTask) {
         bot.setControlState('jump', false);
       }
     }, 1000);
@@ -235,14 +255,7 @@ function createBot() {
     // 启动防卡死自救系统
     initAntiStuck(bot, state, config);
 
-    // 设置最大血量（需要服务器开启 OP 权限）
-    // 你在游戏里手动执行: /op Claude_Bot 然后 bot 会自动设血量
-    setTimeout(() => {
-      bot.chat('/attribute @s minecraft:max_health base set 40');
-      bot.chat('/attribute @s minecraft:attack_damage base set 8');
-      console.log('[Bot] 属性设置指令已发送');
-    }, 1000);
-
+    console.log('[Commands] 创造模式默认允许指令，其他模式需要主人授权；明确禁用优先。');
     bot.chat(config.welcomeMessage);
     console.log('[Bot] 就绪！等待指令...');
   });
@@ -255,6 +268,10 @@ function createBot() {
   bot.on('error', (err) => console.error('[Bot Error]', err));
 
   bot.on('end', (reason) => {
+    // Invalidate pending actions before creating a fresh bot on reconnect.
+    try { require('./modules/task-control').stopCurrentTask(bot, state); } catch (error) { console.log('[Bot] Task cleanup:', error.message); }
+    stopCombat();
+    stopAntiStuck();
     if (waterCheckInterval) { clearInterval(waterCheckInterval); waterCheckInterval = null; }
     console.log(`[Bot] 断开: ${reason}`);
     reconnectCount++;
@@ -267,8 +284,14 @@ function createBot() {
       console.log(`[Bot] 正在重连 (${reconnectCount}/${MAX_RECONNECT})${isDup ? ' [等待旧连接释放]' : ''}...`);
       setTimeout(() => createBot(), delay);
     } else {
-      console.log(`[Bot] 已达最大重连次数 (${MAX_RECONNECT})，停止重连。`);
-      process.exit(0);
+      if (['localhost', '127.0.0.1', '::1'].includes(config.host) && reason === 'socketClosed') {
+        console.log('[Bot] 局域网世界暂未开放，15 秒后继续等待连接。');
+        reconnectCount = 0;
+        setTimeout(() => createBot(), 15000);
+      } else {
+        console.log(`[Bot] 已达最大重连次数 (${MAX_RECONNECT})，停止重连。`);
+        process.exit(0);
+      }
     }
   });
 
@@ -284,4 +307,5 @@ function createBot() {
 // 初始化 AI 大脑
 initAI(config);
 
+startInventoryPanel(() => ({ bot: global.bot, state: global.state, config }), { port: config.inventoryPanelPort ?? 52592 });
 createBot();
