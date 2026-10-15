@@ -4,6 +4,8 @@
 
 ![Node](https://img.shields.io/badge/Node.js-18%2B-blue.svg) ![Minecraft](https://img.shields.io/badge/Minecraft-1.21.x-green.svg) ![License](https://img.shields.io/badge/License-MIT-green.svg)
 
+当前版本：**1.2.0**。更新内容见 [CHANGELOG.md](CHANGELOG.md)。
+
 ## 功能
 
 - **AI 对话** — 自然语言交流（中文），DeepSeek 大模型驱动
